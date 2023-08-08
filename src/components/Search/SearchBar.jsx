@@ -43,13 +43,19 @@ const SearchBar = ({ onClose }) => {
 
   const onSelectTimeBlock = (e, timeBlock, index) => {
     if (!timeBlock.disabled) {
-      if (selectedStartTime === undefined) {
+      if (selectedStartTime === undefined || selectedEndTime === undefined) {
         setSelectedStartTime(index);
-        setSelectedEndTime(undefined);
+        setSelectedEndTime(index);
       } else {
+        if (index < selectedStartTime) {
+          setSelectedStartTime(index);
+          setSelectedEndTime(undefined);
+        }
         setSelectedEndTime(index);
       }
     }
+    console.log(timeBlock, index);
+    console.log(selectedStartTime, selectedEndTime);
   };
 
   const handleModalInput = () => {

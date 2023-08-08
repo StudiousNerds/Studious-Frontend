@@ -72,7 +72,7 @@ const SearchBoxButton = styled.button`
 
 const ModalContainer = styled.div`
   position: fixed;
-  top: 5rem;
+  top: 4rem;
   left: 0;
   width: 100%;
   height: 25rem;
