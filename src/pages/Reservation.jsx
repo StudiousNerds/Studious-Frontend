@@ -9,6 +9,7 @@ import { EditableDiv } from "components/common/Editor";
 import theme from "styles/theme";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import RefundPolicyBox from "components/common/RefundPolicyBox";
+import { Title, TitleSub } from "components/common/Title";
 
 const DUMMY_DATA = {
   cafeName: "(스터디카페 이름)",
@@ -209,15 +210,6 @@ const Reservation = () => {
 
 export default Reservation;
 
-const Title = styled.div`
-  ${({ theme }) => theme.fonts.heading1Bold};
-`;
-
-const TitleSub = styled(Title)`
-  ${({ theme }) => theme.fonts.heading2Bold};
-  margin-bottom: 2rem;
-`;
-
 const RemoteControlSection = styled.section`
   width: 30%;
   float: right;
@@ -231,7 +223,6 @@ const MainSection = styled.section`
 
 const RowContainer = styled.div`
   margin-bottom: 7rem;
-  margin-top: 3rem;
   ${({ theme }) => theme.fonts.body1};
 `;
 
