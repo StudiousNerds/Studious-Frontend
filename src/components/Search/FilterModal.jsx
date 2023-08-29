@@ -21,7 +21,7 @@ const FilterModal = ({ onClose }) => {
     <ModalOverlay>
       <ModalContent ref={modalRef}>
         <h2>편의시설</h2>
-        {/* 모달 내용 구현 */}
+        {}
       </ModalContent>
     </ModalOverlay>
   );

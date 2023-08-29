@@ -3,25 +3,27 @@ import styled from "styled-components";
 const IMG_DUMMY_URL =
   "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
-const ReviewCafeList = ({ item }) => {
+const ReviewCafeList = ({ item, onItemClick }) => {
   return (
     <ReviewContainer>
-      <CafeInfo>
-        <CafeImage
-          src={item.cafePhoto ?? IMG_DUMMY_URL}
-          alt="스터디카페 이미지"
-        />
-        <CafeDetails>
-          <ReviewInfoCafe>{item.cafeName}</ReviewInfoCafe>
-          <ReviewInfo>{item.roomName}</ReviewInfo>
-          <ReviewInfo>
-            결제금액 ₩{item.price}원({item.payType})
-          </ReviewInfo>
-          <ReviewInfo>
-            {item.date} {item.startTime} - {item.endTime} ({item.duration})
-          </ReviewInfo>
-        </CafeDetails>
-      </CafeInfo>
+      <ClickableItem onClick={() => onItemClick(item)}>
+        <CafeInfo>
+          <CafeImage
+            src={item.cafePhoto ?? IMG_DUMMY_URL}
+            alt="스터디카페 이미지"
+          />
+          <CafeDetails>
+            <ReviewInfoCafe>{item.cafeName}</ReviewInfoCafe>
+            <ReviewInfo>{item.roomName}</ReviewInfo>
+            <ReviewInfo>
+              결제금액 ₩{item.price}원({item.payType})
+            </ReviewInfo>
+            <ReviewInfo>
+              {item.date} {item.startTime} - {item.endTime} ({item.duration})
+            </ReviewInfo>
+          </CafeDetails>
+        </CafeInfo>
+      </ClickableItem>
     </ReviewContainer>
   );
 };
@@ -62,3 +64,5 @@ const ReviewInfo = styled.div`
   color: ${({ theme }) => theme.colors.gray800};
   margin-bottom: 0.4rem;
 `;
+
+const ClickableItem = styled.div``;
