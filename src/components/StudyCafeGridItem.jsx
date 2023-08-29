@@ -1,30 +1,43 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import Icon from "./common/Icon";
+import star from "assets/icons/starYellow.svg";
 
 // 서버에서 가져온 데이터에 이미지가 없는 경우 사용할 대체 이미지입니다.
-const IMG_DUMMY_URL =
-  "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
+const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
-const StudyCafeGridItem = ({ item }) => {
+const StudyCafeGridItem = ({
+  item: { cafeId, cafeName, photo, grade, nearestStation, distance, hashtags },
+}) => {
   const navigate = useNavigate();
   const handleClickItem = () => {
-    navigate(`/studyCafe/${item.cafeId}`);
+    navigate(`/studyCafe/${cafeId}`);
   };
   return (
     <ItemLayout>
       <ItemImageBox onClick={handleClickItem}>
-        <img src={item.photo ?? IMG_DUMMY_URL} alt="스터디카페 이미지" />
+        <img src={photo ? photo : IMG_DUMMY_URL} alt="스터디카페 이미지" />
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {item.cafeName}
-          <div>⭐️ {item.grade}</div>
+          {cafeName}
+          {typeof grade === "number" ? (
+            <div>
+              <Icon iconSrc={star} size={1.6} alt="별점 아이콘" />
+              <span>grade</span>
+            </div>
+          ) : null}
         </ItemDetailsTitle>
-        <ItemDetailsMeta>{item.distance}</ItemDetailsMeta>
+        <ItemDetailsMeta>
+          {distance
+            ? `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`
+            : null}
+        </ItemDetailsMeta>
         <ItemDetailsHashtags>
-          {item.hashtags.map((hashtag, hashtagIndex) => (
-            <div key={hashtagIndex}>#{hashtag}</div>
-          ))}
+          {hashtags.length > 0 &&
+            hashtags.map((hashtag, hashtagIndex) => (
+              <div key={hashtagIndex}>#{hashtag}</div>
+            ))}
         </ItemDetailsHashtags>
       </ItemDetails>
     </ItemLayout>

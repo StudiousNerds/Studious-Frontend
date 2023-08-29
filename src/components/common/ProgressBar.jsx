@@ -19,7 +19,7 @@ const ProgressBar = ({ width, percentage }) => {
 export default ProgressBar;
 
 const ProgressBarLayout = styled.div`
-  width: ${({ width }) => `${width}px`};
+  width: ${({ width }) => `${width}rem`};
   height: 2rem;
   position: relative;
 `;
