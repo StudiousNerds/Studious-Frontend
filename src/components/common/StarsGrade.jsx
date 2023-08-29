@@ -65,13 +65,13 @@ const StarsBackgroundLayout = styled.div`
   left: 0;
   div.stars-container {
     display: flex;
-    gap: 8px;
+    gap: 0.8rem;
     z-index: 1;
   }
   div.star {
     flex-shrink: 0;
-    width: ${({ size }) => `${size}px`};
-    height: ${({ size }) => `${size}px`};
+    width: ${({ size }) => `${size}rem`};
+    height: ${({ size }) => `${size}rem`};
   }
 `;
 

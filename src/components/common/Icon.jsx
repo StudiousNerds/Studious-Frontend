@@ -11,6 +11,6 @@ const Icon = ({ size, iconSrc, alt }) => {
 export default Icon;
 
 const IconContainer = styled.div`
-  width: ${({ size }) => (typeof size === "number" ? `${size}px` : size)};
-  height: ${({ size }) => (typeof size === "number" ? `${size}px` : size)};
+  width: ${({ size }) => (typeof size === "number" ? `${size}rem` : size)};
+  height: ${({ size }) => (typeof size === "number" ? `${size}rem` : size)};
 `;

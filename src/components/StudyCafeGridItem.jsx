@@ -23,7 +23,7 @@ const StudyCafeGridItem = ({
           {cafeName}
           {typeof grade === "number" ? (
             <div>
-              <Icon iconSrc={star} size={16} alt="별점 아이콘" />
+              <Icon iconSrc={star} size={1.6} alt="별점 아이콘" />
               <span>grade</span>
             </div>
           ) : null}
