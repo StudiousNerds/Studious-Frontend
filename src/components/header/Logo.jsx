@@ -10,4 +10,5 @@ const LogoBox = styled.div`
   cursor: pointer;
   ${({ theme }) => theme.fonts.logo};
   color: ${({ theme }) => theme.colors.mainDark};
+  z-index: 5;
 `;
