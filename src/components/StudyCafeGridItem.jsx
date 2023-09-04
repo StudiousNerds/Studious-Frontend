@@ -21,17 +21,14 @@ const StudyCafeGridItem = ({
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
           {cafeName}
-          {typeof grade === "number" ? (
-            <div>
-              <Icon iconSrc={star} size={1.6} alt="별점 아이콘" />
-              <span>grade</span>
-            </div>
-          ) : null}
+          <div className="grade">
+            <Icon iconSrc={star} size={1.6} alt="별점 아이콘" />
+            <span>{grade}</span>
+          </div>
         </ItemDetailsTitle>
         <ItemDetailsMeta>
-          {distance
-            ? `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`
-            : null}
+          {distance &&
+            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`}
         </ItemDetailsMeta>
         <ItemDetailsHashtags>
           {hashtags.length > 0 &&
@@ -72,6 +69,11 @@ const ItemDetailsTitle = styled.div`
   display: flex;
   justify-content: space-between;
   ${({ theme }) => theme.fonts.body1Bold};
+  .grade {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 `;
 const ItemDetailsMeta = styled.div`
   ${({ theme }) => theme.fonts.body2};
