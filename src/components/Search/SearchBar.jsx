@@ -349,7 +349,7 @@ const SearchBarButton = styled.button`
 `;
 const CalendarModal = styled.div`
   position: fixed;
-  top: 34%;
+  top: 35%;
   left: 34%;
   width: 40rem;
   height: 50rem;
@@ -361,7 +361,7 @@ const CountModal = styled.div`
   position: fixed;
   justify-content: space-between;
   align-items: center;
-  top: 34%;
+  top: 35%;
   left: 70%;
   width: 40rem;
   height: 15rem;
