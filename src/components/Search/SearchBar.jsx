@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { GET } from "apis/api";
 import { ReactComponent as SearchIcon } from "assets/icons/search100.svg";
 import { ReactComponent as MinusIcon } from "assets/icons/minus.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
@@ -54,8 +54,6 @@ const SearchBar = ({ onClose }) => {
         setSelectedEndTime(index);
       }
     }
-    console.log(timeBlock, index);
-    console.log(selectedStartTime, selectedEndTime);
   };
 
   const handleModalInput = () => {
@@ -112,10 +110,31 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    const url = `http://localhost:8080/studious/search?page=${page}&keyword=${keyword}&date=${date}&startTime=${startTime}&endTime=${endTime}&headCount=${headCount}&sortType=${sortType}&minGrade=${minGrade}&eventInProgress=${eventInProgress}&hashtags=${hashtags}&conveniences=${conveniences}`;
+    let url = `http://localhost:8080/studious/search?page=${page}`;
+
+    const queryParams = [];
+
+    if (keyword) queryParams.push(`keyword=${keyword}`);
+    if (date) queryParams.push(`date=${date}`);
+    if (startTime) queryParams.push(`startTime=${startTime}`);
+    if (endTime) queryParams.push(`endTime=${endTime}`);
+    if (headCount) queryParams.push(`headCount=${headCount}`);
+    if (sortType) queryParams.push(`sortType=${sortType}`);
+    if (minGrade) queryParams.push(`minGrade=${minGrade}`);
+    if (eventInProgress) queryParams.push(`eventInProgress=${eventInProgress}`);
+    if (hashtags && hashtags.length > 0) {
+      queryParams.push(`hashtags=${hashtags.join(",")}`);
+    }
+    if (conveniences && conveniences.length > 0) {
+      queryParams.push(`conveniences=${conveniences.join(",")}`);
+    }
+
+    if (queryParams.length > 0) {
+      url += `&${queryParams.join("&")}`;
+    }
 
     try {
-      const response = await axios.get(url);
+      const response = await GET(url);
 
       if (response.status === 200) {
         const responseData = response.data;
