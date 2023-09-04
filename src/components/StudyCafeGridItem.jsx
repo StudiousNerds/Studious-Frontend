@@ -9,8 +9,8 @@ const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridItem = ({
   item: {
-    cafeId,
-    cafeName,
+    studycafeId,
+    studycafeName,
     photo,
     grade,
     accumRevCnt,
@@ -21,7 +21,7 @@ const StudyCafeGridItem = ({
 }) => {
   const navigate = useNavigate();
   const handleClickItem = () => {
-    navigate(`/studyCafe/${cafeId}`);
+    navigate(`/studyCafe/${studycafeId}`);
   };
   return (
     <ItemLayout>
@@ -30,7 +30,7 @@ const StudyCafeGridItem = ({
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {cafeName}
+          {studycafeName}
           <div className="star">
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
