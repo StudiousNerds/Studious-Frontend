@@ -2,6 +2,7 @@ const colors = {
   mainDark: "#0027B0",
   main30: "#B3BEE7",
   yellow: "#F9CA24",
+  mostLight: "#FAFAFA",
   gray900: "#101010", // sub color dark
   gray800: "#3D3D3D", // sub color dark2
   gray500: "#8F8F8F", // sub color light1
