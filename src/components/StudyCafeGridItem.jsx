@@ -2,16 +2,26 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
+import { formatNumberWithCommas } from "utils/formatNumber";
 
 // 서버에서 가져온 데이터에 이미지가 없는 경우 사용할 대체 이미지입니다.
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridItem = ({
-  item: { cafeId, cafeName, photo, grade, nearestStation, distance, hashtags },
+  item: {
+    studycafeId,
+    studycafeName,
+    photo,
+    grade,
+    accumRevCnt,
+    nearestStation,
+    walkingTime,
+    hashtags,
+  },
 }) => {
   const navigate = useNavigate();
   const handleClickItem = () => {
-    navigate(`/studyCafe/${cafeId}`);
+    navigate(`/studyCafe/${studycafeId}`);
   };
   return (
     <ItemLayout>
@@ -20,18 +30,18 @@ const StudyCafeGridItem = ({
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {cafeName}
-          {typeof grade === "number" ? (
-            <div>
-              <Icon iconSrc={star} size={1.6} alt="별점 아이콘" />
-              <span>grade</span>
-            </div>
-          ) : null}
+          {studycafeName}
+          <div className="star">
+            <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
+            <span>{grade}</span>
+            <span className="accumRevCnt">{`(${formatNumberWithCommas(
+              accumRevCnt
+            )})`}</span>
+          </div>
         </ItemDetailsTitle>
         <ItemDetailsMeta>
-          {distance
-            ? `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`
-            : null}
+          {walkingTime &&
+            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${walkingTime}분`}
         </ItemDetailsMeta>
         <ItemDetailsHashtags>
           {hashtags.length > 0 &&
@@ -72,6 +82,15 @@ const ItemDetailsTitle = styled.div`
   display: flex;
   justify-content: space-between;
   ${({ theme }) => theme.fonts.body1Bold};
+  .star {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .accumRevCnt {
+    color: ${({ theme }) => theme.colors.gray500};
+    ${({ theme }) => theme.fonts.body2};
+  }
 `;
 const ItemDetailsMeta = styled.div`
   ${({ theme }) => theme.fonts.body2};
