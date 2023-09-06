@@ -26,24 +26,24 @@ const Reviews = () => {
           <span>추천해요</span>
           <ThumbsUpIcon />
         </div>
-        <ProgressBar width={700} percentage={recommendationRate} />
+        <ProgressBar width={70} percentage={recommendationRate} />
         <div className="percentage-text">{recommendationRate}%</div>
       </RecommendPercentageContainer>
       <StarsGradeContainer>
         <section className="left-section">
           <div className="left-section__grade">
             <div>청결도</div>
-            <StarsGrade size={30} grade={cleanliness} />
+            <StarsGrade size={3} grade={cleanliness} />
             <div>{cleanliness}점</div>
           </div>
           <div className="left-section__grade">
             <div>방음</div>
-            <StarsGrade size={30} grade={deafening} />
+            <StarsGrade size={3} grade={deafening} />
             <div>{deafening}점</div>
           </div>
           <div className="left-section__grade">
             <div>비품상태</div>
-            <StarsGrade size={30} grade={fixturesStatus} />
+            <StarsGrade size={3} grade={fixturesStatus} />
             <div>{fixturesStatus}점</div>
           </div>
         </section>
@@ -51,7 +51,7 @@ const Reviews = () => {
           <div className="right-section__grade"></div>
           <div className="right-section__grade">
             <div>총점</div>
-            <StarsGrade size={30} grade={total} />
+            <StarsGrade size={3} grade={total} />
             <div>{total}점</div>
           </div>
           <div className="right-section__grade"></div>

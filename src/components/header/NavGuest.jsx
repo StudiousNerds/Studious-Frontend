@@ -16,5 +16,6 @@ export default NavGuest;
 const NavLayout = styled.div`
   display: flex;
   gap: 1rem;
+  z-index: 5;
 `;
 const NavButton = styled.button``;
