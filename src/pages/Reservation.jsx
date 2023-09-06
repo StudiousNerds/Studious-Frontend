@@ -10,66 +10,37 @@ import theme from "styles/theme";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import RefundPolicyBox from "components/common/RefundPolicyBox";
 import { Title, TitleSub } from "components/common/Title";
+import { useReservationQuery } from "hooks/queries/useReservation";
+import { getCookie } from "utils/cookie";
 
-const DUMMY_DATA = {
-  cafeName: "(스터디카페 이름)",
-  refundPolicy: [
-    {
-      day: "이용 1일 전",
-      rate: "10%",
-    },
-    {
-      day: "이용 2일 전",
-      rate: "10%",
-    },
-    {
-      day: "이용 3일 전",
-      rate: "10%",
-    },
-    {
-      day: "이용 4일 전",
-      rate: "10%",
-    },
-  ],
-  roomPhoto: "https://via.placeholder.com/300x200",
-  roomName: "(스터디룸 이름)",
-  conveniences: ["편의시설 이름1", "편의시설 이름2"],
-  paidConveniences: [
-    {
-      name: "HDMI",
-      price: 2000,
-    },
-    {
-      name: "모니터",
-      price: 3000,
-    },
-  ],
-  username: "이민희",
-  userphoneNumber: "01089292505",
-};
 const Reservation = () => {
-  const {
-    cafeName,
-    refundPolicy,
-    roomName,
-    roomPhoto,
-    conveniences,
-    paidConveniences,
-    username,
-    userphoneNumber,
-  } = DUMMY_DATA;
   const { handleRedirect } = useRedirectLogin(true);
   useEffect(() => {
     handleRedirect();
   }, [handleRedirect]);
-  // window.scrollTo(0, 0);
-  const { date, startTime, endTime, duration, headcount, price } =
-    useRecoilValue(reservationInfoState);
+  window.scrollTo(0, 0);
+  const {
+    cafeId,
+    roomId,
+    date,
+    startTime,
+    endTime,
+    duration,
+    headcount,
+    price,
+  } = useRecoilValue(reservationInfoState);
+
+  const { data } = useReservationQuery({
+    cafeId: 1,
+    roomId: 1,
+    token: getCookie("accessToken"),
+  });
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedConveniences, setSelectedConveniences] = useState([]);
   const [userInfo, setUserInfo] = useState({
-    name: "",
-    phoneNumber: "",
+    name: data?.username,
+    phoneNumber: data?.userPhoneNumber,
     request: "",
   });
 
@@ -93,14 +64,14 @@ const Reservation = () => {
     if (e.target.checked) {
       setUserInfo((userInfo) => ({
         ...userInfo,
-        name: username,
-        phoneNumber: userphoneNumber,
+        name: data?.username,
+        phoneNumber: data?.userPhoneNumber,
       }));
     }
   };
   return (
     <>
-      <Title>{cafeName}</Title>
+      <Title>{data?.cafeName}</Title>
 
       <RemoteControlSection>
         <RemoteControl
@@ -116,10 +87,10 @@ const Reservation = () => {
       <MainSection>
         <TwoColumnContainer>
           <div className="left">
-            <img src={roomPhoto} alt="스터디룸 이미지" />
+            <img src={data?.studycafePhoto} alt="스터디카페 이미지" />
           </div>
           <div className="right">
-            <StudyRoomName>{roomName}</StudyRoomName>
+            <StudyRoomName>{data?.roomName}</StudyRoomName>
           </div>
         </TwoColumnContainer>
         <TwoColumnContainer>
@@ -179,19 +150,27 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>유료 편의 시설</TitleSub>
-          <CheckBoxList>
-            {paidConveniences.map(({ name, price }, index) => {
-              return (
-                <CheckBoxListItem key={index}>
-                  <div className="checkbox">
-                    <input type="checkbox" id={name} />
-                    <label htmlFor={name}>{name}</label>
-                  </div>
-                  <span>₩ {formatNumberWithCommas(price)}</span>
-                </CheckBoxListItem>
-              );
-            })}
-          </CheckBoxList>
+          {data?.paidConveniences.length ? (
+            <CheckBoxList>
+              {data?.paidConveniences.map(
+                ({ convenienceName, price }, index) => {
+                  return (
+                    <CheckBoxListItem key={index}>
+                      <div className="checkbox">
+                        <input type="checkbox" id={convenienceName} />
+                        <label htmlFor={convenienceName}>
+                          {convenienceName}
+                        </label>
+                      </div>
+                      <span>₩ {formatNumberWithCommas(price)}</span>
+                    </CheckBoxListItem>
+                  );
+                }
+              )}
+            </CheckBoxList>
+          ) : (
+            <span>유료 편의시설이 없습니다.</span>
+          )}
         </RowContainer>
 
         <Divider
@@ -201,7 +180,7 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>환불 규정</TitleSub>
-          <RefundPolicyBox refundPolicy={refundPolicy} />
+          <RefundPolicyBox refundPolicy={data?.refundPolicy} />
         </RowContainer>
       </MainSection>
     </>
