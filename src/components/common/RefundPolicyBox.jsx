@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Fragment } from "react";
 
 const RefundPolicyBox = ({ refundPolicy }) => {
-  console.log("refundPolicy", refundPolicy);
   return (
     <EditableDiv readOnly={true}>
       <div>
@@ -17,14 +16,15 @@ const RefundPolicyBox = ({ refundPolicy }) => {
       </div>
       <div>
         <RefundPolicyList>
-          {refundPolicy.map(({ day, rate }, index) => {
-            return (
-              <Fragment key={index}>
-                <div>{day}</div>
-                <div>{`총 금액의 ${rate} 환불`}</div>
-              </Fragment>
-            );
-          })}
+          {refundPolicy?.length &&
+            refundPolicy.map(({ day, rate }, index) => {
+              return (
+                <Fragment key={index}>
+                  <div>{day}</div>
+                  <div>{`총 금액의 ${rate} 환불`}</div>
+                </Fragment>
+              );
+            })}
         </RefundPolicyList>
       </div>
     </EditableDiv>
