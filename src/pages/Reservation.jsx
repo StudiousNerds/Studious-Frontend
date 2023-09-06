@@ -38,7 +38,7 @@ const Reservation = () => {
     token: getCookie("accessToken"),
   });
 
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(price);
   const [selectedConveniences, setSelectedConveniences] = useState([]);
   const [userInfo, setUserInfo] = useState({
     name: data?.username,
@@ -70,6 +70,21 @@ const Reservation = () => {
         phoneNumber: data?.userPhoneNumber,
       }));
     }
+  };
+
+  const handleCheckPaidConvenience = (e, convenienceName, conveniencePrice) => {
+    setSelectedConveniences((prevConveniences) => [
+      ...prevConveniences,
+      {
+        convenienceName,
+        conveniencePrice,
+      },
+    ]);
+    if (e.currentTarget.checked) {
+      setTotalPrice((totalPrice) => totalPrice + price);
+      return;
+    }
+    setTotalPrice((totalPrice) => totalPrice - price);
   };
   return (
     <>
@@ -159,7 +174,17 @@ const Reservation = () => {
                   return (
                     <CheckBoxListItem key={index}>
                       <div className="checkbox">
-                        <input type="checkbox" id={convenienceName} />
+                        <input
+                          type="checkbox"
+                          id={convenienceName}
+                          onChange={(e) =>
+                            handleCheckPaidConvenience(
+                              e,
+                              convenienceName,
+                              price
+                            )
+                          }
+                        />
                         <label htmlFor={convenienceName}>
                           {convenienceName}
                         </label>

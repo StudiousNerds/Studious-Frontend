@@ -39,15 +39,19 @@ const RemoteControl = ({
         <div className="info-row">
           <div className="info-row__label">추가 내역</div>
           <div className="info-row__content">
-            {selectedConveniences.map(
-              ({ convenienceName, conveniencePrice }) => {
-                return (
-                  <div className="info-row__content--row">
-                    <span>{convenienceName}</span>
-                    <span>{formatNumberWithCommas(conveniencePrice)}</span>
-                  </div>
-                );
-              }
+            {selectedConveniences.length ? (
+              selectedConveniences.map(
+                ({ convenienceName, conveniencePrice }) => {
+                  return (
+                    <div className="info-row__content--row">
+                      <span>{convenienceName}</span>
+                      <span>{formatNumberWithCommas(conveniencePrice)}</span>
+                    </div>
+                  );
+                }
+              )
+            ) : (
+              <span>-</span>
             )}
           </div>
         </div>
