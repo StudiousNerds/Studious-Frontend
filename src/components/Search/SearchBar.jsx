@@ -110,7 +110,7 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    let url = `http://localhost:8080/studious/search?page=${page}`;
+    let url = `http://ec2-3-35-140-90.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
 
     const queryParams = [];
 
@@ -139,6 +139,7 @@ const SearchBar = ({ onClose }) => {
       if (response.status === 200) {
         const responseData = response.data;
         setSearchResult(responseData);
+        console.log(response.data);
 
         // 검색 결과를 SearchResult 페이지로 전달하고 페이지 이동
         navigate("/search-result", {
