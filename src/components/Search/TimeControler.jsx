@@ -29,16 +29,15 @@ const TimeControler = ({
   };
 
   const handleScrollRight = () => {
-    setScrollPosition((prevScrollPosition) => prevScrollPosition + 1);
+    if (scrollPosition < hourlySchedules.length - 1) {
+      setScrollPosition((prevScrollPosition) => prevScrollPosition + 1);
+    }
   };
 
   return (
     <TimeControlerWrapper
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
-      {isScrollLeftVisible && (
-        <ScrollButtonLeft onClick={handleScrollLeft}>{"<"}</ScrollButtonLeft>
-      )}
       <TimeListWrapper>
         <TimeList ref={timeListRef} scrollPosition={scrollPosition}>
           {hourlySchedules.map((timeBlock, index) => (
@@ -62,6 +61,9 @@ const TimeControler = ({
           ))}
         </TimeList>
       </TimeListWrapper>
+      {isScrollLeftVisible && (
+        <ScrollButtonLeft onClick={handleScrollLeft}>{"<"}</ScrollButtonLeft>
+      )}
       {isScrollRightVisible && (
         <ScrollButtonRight onClick={handleScrollRight}>{">"}</ScrollButtonRight>
       )}
@@ -129,7 +131,7 @@ const ScrollButtonLeft = styled.button`
   cursor: pointer;
   position: absolute;
   left: 10%;
-  top: 80%;
+  top: 65%;
   transform: translateY(-50%);
 `;
 
@@ -144,6 +146,6 @@ const ScrollButtonRight = styled.button`
   cursor: pointer;
   position: absolute;
   right: 10%;
-  top: 80%;
+  top: 65%;
   transform: translateY(-50%);
 `;

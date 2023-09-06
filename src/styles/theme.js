@@ -38,6 +38,7 @@ const fonts = {
   body1: FONT({ weight: 400, size: 1.8, lineHeight: 26 }), // 18px
   body2Bold: FONT({ weight: 700, size: 1.6, lineHeight: 23 }), // 16px
   body2: FONT({ weight: 400, size: 1.6, lineHeight: 23 }), // 16px
+  body3: FONT({ weight: 400, size: 1.3, lineHeight: 20 }), // 13px
 
   caption1: FONT({ weight: 400, size: 1.4, lineHeight: 20 }), // 14px
   caption2: FONT({ weight: 400, size: 1.2, lineHeight: 20 }), // 12px

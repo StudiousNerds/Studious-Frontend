@@ -12,9 +12,9 @@ import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
-import Search from "pages/Search";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
+import Reviews from "pages/Reviews";
 
 function App() {
   const queryClient = new QueryClient();
@@ -50,8 +50,8 @@ function App() {
                   path="/studyCafe/:studyCafeId/reservation"
                   element={<Reservation />}
                 />
-                <Route path="/search" element={<Search />} />
                 <Route path="/search-result" element={<SearchResult />} />
+                <Route path="/reviews" element={<Reviews />} />
               </Routes>
             </Layout>
           </ThemeProvider>

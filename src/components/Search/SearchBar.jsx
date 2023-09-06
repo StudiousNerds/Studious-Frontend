@@ -1,14 +1,16 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "assets/icons/search100.svg";
 import { ReactComponent as MinusIcon } from "assets/icons/minus.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeControler from "./TimeControler";
 import Calendar from "./Calendar";
+import { GET } from "apis/api";
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onClose }) => {
+  const navigate = useNavigate();
   const [isInputMode, setIsInputMode] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -34,6 +36,7 @@ const SearchBar = ({ onSearch }) => {
     { starttime: "22:00", endtime: "23:00", selected: false },
     { starttime: "23:00", endtime: "24:00", selected: false },
   ];
+  const [searchResult, setSearchResult] = useState([]);
 
   const [selectedStartTime, setSelectedStartTime] = useState(undefined);
   const [selectedEndTime, setSelectedEndTime] = useState(undefined);
@@ -83,33 +86,112 @@ const SearchBar = ({ onSearch }) => {
     setSelectedDate(date);
   };
 
-  const handleSearch = () => {
+  const formatTime = (time) => {
+    const hours = String(time.getHours()).padStart(2, "0");
+    const minutes = String(time.getMinutes()).padStart(2, "0");
+    const seconds = String(time.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  const handleSearch = async ({
+    page,
+    keyword,
+    date,
+    startTime,
+    endTime,
+    headCount,
+    sortType,
+    minGrade,
+    eventInProgress,
+    hashtags,
+    conveniences,
+  }) => {
+    const params = {
+      page,
+      keyword,
+      date,
+      startTime,
+      endTime,
+      headCount,
+      sortType,
+      minGrade,
+      eventInProgress,
+      hashtags: Array.isArray(hashtags) ? hashtags.join(",") : [],
+      conveniences: Array.isArray(conveniences) ? conveniences.join(",") : [],
+    };
+
+    try {
+      const response = await GET("/studious/search", null, params);
+
+      if (response.status === 200) {
+        const responseData = response.data;
+        setSearchResult(responseData);
+
+        navigate("/search-result", {
+          state: {
+            searchResult: responseData,
+            searchParameters: {
+              page,
+              keyword,
+              date,
+              startTime,
+              endTime,
+              headCount,
+              sortType,
+              minGrade,
+              eventInProgress,
+              hashtags,
+              conveniences,
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error data:", error);
+    }
+  };
+
+  const handleSearchButtonClick = async () => {
     const searchQuery = inputValue;
-    const selectedDateString = selectedDate.toLocaleDateString("ko-KR", {
-      month: "numeric",
-      day: "numeric",
-      weekday: "short",
-    });
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const selectedDateFormatted = `${year}-${month}-${day}`;
     const selectedTimeRange =
       selectedStartTime !== undefined && selectedEndTime !== undefined
         ? {
-            startTime: hourlySchedules[selectedStartTime].starttime,
-            endTime: hourlySchedules[selectedEndTime].endtime,
+            startTime: formatTime(
+              new Date(
+                `2023-07-20T${hourlySchedules[selectedStartTime].starttime}`
+              )
+            ),
+            endTime: formatTime(
+              new Date(`2023-07-20T${hourlySchedules[selectedEndTime].endtime}`)
+            ),
           }
         : {};
 
-    onSearch({
+    const searchParameters = {
+      page: 1,
       keyword: searchQuery,
-      date: selectedDateString,
+      date: selectedDateFormatted,
       startTime: selectedTimeRange.startTime || "",
       endTime: selectedTimeRange.endTime || "",
       headCount: count,
-      sort: "GRADE_DESC",
-    });
-    console.log("검색어:", searchQuery);
-    console.log("선택한 날짜:", selectedDateString.startTime);
-    console.log("선택한 시간:", selectedTimeRange.endTime);
-    console.log("인원수:", count);
+      sortType: "GRADE_DESC",
+      minGrade: 0,
+      eventInProgress: "",
+      hashtags: "",
+      conveniences: "",
+    };
+
+    try {
+      await handleSearch(searchParameters);
+
+      onClose();
+    } catch (error) {
+      console.error("Error during search:", error);
+    }
   };
 
   return (
@@ -189,7 +271,7 @@ const SearchBar = ({ onSearch }) => {
             인원 수
           </SearchBarButtonText>
         )}
-        <SearchBarButton onClick={handleSearch}>
+        <SearchBarButton onClick={handleSearchButtonClick}>
           <SearchIcon />
         </SearchBarButton>
       </SearchBarLayout>
@@ -259,7 +341,7 @@ const CalendarModal = styled.div`
   height: 50rem;
   background-color: #ffffff;
   border-radius: 2rem;
-  z-index: 2;
+  z-index: 4;
 `;
 const CountModal = styled.div`
   position: fixed;
@@ -271,7 +353,7 @@ const CountModal = styled.div`
   height: 15rem;
   background-color: #ffffff;
   border-radius: 2rem;
-  z-index: 2;
+  z-index: 4;
   &:hover {
     cursor: auto;
   }
