@@ -3,5 +3,7 @@ import { getReservation } from "apis/reservation";
 
 export const useReservationQuery = ({ cafeId, roomId, token }) => {
   const queryKey = ["useReservation", { cafeId, roomId, token }];
-  return useQuery(queryKey, () => getReservation({ cafeId, roomId, token }));
+  return useQuery(queryKey, () => getReservation({ cafeId, roomId, token }), {
+    enabled: !!cafeId && !!roomId && !!token,
+  });
 };
