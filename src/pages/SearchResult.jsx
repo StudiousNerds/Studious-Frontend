@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { ReactComponent as FilterIcon } from "assets/icons/filter.svg";
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import FilterModal from "components/Search/FilterModal";
+import FilterModal from "components/FilterModal";
 import StudyCafeGridItem from "components/StudyCafeGridItem";
 import Pagination from "components/Pagination";
-import axios from "axios";
+import { GET } from "apis/api";
+import useSearchResult from "hooks/queries/useSearchResult";
 
 const SearchResult = () => {
   const location = useLocation();
@@ -96,8 +97,14 @@ const SearchResult = () => {
       hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
     },
   ];
-  const [searchResult, setSearchResult] = useState(initialSearchResultFake); //initialSearchResult로 변경하기
+  const [searchResult, setSearchResult] = useState(initialSearchResultFake);
   const searchBarData = location.state?.searchParameters || [];
+
+  const { data: searchResultData } = useSearchResult({
+    currentPage,
+    sortOption,
+    searchBarData,
+  });
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
@@ -120,18 +127,24 @@ const SearchResult = () => {
 
   const handleApplyFilters = async (filterData) => {
     const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
-    const url = `http://localhost:8080/studious/search?page=${currentPage}&keyword=${
-      searchBarData.keyword
-    }&date=${searchBarData.date}&startTime=${searchBarData.startTime}&endTime=${
-      searchBarData.endTime
-    }&headCount=${
-      searchBarData.headCount
-    }&sortType=${sortOption}&minGrade=${minGrade}&eventInProgress=${eventInProgress}&hashtags=${hashtags.join(
-      ","
-    )}&conveniences=${conveniences.join(",")}`;
+    const url = `/studious/search`;
+
+    const params = {
+      page: currentPage,
+      keyword: searchBarData.keyword,
+      date: searchBarData.date,
+      startTime: searchBarData.startTime,
+      endTime: searchBarData.endTime,
+      headCount: searchBarData.headCount,
+      sortType: sortOption,
+      minGrade: minGrade,
+      eventInProgress: eventInProgress,
+      hashtags: hashtags.join(","),
+      conveniences: conveniences.join(","),
+    };
 
     try {
-      const response = await axios.get(url);
+      const response = await GET(url, null, params);
 
       if (response.status === 200) {
         const responseData = response.data;
@@ -142,24 +155,6 @@ const SearchResult = () => {
       console.log(url);
     }
   };
-
-  useEffect(() => {
-    async function axiosSearchResults() {
-      const url = `http://localhost:8080/studious/search?page=${currentPage}&keyword=${searchBarData.keyword}&date=${searchBarData.date}&startTime=${searchBarData.startTime}&endTime=${searchBarData.endTime}&headCount=${searchBarData.headCount}&sortType=${sortOption}`;
-
-      try {
-        const response = await axios.get(url);
-
-        if (response.status === 200) {
-          const responseData = response.data;
-          setSearchResult(responseData);
-        }
-      } catch (error) {
-        console.error("Error data:", error);
-      }
-    }
-    axiosSearchResults();
-  }, [currentPage, sortOption]); // currentPage와 sortOption 변경 시 실행
 
   return (
     <SearchResultContainer>

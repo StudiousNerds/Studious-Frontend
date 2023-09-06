@@ -6,7 +6,10 @@ const ImagesGrid = ({ photos }) => {
     <GridContainer>
       {photos.map((imgUrl, imgIndex) => {
         return (
-          <GridItem key={imgIndex} isExpand={imgIndex === 0}>
+          <GridItem
+            key={imgIndex}
+            isExpand={imgIndex === 0 || (photos.length === 2 && 1)}
+          >
             <ImagesGridItem imageSrc={imgUrl} />
           </GridItem>
         );

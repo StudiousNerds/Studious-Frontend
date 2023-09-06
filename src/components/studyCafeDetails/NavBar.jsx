@@ -1,45 +1,16 @@
 import styled from "styled-components";
-import StudyRoomReservation from "./studyRoomReservation/StudyRoomReservation";
-import { useState } from "react";
 
-const NAVBAR_CONTENTS = [
-  {
-    name: "스터디룸 예약",
-    component: <StudyRoomReservation />,
-  },
-  {
-    name: "리뷰",
-    component: <StudyRoomReservation />,
-  },
-  {
-    name: "진행 중인 이벤트",
-    component: <StudyRoomReservation />,
-  },
-  {
-    name: "환불 정책",
-    component: <StudyRoomReservation />,
-  },
-  {
-    name: "유의사항",
-    component: <StudyRoomReservation />,
-  },
-];
-
-const NavBar = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const handleClickContent = (contentIndex) => {
-    setActiveIndex(contentIndex);
-  };
-
+const NavBar = ({ navBarItems, onClickMenu, activeIndex }) => {
   return (
     <NavBarContainer>
-      {NAVBAR_CONTENTS.map((contentItem, contentIndex) => (
+      {navBarItems.map((item, contentIndex) => (
         <NavBarItem
           isCurrent={contentIndex === activeIndex}
-          onClick={() => handleClickContent(contentIndex)}
+          onClick={() => onClickMenu(contentIndex)}
+          countItems={navBarItems.length}
           key={contentIndex}
         >
-          {contentItem.name}
+          {item}
         </NavBarItem>
       ))}
     </NavBarContainer>
@@ -64,5 +35,5 @@ const NavBarItem = styled.div`
     isCurrent ? theme.colors.mainDark : theme.colors.gray800};
   border-bottom: ${({ isCurrent, theme }) =>
     isCurrent ? `2px solid ${theme.colors.mainDark}` : `1px solid`};
-  width: calc(100% / ${NAVBAR_CONTENTS.length});
+  width: calc(100% / ${({ countItems }) => countItems});
 `;
