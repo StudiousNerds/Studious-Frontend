@@ -111,7 +111,7 @@ const Reviews = () => {
 
   const handleWriteReview = (review) => {
     console.log("리뷰 작성 페이지로 이동:", review);
-    navigate("/reviews/write", { state: { review } });
+    navigate(`/myPage/reviews/${review.id}/edit`, { state: { review } });
   };
 
   const handleUpdateReview = (review) => {

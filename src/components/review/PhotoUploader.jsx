@@ -86,6 +86,7 @@ const SelectedPhotosList = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 1rem;
+  flex-direction: row;
 `;
 
 const SelectedPhoto = styled.div`
