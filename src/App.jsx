@@ -15,6 +15,7 @@ import StudyCafeDetails from "pages/StudyCafeDetails";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
+import MyReservationCancel from "pages/MyReservationCancel";
 
 function App() {
   const queryClient = new QueryClient();
@@ -51,7 +52,11 @@ function App() {
                   element={<Reservation />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route
+                  path="/myPage/reservation/:reservationId/cancel"
+                  element={<MyReservationCancel />}
+                />
               </Routes>
             </Layout>
           </ThemeProvider>
