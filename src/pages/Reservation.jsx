@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { reservationInfoState } from "recoil/atoms/reservationInfoState";
-import { useRecoilValue } from "recoil";
 import RemoteControl from "components/reservation/RemoteControl";
 import { useState, useEffect } from "react";
 import useRedirectLogin from "hooks/useRedirectLogin";
@@ -18,7 +16,12 @@ const Reservation = () => {
   useEffect(() => {
     handleRedirect();
   }, [handleRedirect]);
-  window.scrollTo(0, 0);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const reservationInfo = getCookie("reservationInfo");
   const {
     cafeId,
     roomId,
@@ -28,11 +31,10 @@ const Reservation = () => {
     duration,
     headcount,
     price,
-  } = useRecoilValue(reservationInfoState);
-
+  } = reservationInfo;
   const { data } = useReservationQuery({
-    cafeId: 1,
-    roomId: 1,
+    cafeId,
+    roomId,
     token: getCookie("accessToken"),
   });
 
