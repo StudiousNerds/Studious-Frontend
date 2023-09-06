@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import { GET } from "apis/api";
-=======
->>>>>>> 30971e2f01ce2e599a824b56c3b1b92e69af8e7e
 import { ReactComponent as SearchIcon } from "assets/icons/search100.svg";
 import { ReactComponent as MinusIcon } from "assets/icons/minus.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
@@ -11,7 +8,6 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeControler from "./TimeControler";
 import Calendar from "./Calendar";
-import { GET } from "apis/api";
 
 const SearchBar = ({ onClose }) => {
   const navigate = useNavigate();
