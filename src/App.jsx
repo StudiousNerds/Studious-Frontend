@@ -54,7 +54,7 @@ function App() {
                 <Route path="/reviews" element={<Reviews />} />
                 <Route path="/reviews/write" element={<ReviewWrite />} />
                 <Route path="/review/edit/:reviewId" component={ReviewEdit} />
-                <Route path="/reservation" element={<Reservation />} />
+                <Route path="/myPage/reservation" element={<Reservation />} />
               </Routes>
             </Layout>
           </ThemeProvider>

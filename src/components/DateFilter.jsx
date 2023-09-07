@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as CalendarIcon } from "assets/icons/calendar.svg";
+import { ReactComponent as DividerIcon } from "assets/icons/divider.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
+import { GET } from "apis/api";
 
 const CustomHeader = ({ date, decreaseMonth, increaseMonth }) => {
   const pad = (num) => (num < 10 ? "0" + num : num);
@@ -18,110 +20,47 @@ const CustomHeader = ({ date, decreaseMonth, increaseMonth }) => {
     </CustomHeaderContainer>
   );
 };
-const DateFilter = ({ onDateFilter }) => {
-  const [selectedFilter, setSelectedFilter] = useState("1year");
-  const [selectedStartDate, setSelectedStartDate] = useState(
-    new Date(new Date().setFullYear(new Date().getFullYear() - 1))
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState(new Date());
-
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter);
-
-    const currentDate = new Date();
-    let startDate, endDate;
-
-    switch (filter) {
-      case "1year":
-        startDate = new Date(
-          currentDate.getFullYear() - 1,
-          currentDate.getMonth(),
-          currentDate.getDate()
-        );
-        endDate = currentDate;
-        break;
-      case "1week":
-        startDate = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate() - 7
-        );
-        endDate = currentDate;
-        break;
-      case "1month":
-        startDate = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth() - 1,
-          currentDate.getDate()
-        );
-        endDate = currentDate;
-        break;
-      case "3months":
-        startDate = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth() - 3,
-          currentDate.getDate()
-        );
-        endDate = currentDate;
-        break;
-      default:
-        startDate = new Date(
-          currentDate.getFullYear() - 1,
-          currentDate.getMonth(),
-          currentDate.getDate()
-        );
-        endDate = currentDate;
-    }
-
-    setSelectedStartDate(startDate);
-    setSelectedEndDate(endDate);
-  };
+const DateFilter = ({ onDateFilter, startDate, endDate }) => {
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
-    setSelectedFilter("");
+    onDateFilter({
+      startDate: date,
+      endDate: selectedEndDate,
+    });
     console.log(date);
   };
   const handleEndDateChange = (date) => {
-    setSelectedEndDate(date);
-    setSelectedFilter("");
+    if (selectedStartDate && date < selectedStartDate) {
+      setSelectedStartDate(date);
+      setSelectedEndDate(date);
+    } else {
+      setSelectedEndDate(date);
+    }
+    onDateFilter({
+      startDate: selectedStartDate,
+      endDate: date,
+    });
   };
 
+  const handleDateFilter = () => {};
+
   onDateFilter({
-    filter: selectedFilter,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
 
   return (
     <FilterContainer>
-      <FilterButton
-        active={selectedFilter === "1year"}
-        onClick={() => handleFilterChange("1year")}>
-        최근 1년
-      </FilterButton>
-      <FilterButton
-        active={selectedFilter === "1week"}
-        onClick={() => handleFilterChange("1week")}>
-        1주일
-      </FilterButton>
-      <FilterButton
-        active={selectedFilter === "1month"}
-        onClick={() => handleFilterChange("1month")}>
-        1개월
-      </FilterButton>
-      <FilterButton
-        active={selectedFilter === "3months"}
-        onClick={() => handleFilterChange("3months")}>
-        3개월
-      </FilterButton>
       <DatePickerContainer>
         <StyledDatePicker
-          selected={selectedStartDate}
+          selected={selectedStartDate === "-" ? "날짜 선택" : selectedStartDate}
           onChange={handleStartDateChange}
           dateFormat="yyyy.MM.dd"
           locale={ko}
-          maxDate={selectedEndDate}
+          maxDate={selectedEndDate === "-" ? null : selectedEndDate}
           renderCustomHeader={CustomHeader}
           dayClassName={(d) =>
             d.getDay() === 0
@@ -133,13 +72,15 @@ const DateFilter = ({ onDateFilter }) => {
         />
         <StyledCalendarIcon />
       </DatePickerContainer>
+      <Divider>
+        <DividerIcon />
+      </Divider>
       <DatePickerContainer>
         <StyledDatePicker
-          selected={selectedEndDate}
+          selected={selectedEndDate === "-" ? null : selectedEndDate}
           onChange={handleEndDateChange}
           dateFormat="yyyy.MM.dd"
           locale={ko}
-          maxDate={new Date()}
           renderCustomHeader={CustomHeader}
           dayClassName={(d) =>
             d.getDay() === 0
@@ -159,20 +100,7 @@ const FilterContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 0rem;
-  margin-left: 8rem;
-`;
-
-const FilterButton = styled.button`
-  ${({ theme }) => theme.fonts.body1};
-  color: ${({ theme, active }) => (active ? "#FFFFFF" : theme.colors.gray900)};
-  background-color: ${({ theme, active }) =>
-    active ? theme.colors.mainDark : theme.colors.gray200};
-  border: none;
-  border-radius: 1rem;
-  margin-right: 1rem;
-  cursor: pointer;
-  width: 7.8rem;
-  height: 4rem;
+  margin-left: 35rem;
 `;
 
 const DatePickerContainer = styled.div`
@@ -207,12 +135,6 @@ const DatePickerContainer = styled.div`
   .react-datepicker__day--selected {
     background-color: ${({ theme }) => theme.colors.mainDark};
     color: #ffffff;
-  }
-
-  /* 오늘 날짜 이후 스타일 */
-  .react-datepicker__day--disabled {
-    cursor: not-allowed;
-    color: ${({ theme }) => theme.colors.gray400} !important;
   }
 
   .custom-day.saturday {
@@ -254,6 +176,12 @@ const CustomHeaderDate = styled.div`
   ${({ theme }) => theme.fonts.body2Bold};
   margin-left: 4rem;
   margin-right: 3rem;
+`;
+
+const Divider = styled.div`
+  ${({ theme }) => theme.colors.gray300};
+  margin-left: 1rem;
+  width: 1rem;
 `;
 
 export default DateFilter;
