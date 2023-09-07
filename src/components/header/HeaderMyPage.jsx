@@ -24,7 +24,7 @@ const HeaderMyPage = () => {
 export default HeaderMyPage;
 
 const HeaderLayout = styled.section`
-  padding: 1.5rem 0;
+  padding: 3rem 0;
   display: flex;
   justify-content: space-between;
   border-bottom: 2px solid ${({ theme }) => theme.colors.gray200};
