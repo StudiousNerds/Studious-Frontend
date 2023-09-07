@@ -26,7 +26,13 @@ const StudyRoomReservation = () => {
           </SelectDateBox>
           {isShowCalendar && <Calendar onSelectDate={() => {}} />}
           {studyRoomsData.map((roomData, roomIndex) => {
-            return <StudyRoomItem roomData={roomData} key={roomIndex} />;
+            return (
+              <StudyRoomItem
+                roomData={roomData}
+                key={roomIndex}
+                date={selectedDate}
+              />
+            );
           })}
         </StudyRoomTabLayout>
       </TabContainer>

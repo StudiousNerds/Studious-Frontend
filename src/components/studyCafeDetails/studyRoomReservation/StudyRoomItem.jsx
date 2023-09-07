@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import NumberController from "components/common/NumberController";
+import useRedirectLogin from "hooks/useRedirectLogin";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { setCookie } from "utils/cookie";
 
 const StudyRoomItem = ({
   roomData: {
@@ -15,7 +19,34 @@ const StudyRoomItem = ({
     canReserveDatetime,
     photos,
   },
+  selectedDate,
 }) => {
+  const navigate = useNavigate();
+  const { handleRedirect } = useRedirectLogin();
+  const [startTime, setStartTime] = useState("00:00");
+  const [endTime, setEndTime] = useState("00:00");
+  const [duration, setDuration] = useState(0);
+  const [headCount, setHeadCount] = useState(minCount);
+  const pathname = useLocation().pathname.slice(1);
+  const cafeId = pathname.slice(pathname.indexOf("/") + 1);
+  const handleClickReservation = () => {
+    setCookie({
+      key: "reservationInfo",
+      value: {
+        cafeId,
+        roomId: id,
+        date: selectedDate,
+        startTime,
+        endTime,
+        duration,
+        headCount,
+        price,
+      },
+    });
+    if (!handleRedirect()) {
+      navigate(`/studyCafe/${id}/reservation`);
+    }
+  };
   return (
     <ItemContainer>
       <ItemLeftSection>
@@ -68,7 +99,9 @@ const StudyRoomItem = ({
             )}원`}</span>
           </div>
         </ExpectedPriceLayout>
-        <ReservationButton>예약하기</ReservationButton>
+        <ReservationButton onClick={handleClickReservation}>
+          예약하기
+        </ReservationButton>
       </ItemRightSection>
     </ItemContainer>
   );
