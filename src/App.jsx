@@ -46,7 +46,7 @@ function App() {
                   element={<StudyCafeDetails />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/myPage/reviews" element={<Reviews />} />
               </Routes>
             </Layout>
           </ThemeProvider>
