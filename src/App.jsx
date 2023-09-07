@@ -45,12 +45,15 @@ function App() {
                 />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/myPage/reviews" element={<Reviews />} />
                 <Route
-                  path="/myPage/reviews/:reviewId/edit"
+                  path="/myPage/reviews/:reviewId/write"
                   element={<ReviewWrite />}
                 />
-                <Route path="/review/edit/:reviewId" component={ReviewEdit} />
+                <Route
+                  path="/myPage/reviews/:reviewId/edit"
+                  component={ReviewEdit}
+                />
               </Routes>
             </Layout>
           </ThemeProvider>

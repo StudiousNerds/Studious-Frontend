@@ -6,7 +6,6 @@ import axios from "axios";
 const ReviewEdit = () => {
   const { reviewId } = useParams();
   const navigate = useNavigate();
-
   const [review, setReview] = useState({});
 
   // 리뷰 정보를 불러오는 함수
@@ -23,7 +22,7 @@ const ReviewEdit = () => {
 
   useEffect(() => {
     fetchReview();
-  }, []);
+  }, [reviewId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,6 +45,7 @@ const ReviewEdit = () => {
 
   return (
     <Wrapper>
+      <ReviewText>리뷰 작성</ReviewText>
       <TitleInput
         type="text"
         name="title"
@@ -63,11 +63,28 @@ const ReviewEdit = () => {
 };
 
 const Wrapper = styled.div``;
+const ReviewText = styled.div`
+  ${({ theme }) => theme.fonts.heading1Bold};
+  color: ${({ theme }) => theme.colors.black};
+  font-family: Noto Sans KR;
+  width: 9.4rem;
+  height: 3.5rem;
+`;
 
 const TitleInput = styled.input``;
 
 const ContentInput = styled.textarea``;
 
-const EditButton = styled.button``;
+const EditButton = styled.button`
+  font-family: Noto Sans KR;
+  ${({ theme }) => theme.fonts.body1};
+  color: ${({ theme }) => theme.colors.mainDark};
+  border: 1px solid #0027b0;
+  padding: 6px 12px;
+  cursor: pointer;
+  width: 15rem;
+  height: 4rem;
+  border-radius: 12px;
+`;
 
 export default ReviewEdit;

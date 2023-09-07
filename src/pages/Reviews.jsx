@@ -7,25 +7,27 @@ import { useNavigate } from "react-router-dom";
 const Reviews = () => {
   const [writableReviews, setWritableReviews] = useState([]);
   const [writtenReviews, setWrittenReviews] = useState([]);
-  const [activeTab, setActiveTab] = useState("writable"); // 기본으로 작성 가능한 리뷰 탭이 활성화
+  const [activeTab, setActiveTab] = useState("writable");
+  const accessToken = "";
 
   const IMG_DUMMY_URL =
     "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
-  // useEffect(() => {
-  //   // 작성 가능한 리뷰 목록 가져오기
-  //   axios
-  //     .get("http://localhost:8080/studious/mypage/{userd}/reviews")
-  //     .then((response) => {
-  //       setWritableReviews(response.data);
-  //     });
 
-  //   // 작성한 리뷰 목록 가져오기
-  //   axios
-  //     .get("http://localhost:8080/studious/mypage/{userd}/reviews")
-  //     .then((response) => {
-  //       setWrittenReviews(response.data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    // 작성 가능한 리뷰 목록 가져오기
+    axios
+      .get("http://localhost:8080/studious/reviews/available", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setWritableReviews(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const DUMMY_DATA1 = [
     {
@@ -111,12 +113,12 @@ const Reviews = () => {
 
   const handleWriteReview = (review) => {
     console.log("리뷰 작성 페이지로 이동:", review);
-    navigate(`/myPage/reviews/${review.id}/edit`, { state: { review } });
+    navigate(`/myPage/reviews/${review.id}/write`, { state: { review } });
   };
 
   const handleUpdateReview = (review) => {
     console.log("리뷰 수정 페이지로 이동:", review);
-    navigate(`/edit-review/${review.id}`, { state: { review } });
+    navigate(`myPage/reviews/${review.id}/edit`, { state: { review } });
   };
 
   const handleDeleteReview = (review) => {

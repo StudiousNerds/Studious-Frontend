@@ -29,7 +29,7 @@ const ReviewWrite = () => {
   const [content, setContent] = useState("");
 
   const handleCancel = () => {
-    navigate("/reviews");
+    navigate("/myPage/reviews");
   };
 
   const handleRecommend = () => {
@@ -56,7 +56,10 @@ const ReviewWrite = () => {
     };
 
     try {
-      const response = await axios.post("/api/reviews", reviewData);
+      const response = await axios.post(
+        "http://ec2-3-35-140-90.ap-northeast-2.compute.amazonaws.com:8080/api/reviews",
+        reviewData
+      );
       console.log("Review submitted successfully:", response.data);
     } catch (error) {
       console.error("Error submitting review:", error);
