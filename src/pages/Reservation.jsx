@@ -25,92 +25,55 @@ const Reservation = () => {
 
   const DUMMY_DATA1 = [
     {
-      page: 0,
-      totalPageCount: 2,
-      reservationInfo: [
+      reservationRecordInfoList: [
         {
-          studycafeName: "스터디 카페 이름",
+          studycafeName: "Nerds",
           studycafePhoto:
-            "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-          roomName: "룸 이름",
-          reservationId: 1,
-          reservationDate: "2023년 05월 11일",
-          reservationStartTime: "11:00",
-          reservationEndTime: "13:00",
-          usingTime: "2시간",
-          price: "5,000",
-          paymentMethod: "카카오페이",
-          reservationStatus: "이용 완료",
-          cancelReason: "",
-          canceler: "",
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-19",
+          reservationStartTime: "09:00:00",
+          reservationEndTime: "11:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
+        },
+        {
+          studycafeName: "Nerds",
+          studycafePhoto:
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-10",
+          reservationStartTime: "10:00:00",
+          reservationEndTime: "12:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
+        },
+        {
+          studycafeName: "Nerds",
+          studycafePhoto:
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-09",
+          reservationStartTime: "09:00:00",
+          reservationEndTime: "11:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
         },
       ],
-    },
-    {
-      page: 1,
-      totalPageCount: 2,
-      reservationInfo: [
-        {
-          studycafeName: "혜화 열정공장",
-          studycafePhoto:
-            "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-          roomName: "룸 이름",
-          reservationId: 2,
-          reservationDate: "2023년 05월 01일",
-          reservationStartTime: "19:00",
-          reservationEndTime: "21:00",
-          usingTime: "2시간",
-          price: "5,000",
-          paymentMethod: "카카오페이",
-          reservationStatus: "취소",
-          cancelReason: "중복 예약",
-          canceler: "사장님",
-        },
-      ],
-    },
-    {
-      page: 1,
-      totalPageCount: 2,
-      reservationInfo: [
-        {
-          studycafeName: "혜화 열정공장",
-          studycafePhoto:
-            "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-          roomName: "룸 이름",
-          reservationId: 3,
-          reservationDate: "2023년 05월 01일",
-          reservationStartTime: "19:00",
-          reservationEndTime: "21:00",
-          usingTime: "2시간",
-          price: "5,000",
-          paymentMethod: "카카오페이",
-          reservationStatus: "이용 중",
-          cancelReason: "",
-          canceler: "",
-        },
-      ],
-    },
-    {
-      page: 1,
-      totalPageCount: 2,
-      reservationInfo: [
-        {
-          studycafeName: "혜화 열정공장",
-          studycafePhoto:
-            "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-          roomName: "룸 이름",
-          reservationId: 4,
-          reservationDate: "2023년 05월 01일",
-          reservationStartTime: "19:00",
-          reservationEndTime: "21:00",
-          usingTime: "2시간",
-          price: "5,000",
-          paymentMethod: "카카오페이",
-          reservationStatus: "이용 전",
-          cancelReason: "",
-          canceler: "",
-        },
-      ],
+      pageNumber: 1,
+      totalPage: 1,
     },
   ];
 
@@ -120,6 +83,26 @@ const Reservation = () => {
 
   const handleItemClick = (item) => {
     setClickedItem(item);
+  };
+  const handle = () => {
+    try {
+      axios
+        .get(
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservation-settings",
+          {
+            page: 1,
+            startDate: "2023-07-30",
+            endDate: "2023-07-31",
+            studycafeName: "",
+            tab: "ALL",
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+        });
+    } catch (error) {
+      console.error("Error fetching reservations:", error);
+    }
   };
 
   useEffect(() => {
@@ -172,9 +155,7 @@ const Reservation = () => {
       <TabContainer>
         {/* 전체 예약 탭 */}
         <TabWrapper>
-          <TabButton
-            active={activeTab === "all"}
-            onClick={() => handleTabChange("all")}>
+          <TabButton active={activeTab === "all"} onClick={() => handle()}>
             전체
           </TabButton>
           <TabIndicator active={activeTab === "all"} />
@@ -236,7 +217,11 @@ const Reservation = () => {
       {/* 각 탭에 따른 데이터 렌더링 */}
       {DUMMY_DATA1.map((item, index) => (
         <>
-          <ReservationList key={index} reservations={DUMMY_DATA1} />
+          <ReservationList
+            key={index}
+            reservations={DUMMY_DATA1}
+            onItemClick={handleItemClick}
+          />
           <Divider />
         </>
       ))}

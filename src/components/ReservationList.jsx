@@ -7,16 +7,16 @@ const IMG_DUMMY_URL =
 const ReservationList = ({ reservations, onItemClick }) => {
   const renderButtons = (reservationStatus) => {
     switch (reservationStatus) {
-      case "이용 전":
+      case "BEFORE_USING":
         return (
           <ButtonContainer>
             <EditButton>예약 변경</EditButton>
             <CancelButton>예약 취소</CancelButton>
           </ButtonContainer>
         );
-      case "이용 중":
+      case "USING":
         return <TimeButton>시간 연장</TimeButton>;
-      case "이용 완료":
+      case "AFTER_USING":
         return <WriteReviewButton>후기 작성하기</WriteReviewButton>;
       default:
         return null;
@@ -28,7 +28,7 @@ const ReservationList = ({ reservations, onItemClick }) => {
       <ClickableItem onClick={() => onItemClick(reservations)}>
         {reservations.map((data, index) => (
           <div key={index}>
-            {data.reservationInfo.map((reservation, index) => (
+            {data.reservationRecordInfoList.map((reservation, index) => (
               <ReservationItem key={index}>
                 <CafeInfo>
                   <CafeImage
