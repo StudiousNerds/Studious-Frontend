@@ -18,7 +18,7 @@ export const Button = ({
   ...props
 }) => {
   return (
-    <ButtonContainer width={width} height={height}>
+    <ButtonContainer width={width} height={height} colorTheme={colorTheme}>
       <button style={{ ...props.style }} onClick={onClick}>
         {text ? text : ""}
       </button>
@@ -36,15 +36,9 @@ const ButtonContainer = styled.div`
     border-radius: 1.5rem;
     border: 1px solid ${({ theme }) => theme.colors.mainDark};
     ${({ theme }) => theme.fonts.heading2};
-    ${({ colorTheme }) => {
-      return colorTheme === "dark"
-        ? `
-        background-color: ${({ colorTheme }) => colorTheme.colors.mainDark};
-        color: ${({ colorTheme }) => colorTheme.colors.mostLight};
-      `
-        : `
-        color: ${({ colorTheme }) => colorTheme.colors.mainDark};
-      `;
-    }}
+    background-color: ${({ colorTheme, theme }) =>
+      colorTheme === "dark" ? theme.colors.mainDark : ""};
+    color: ${({ colorTheme, theme }) =>
+      colorTheme === "light" ? theme.colors.mainDark : ""};
   }
 `;
