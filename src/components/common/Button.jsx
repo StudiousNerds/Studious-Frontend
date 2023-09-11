@@ -6,6 +6,7 @@ import styled from "styled-components";
  * @param {number} width rem
  * @param {number} height rem
  * @param {string} colorTheme 'dark' 또는 'light'
+ * @param {() => void} onClick 이벤트핸들러
  * @returns 버튼 컴포넌트
  */
 export const Button = ({
@@ -13,11 +14,14 @@ export const Button = ({
   width,
   height,
   colorTheme = "dark",
+  onClick,
   ...props
 }) => {
   return (
     <ButtonContainer width={width} height={height}>
-      <button style={{ ...props.style }}>{text ? text : ""}</button>
+      <button style={{ ...props.style }} onClick={onClick}>
+        {text ? text : ""}
+      </button>
     </ButtonContainer>
   );
 };
