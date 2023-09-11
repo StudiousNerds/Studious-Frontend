@@ -14,18 +14,30 @@ const DUMMY_DATA_2 = {
     "랭스는 Language(s)에 s를 붙인 복수형의 줄임말로 언어 공부나 대화가 필요한 다양한 활동을 할 수 있는 공간으로 만들고자 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다. 스터디에 적합한 공간으로 시작되었습니다.",
   conveniences: ["룸 편의시설 이름1", "룸 편의시설 이름2"],
   notification: "(공지 사항)", // 공지사항이 없는 경우 null
-  refundPolicy: {
-    0: 0, // 이용 당일   :   0% 환불
-    1: 50, // 이용 1일 전 :  50% 환불
-    2: 50, // 이용 2일 전 :  50% 환불
-    3: 50, // 이용 3일 전 :  50% 환불
-    4: 50, // 이용 4일 전 :  50% 환불
-    5: 50, // 이용 5일 전 :  50% 환불
-    6: 100, // 이용 6일 전 : 100% 환불
-    7: 100, // 이용 7일 전 : 100% 환불
-    8: 100, // 이용 8일 전 : 100% 환불
-  },
-  notice: ["유의 사항1", "유의 사항2"],
+  refundPolicy: [
+    {
+      day: "이용 1일 전",
+      rate: "10%",
+    },
+    {
+      day: "이용 2일 전",
+      rate: "10%",
+    },
+    {
+      day: "이용 3일 전",
+      rate: "10%",
+    },
+    {
+      day: "이용 4일 전",
+      rate: "10%",
+    },
+  ],
+  notice: [
+    "당일 예약도 가능합니다.",
+    "시간, 날짜 변경은 하루 전까지만 가능하며 변경을 원하실 경우, 매장으로 전화 혹은 카카오톡 플러스 친구 문의 주시면 됩니다.",
+    "부스 내부 소독으로 퇴실시간 기준 5분 전 퇴실을 권유드리고 있습니다. 고객님들의 건강을 위해 양해 부탁드립니다.",
+    "실시간으로 예약을 받고 있어 해당 시간 만실일 경우 예약 취소 안내 연락을 드릴 수 있습니다.",
+  ],
   rooms: [
     {
       id: 1,
@@ -168,6 +180,26 @@ export const detailsReviewsSelector = selector({
       deafening,
       fixturesStatus,
       total,
+    };
+  },
+});
+
+export const detailsRefundPolicySelector = selector({
+  key: "RefundPolicy",
+  get: () => {
+    const { refundPolicy } = DUMMY_DATA_2;
+    return {
+      refundPolicy,
+    };
+  },
+});
+
+export const detailsNoticeSelector = selector({
+  key: "Notice",
+  get: () => {
+    const { notice } = DUMMY_DATA_2;
+    return {
+      notice,
     };
   },
 });
