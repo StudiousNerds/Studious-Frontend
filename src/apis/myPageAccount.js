@@ -1,4 +1,3 @@
-import useRedirectLogin from "hooks/useRedirectLogin";
 import { GET, PATCH } from "./api";
 
 export const getMyPageAccount = async (token) => {
@@ -22,6 +21,18 @@ export const patchPhoneNumber = async ({ newPhoneNumber, token }) => {
     `/studious/mypage/members/phoneNumber`,
     {
       newPhoneNumber: newPhoneNumber,
+    },
+    token
+  );
+  return data;
+};
+
+export const patchPassword = async ({ oldPassword, newPassword, token }) => {
+  const { data } = await PATCH(
+    `/studious/mypage/members/password`,
+    {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
     },
     token
   );

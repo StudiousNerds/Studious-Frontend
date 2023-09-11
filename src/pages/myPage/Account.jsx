@@ -4,6 +4,7 @@ import ProfileImg from "components/common/ProfileImg";
 import {
   useMyPageAccount,
   useNicknameMutation,
+  usePasswordMutation,
   usePhoneNumberMutation,
 } from "hooks/queries/useMyPageAccount";
 import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
@@ -23,17 +24,30 @@ const Account = () => {
   const [isEditPhoneNumber, setIsEditPhoneNumber] = useState(false);
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const usePhoneNumber = usePhoneNumberMutation();
+  const [isEditPassword, setIsEditPassword] = useState(false);
+  const [passwordEditState, setPasswordEditState] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+  const usePassword = usePasswordMutation();
   const handleEditNicknameClick = () => {
     if (isEditNickname) {
       useNickname.mutate({ newNickname, token });
     }
-    setIsEditNickname((isEditNickname) => !isEditNickname);
+    setIsEditNickname((isEdit) => !isEdit);
   };
   const handleEditPhoneNumberClick = () => {
     if (isEditPhoneNumber) {
       usePhoneNumber.mutate({ newPhoneNumber, token });
     }
-    setIsEditPhoneNumber((isEditNickname) => !isEditNickname);
+    setIsEditPhoneNumber((isEdit) => !isEdit);
+  };
+  const handleEditPasswordClick = () => {
+    const { oldPassword, newPassword } = passwordEditState;
+    if (isEditPassword) {
+      usePassword.mutate({ oldPassword, newPassword, token });
+    }
+    setIsEditPassword((isEdit) => !isEdit);
   };
   const handleDeleteClick = () => {};
   return (
@@ -111,15 +125,51 @@ const Account = () => {
             </div>
           </AccountInformationRow>
           <AccountInformationRow>
-            <div></div>
-            <div />
-            <Button
-              text="비밀번호 변경하기"
-              width={25}
-              height={4}
-              colorTheme="light"
-              onClick={handleDeleteClick}
-            />
+            <div>비밀번호</div>
+            <div className="edit-column">
+              {isEditPassword && (
+                <>
+                  <EditInputBox
+                    type="password"
+                    placeholder="기존 비밀번호"
+                    onChange={(e) =>
+                      setPasswordEditState((prevState) => ({
+                        ...prevState,
+                        oldPassword: e.target.value,
+                      }))
+                    }
+                  />
+                  <EditInputBox
+                    type="password"
+                    placeholder="변경할 비밀번호"
+                    onChange={(e) =>
+                      setPasswordEditState((prevState) => ({
+                        ...prevState,
+                        newPassword: e.target.value,
+                      }))
+                    }
+                  />
+                </>
+              )}
+            </div>
+            <div className="buttons-column">
+              <Button
+                text="수정하기"
+                width={15}
+                height={4}
+                colorTheme="light"
+                onClick={handleEditPasswordClick}
+              />
+              {isEditPassword && (
+                <Button
+                  text="수정 취소"
+                  width={15}
+                  height={4}
+                  colorTheme="light"
+                  onClick={() => setIsEditPassword(false)}
+                />
+              )}
+            </div>
           </AccountInformationRow>
         </AccountInformationSection>
       </AccountLayout>
