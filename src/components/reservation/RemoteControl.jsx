@@ -2,7 +2,7 @@ import styled from "styled-components";
 import theme from "styles/theme";
 import Divider from "components/common/Divider";
 import { formatNumberWithCommas } from "utils/formatNumber";
-import { DarkButton } from "components/common/Button";
+import { Button } from "components/common/Button";
 
 const RemoteControl = ({
   date,
@@ -69,7 +69,7 @@ const RemoteControl = ({
         </TotalPrice>
       </div>
       <div className="button">
-        <DarkButton
+        <Button
           text="결제하기"
           width={30}
           height={5}
