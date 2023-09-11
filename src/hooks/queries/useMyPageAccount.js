@@ -4,6 +4,7 @@ import {
   patchNickname,
   patchPhoneNumber,
   patchPassword,
+  postWithdrawAccount,
 } from "apis/myPageAccount";
 import useRedirectLogin from "hooks/useRedirectLogin";
 
@@ -34,4 +35,8 @@ export const usePasswordMutation = () => {
       alert("비밀번호가 성공적으로 변경되었습니다.");
     },
   });
+};
+
+export const useWithdrawMutation = () => {
+  return useMutation(postWithdrawAccount);
 };
