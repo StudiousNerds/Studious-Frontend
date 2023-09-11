@@ -14,6 +14,12 @@ const Account = () => {
   const [isEditNickname, setIsEditNickname] = useState(false);
   const [newNickname, setNewNickname] = useState("");
   const useNickname = useNicknameMutation();
+  const handleEditNicknameClick = () => {
+    if (isEditNickname) {
+      useNickname.mutate(newNickname);
+    }
+    setIsEditNickname((isEditNickname) => !isEditNickname);
+  };
   const handleEditClick = (infoType) => {
     if (infoType === "nickname") {
       if (isEditNickname) {
@@ -51,7 +57,7 @@ const Account = () => {
                 width={15}
                 height={4}
                 colorTheme="light"
-                onClick={() => handleEditClick("nickname")}
+                onClick={handleEditNicknameClick}
               />
               {isEditNickname && (
                 <Button
