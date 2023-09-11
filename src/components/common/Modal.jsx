@@ -6,7 +6,7 @@ import styled from "styled-components";
  * @param {number} height
  * @returns
  */
-const Modal = ({ onClose, width, height }) => {
+const Modal = ({ onClose, width, height, children }) => {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent
@@ -15,7 +15,9 @@ const Modal = ({ onClose, width, height }) => {
         onClick={(e) => {
           e.stopPropagation();
         }}
-      ></ModalContent>
+      >
+        {children}
+      </ModalContent>
     </ModalOverlay>
   );
 };
@@ -43,5 +45,6 @@ const ModalContent = styled.div`
     typeof height === "number" ? `${height}rem` : height};
   background-color: #ffffff;
   border-radius: 2rem;
+  padding: 6rem;
   z-index: 10000;
 `;
