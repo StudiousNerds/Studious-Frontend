@@ -11,6 +11,7 @@ import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
 import { Button } from "components/common/Button";
 import { useState, useEffect } from "react";
 import useRedirectLogin from "hooks/useRedirectLogin";
+import { comparePassword } from "utils/comparePassword";
 
 const Account = () => {
   const { data } = useMyPageAccount();
@@ -29,6 +30,7 @@ const Account = () => {
     oldPassword: "",
     newPassword: "",
   });
+  const [isPasswordCheckWrong, setIsPasswordCheckWrong] = useState(false);
   const usePassword = usePasswordMutation();
   const handleEditNicknameClick = () => {
     if (isEditNickname) {
@@ -48,6 +50,13 @@ const Account = () => {
       usePassword.mutate({ oldPassword, newPassword, token });
     }
     setIsEditPassword((isEdit) => !isEdit);
+  };
+  const handleCheckPasswordChange = (e) => {
+    if (!comparePassword(passwordEditState.newPassword, e.target.value)) {
+      setIsPasswordCheckWrong(true);
+    } else {
+      setIsPasswordCheckWrong(false);
+    }
   };
   const handleDeleteClick = () => {};
   return (
@@ -149,6 +158,14 @@ const Account = () => {
                       }))
                     }
                   />
+                  <EditInputBox
+                    type="password"
+                    placeholder="비밀번호 확인"
+                    onChange={handleCheckPasswordChange}
+                  />
+                  {isPasswordCheckWrong && (
+                    <GuideText>비밀번호가 일치하지 않습니다.</GuideText>
+                  )}
                 </>
               )}
             </div>
@@ -252,4 +269,9 @@ const EditInputBox = styled.input`
   border: 1px solid ${({ theme }) => theme.colors.gray500};
   border-radius: 1.2rem;
   padding: 0 1rem;
+`;
+
+const GuideText = styled.span`
+  ${({ theme }) => theme.fonts.body2};
+  color: ${({ theme }) => theme.colors.mainDark};
 `;
