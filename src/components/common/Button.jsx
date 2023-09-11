@@ -39,6 +39,6 @@ const ButtonContainer = styled.div`
     background-color: ${({ colorTheme, theme }) =>
       colorTheme === "dark" ? theme.colors.mainDark : ""};
     color: ${({ colorTheme, theme }) =>
-      colorTheme === "light" ? theme.colors.mainDark : ""};
+      colorTheme === "light" ? theme.colors.mainDark : theme.colors.gray200};
   }
 `;
