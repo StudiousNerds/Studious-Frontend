@@ -100,11 +100,11 @@ const SearchResult = () => {
   const [searchResult, setSearchResult] = useState(initialSearchResultFake);
   const searchBarData = location.state?.searchParameters || [];
 
-  const { data: searchResultData } = useSearchResult({
-    currentPage,
-    sortOption,
-    searchBarData,
-  });
+  // const { data: searchResultData } = useSearchResult({
+  //   currentPage,
+  //   sortOption,
+  //   searchBarData,
+  // });
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
