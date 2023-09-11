@@ -46,10 +46,12 @@ const Account = () => {
   };
   const handleEditPasswordClick = () => {
     const { oldPassword, newPassword } = passwordEditState;
-    if (isEditPassword) {
-      usePassword.mutate({ oldPassword, newPassword, token });
+    if (!isPasswordCheckWrong && passwordEditState.oldPassword) {
+      if (isEditPassword) {
+        usePassword.mutate({ oldPassword, newPassword, token });
+      }
+      setIsEditPassword((isEdit) => !isEdit);
     }
-    setIsEditPassword((isEdit) => !isEdit);
   };
   const handleCheckPasswordChange = (e) => {
     if (!comparePassword(passwordEditState.newPassword, e.target.value)) {
