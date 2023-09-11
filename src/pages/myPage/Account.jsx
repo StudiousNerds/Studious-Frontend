@@ -4,29 +4,36 @@ import ProfileImg from "components/common/ProfileImg";
 import {
   useMyPageAccount,
   useNicknameMutation,
+  usePhoneNumberMutation,
 } from "hooks/queries/useMyPageAccount";
 import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
 import { Button } from "components/common/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useRedirectLogin from "hooks/useRedirectLogin";
 
 const Account = () => {
   const { data } = useMyPageAccount();
+  const { token, handleRedirect } = useRedirectLogin(true);
+  useEffect(() => {
+    handleRedirect();
+  }, [handleRedirect]);
   const [isEditNickname, setIsEditNickname] = useState(false);
   const [newNickname, setNewNickname] = useState("");
   const useNickname = useNicknameMutation();
+  const [isEditPhoneNumber, setIsEditPhoneNumber] = useState(false);
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const usePhoneNumber = usePhoneNumberMutation();
   const handleEditNicknameClick = () => {
     if (isEditNickname) {
-      useNickname.mutate(newNickname);
+      useNickname.mutate({ newNickname, token });
     }
     setIsEditNickname((isEditNickname) => !isEditNickname);
   };
-  const handleEditClick = (infoType) => {
-    if (infoType === "nickname") {
-      if (isEditNickname) {
-        useNickname.mutate(newNickname);
-      }
-      setIsEditNickname((isEditNickname) => !isEditNickname);
+  const handleEditPhoneNumberClick = () => {
+    if (isEditPhoneNumber) {
+      usePhoneNumber.mutate({ newPhoneNumber, token });
     }
+    setIsEditPhoneNumber((isEditNickname) => !isEditNickname);
   };
   const handleDeleteClick = () => {};
   return (
@@ -44,7 +51,7 @@ const Account = () => {
           <AccountInformationRow>
             <div>닉네임</div>
             <div className="edit-column">
-              {data?.nickname}
+              {data?.nickname.trim()}
               {isEditNickname && (
                 <EditInputBox
                   onChange={(e) => setNewNickname(e.target.value)}
@@ -76,14 +83,32 @@ const Account = () => {
           </AccountInformationRow>
           <AccountInformationRow>
             <div>휴대전화</div>
-            <div>{data?.phoneNumber}</div>
-            <Button
-              text="수정하기"
-              width={15}
-              height={4}
-              colorTheme="light"
-              onClick={handleEditClick}
-            />
+            <div className="edit-column">
+              {data?.phoneNumber}
+              {isEditPhoneNumber && (
+                <EditInputBox
+                  onChange={(e) => setNewPhoneNumber(e.target.value)}
+                />
+              )}
+            </div>
+            <div className="buttons-column">
+              <Button
+                text="수정하기"
+                width={15}
+                height={4}
+                colorTheme="light"
+                onClick={handleEditPhoneNumberClick}
+              />
+              {isEditPhoneNumber && (
+                <Button
+                  text="수정 취소"
+                  width={15}
+                  height={4}
+                  colorTheme="light"
+                  onClick={() => setIsEditPhoneNumber(false)}
+                />
+              )}
+            </div>
           </AccountInformationRow>
           <AccountInformationRow>
             <div></div>
@@ -93,7 +118,7 @@ const Account = () => {
               width={25}
               height={4}
               colorTheme="light"
-              onClick={handleEditClick}
+              onClick={handleDeleteClick}
             />
           </AccountInformationRow>
         </AccountInformationSection>

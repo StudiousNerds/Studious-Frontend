@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from "react-query";
-import { getMyPageAccount, patchNickname } from "apis/myPageAccount";
+import {
+  getMyPageAccount,
+  patchNickname,
+  patchPhoneNumber,
+} from "apis/myPageAccount";
 import useRedirectLogin from "hooks/useRedirectLogin";
 
 export const useMyPageAccount = () => {
@@ -8,9 +12,10 @@ export const useMyPageAccount = () => {
   return useQuery(["useMyPageAccount"], () => getMyPageAccount(token));
 };
 
-export const useNicknameMutation = (nickname, body) => {
-  const { token } = useRedirectLogin();
-  return useMutation(["useNicknameMutation"], () =>
-    patchNickname(token, nickname)
-  );
+export const useNicknameMutation = () => {
+  return useMutation(patchNickname);
+};
+
+export const usePhoneNumberMutation = () => {
+  return useMutation(patchPhoneNumber);
 };

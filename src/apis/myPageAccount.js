@@ -1,3 +1,4 @@
+import useRedirectLogin from "hooks/useRedirectLogin";
 import { GET, PATCH } from "./api";
 
 export const getMyPageAccount = async (token) => {
@@ -5,11 +6,22 @@ export const getMyPageAccount = async (token) => {
   return data;
 };
 
-export const patchNickname = async (token, newNickname) => {
+export const patchNickname = async ({ newNickname, token }) => {
   const { data } = await PATCH(
     `/studious/mypage/members/nickname`,
     {
       newNickname: newNickname,
+    },
+    token
+  );
+  return data;
+};
+
+export const patchPhoneNumber = async ({ newPhoneNumber, token }) => {
+  const { data } = await PATCH(
+    `/studious/mypage/members/phoneNumber`,
+    {
+      newPhoneNumber: newPhoneNumber,
     },
     token
   );
