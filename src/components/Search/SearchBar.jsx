@@ -110,7 +110,8 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    let url = `http://ec2-3-35-140-90.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
+    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
+    //`/studious/search?page=${page}`로 변경
 
     const queryParams = [];
 

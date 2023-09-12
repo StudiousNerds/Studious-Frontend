@@ -14,90 +14,90 @@ const SearchResult = () => {
   const [sortOption, setSortOption] = useState("GRADE_DESC");
   const [currentPage, setCurrentPage] = useState(1);
   const initialSearchResult = location.state?.searchResult || [];
-  const initialSearchResultFake = [
-    {
-      Id: 1,
-      name: "스터디카페1",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 2,
-      name: "스터디카페2",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 12,
-      distance: "700m",
-      grade: 3.8,
-      hashtags: ["편안한", "음료 다양", "서비스 좋음"],
-    },
-    {
-      Id: 3,
-      name: "스터디카페3",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 4,
-      name: "스터디카페4",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 5,
-      name: "스터디카페5",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 6,
-      name: "스터디카페6",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 7,
-      name: "스터디카페7",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 8,
-      name: "스터디카페8",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 9,
-      name: "스터디카페9",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-  ];
-  const [searchResult, setSearchResult] = useState(initialSearchResultFake);
+  // const initialSearchResultFake = [
+  //   {
+  //     Id: 1,
+  //     name: "스터디카페1",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 2,
+  //     name: "스터디카페2",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 12,
+  //     distance: "700m",
+  //     grade: 3.8,
+  //     hashtags: ["편안한", "음료 다양", "서비스 좋음"],
+  //   },
+  //   {
+  //     Id: 3,
+  //     name: "스터디카페3",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 4,
+  //     name: "스터디카페4",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 5,
+  //     name: "스터디카페5",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 6,
+  //     name: "스터디카페6",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 7,
+  //     name: "스터디카페7",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 8,
+  //     name: "스터디카페8",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  //   {
+  //     Id: 9,
+  //     name: "스터디카페9",
+  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+  //     accumRevCnt: 20,
+  //     distance: "500m",
+  //     grade: 4.5,
+  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+  //   },
+  // ];
+  const [searchResult, setSearchResult] = useState(initialSearchResult);
   const searchBarData = location.state?.searchParameters || [];
 
   // const { data: searchResultData } = useSearchResult({
@@ -124,6 +124,10 @@ const SearchResult = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  useEffect(() => {
+    handleApplyFilters();
+  }, []);
 
   const handleApplyFilters = async (filterData) => {
     const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
@@ -152,7 +156,6 @@ const SearchResult = () => {
       }
     } catch (error) {
       console.error("Error data:", error);
-      console.log(url);
     }
   };
 
