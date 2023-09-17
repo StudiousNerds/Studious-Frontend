@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import theme from "styles/theme";
 import GlobalStyle from "styles/globalStyle";
 import { ThemeProvider } from "styled-components";
-import Layout from "components/Layout";
+import AppLayout from "components/layouts/AppLayout";
 import { RecoilRoot } from "recoil";
 import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -15,6 +15,7 @@ import StudyCafeDetails from "pages/StudyCafeDetails";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
+import Account from "pages/myPage/Account";
 
 function App() {
   const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ function App() {
         <RecoilRoot>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
-            <Layout>
+            <AppLayout>
               <Header />
               <Routes>
                 <Route path="/" element={<Main />} />
@@ -51,9 +52,10 @@ function App() {
                   element={<Reservation />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route path="/myPage/account" element={<Account />} />
               </Routes>
-            </Layout>
+            </AppLayout>
           </ThemeProvider>
         </RecoilRoot>
       </CookiesProvider>

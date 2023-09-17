@@ -11,6 +11,7 @@ const Divider = ({
   };
   return (
     <Line
+      type={type}
       length={length}
       {...props}
       style={{ ...dividerStyle, ...props.style }}
@@ -23,20 +24,19 @@ export default Divider;
 const Line = styled.hr`
   border: none;
   background-color: ${({ theme }) => theme.colors.gray500};
-
-  &.vertical {
+  ${({ type, length }) =>
+    type === "vertical"
+      ? `
     position: relative;
     top: -1px;
     display: inline-block;
     width: 1px;
-    height: ${({ length }) =>
-      typeof length === "number" ? `${length}rem` : length};
+    height: ${typeof length === "number" ? `${length}rem` : length};
     vertical-align: middle;
-  }
-  &.horizontal {
+  `
+      : `
     display: block;
-    width: ${({ length }) =>
-      typeof length === "number" ? `${length}rem` : length};};
+    width: ${typeof length === "number" ? `${length}rem` : length};
     height: 1px;
-  }
+  `}
 `;
