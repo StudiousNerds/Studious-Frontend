@@ -1,21 +1,28 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommonInformation from "components/studyCafeDetails/commonInfomation/CommonInformation";
 import NavBar from "components/studyCafeDetails/NavBar";
 import StudyRoomReservation from "components/studyCafeDetails/studyRoomReservation/StudyRoomReservation";
 import Reviews from "components/studyCafeDetails/reviews/Reviews";
 import RefundPolicy from "components/studyCafeDetails/refundPolicy/RefundPolicy";
 import Notice from "components/studyCafeDetails/notice/Notice";
+import { useLocation } from "react-router-dom";
+import { useStudyRoomReservations } from "hooks/queries/useStudyCafeDetails";
+import { useSetRecoilState } from "recoil";
+import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const StudyCafeDetails = () => {
+  const { pathname } = useLocation();
+  const studyCafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
+
   const NAVBAR_CONTENTS = [
     {
       name: "스터디룸 예약",
-      component: <StudyRoomReservation />,
+      component: <StudyRoomReservation studyCafeId={studyCafeId} />,
     },
     {
       name: "리뷰",
-      component: <Reviews />,
+      component: <Reviews studyCafeId={studyCafeId} />,
     },
     {
       name: "진행 중인 이벤트",
@@ -23,14 +30,27 @@ const StudyCafeDetails = () => {
     },
     {
       name: "환불 정책",
-      component: <RefundPolicy />,
+      component: <RefundPolicy studyCafeId={studyCafeId} />,
     },
     {
       name: "유의사항",
-      component: <Notice />,
+      component: <Notice studyCafeId={studyCafeId} />,
     },
   ];
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const { data, isSuccess } = useStudyRoomReservations({
+    studyCafeId,
+    date: "2023-09-18",
+  });
+  const setStudyCafeDetailsState = useSetRecoilState(studyCafeDetails);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setStudyCafeDetailsState(data);
+    }
+  }, [data, isSuccess, setStudyCafeDetailsState]);
+
   return (
     <>
       <CommonInformation />

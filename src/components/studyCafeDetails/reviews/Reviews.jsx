@@ -7,17 +7,27 @@ import ReviewsList from "./ReviewsList";
 import { detailsReviewsSelector } from "recoil/selectors/studyCafeDetails";
 import { useRecoilValue } from "recoil";
 import Pagination from "components/Pagination";
+import { useAllStudyRoomsReviews } from "hooks/queries/useStudyCafeDetails";
+import { useState } from "react";
 
-const Reviews = () => {
-  const {
-    reviewInfo,
-    recommendationRate,
-    cleanliness,
-    deafening,
-    fixturesStatus,
-    total,
-  } = useRecoilValue(detailsReviewsSelector);
+const Reviews = ({ studyCafeId }) => {
+  // const {
+  //   reviewInfo,
+  //   recommendationRate,
+  //   cleanliness,
+  //   deafening,
+  //   fixturesStatus,
+  //   total,
+  // } = useRecoilValue(detailsReviewsSelector);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data } = useAllStudyRoomsReviews({
+    studyCafeId,
+    page: currentPage,
+    size: 3,
+  });
+
+  console.log(data);
   const LIST_ITEMS_PER_PAGE = 3;
   return (
     <TabContainer title={"리뷰"}>
@@ -26,42 +36,50 @@ const Reviews = () => {
           <span>추천해요</span>
           <ThumbsUpIcon />
         </div>
-        <ProgressBar width={70} percentage={recommendationRate} />
-        <div className="percentage-text">{recommendationRate}%</div>
+        <ProgressBar
+          width={70}
+          percentage={data?.totalGradeInfo.recommendationRate}
+        />
+        <div className="percentage-text">
+          {data?.totalGradeInfo.recommendationRate}%
+        </div>
       </RecommendPercentageContainer>
       <StarsGradeContainer>
         <section className="left-section">
           <div className="left-section__grade">
             <div>청결도</div>
-            <StarsGrade size={3} grade={cleanliness} />
-            <div>{cleanliness}점</div>
+            <StarsGrade size={3} grade={data?.totalGradeInfo.cleanliness} />
+            <div>{data?.totalGradeInfo.cleanliness}점</div>
           </div>
           <div className="left-section__grade">
             <div>방음</div>
-            <StarsGrade size={3} grade={deafening} />
-            <div>{deafening}점</div>
+            <StarsGrade size={3} grade={data?.totalGradeInfo.deafening} />
+            <div>{data?.totalGradeInfo.deafening}점</div>
           </div>
           <div className="left-section__grade">
             <div>비품상태</div>
-            <StarsGrade size={3} grade={fixturesStatus} />
-            <div>{fixturesStatus}점</div>
+            <StarsGrade size={3} grade={data?.totalGradeInfo.fixturesStatus} />
+            <div>{data?.totalGradeInfo.fixturesStatus}점</div>
           </div>
         </section>
         <section className="right-section">
           <div className="right-section__grade"></div>
           <div className="right-section__grade">
             <div>총점</div>
-            <StarsGrade size={3} grade={total} />
-            <div>{total}점</div>
+            <StarsGrade size={3} grade={data?.totalGradeInfo.total} />
+            <div>{data?.totalGradeInfo.total}점</div>
           </div>
           <div className="right-section__grade"></div>
         </section>
       </StarsGradeContainer>
-      <ReviewsList reviewData={reviewInfo} />
+      <ReviewsList reviewData={data?.findReviewInfo} />
       <Pagination
         currentPage={1}
-        totalPages={parseInt(reviewInfo.length / LIST_ITEMS_PER_PAGE, 10)}
-        onPageChange={() => {}}
+        totalPages={parseInt(
+          data?.findReviewInfo.length / LIST_ITEMS_PER_PAGE,
+          10
+        )}
+        onPageChange={setCurrentPage}
       />
     </TabContainer>
   );
