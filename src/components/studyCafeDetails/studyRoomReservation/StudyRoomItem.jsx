@@ -9,11 +9,12 @@ import { setCookie } from "utils/cookie";
 const StudyRoomItem = ({
   roomData: {
     id,
-    name,
-    minCount,
-    maxCount,
+    roomName,
+    minHeadCount,
+    maxHeadCount,
+    minUsingTime,
     price,
-    type,
+    priceType,
     conveniences,
     paidConveniences,
     canReserveDatetime,
@@ -26,7 +27,7 @@ const StudyRoomItem = ({
   const [startTime, setStartTime] = useState("00:00");
   const [endTime, setEndTime] = useState("00:00");
   const [duration, setDuration] = useState(0);
-  const [headCount, setHeadCount] = useState(minCount);
+  const [headCount, setHeadCount] = useState(minHeadCount);
   const pathname = useLocation().pathname.slice(1);
   const cafeId = pathname.slice(pathname.indexOf("/") + 1);
   const handleClickReservation = () => {
@@ -60,13 +61,13 @@ const StudyRoomItem = ({
       <ItemRightSection>
         <StudyRoomMainInfoBox>
           <div className="info">
-            {name}
-            <div className="info__sub">{`최소 ${minCount}인 ~ 최대 ${maxCount}인`}</div>
+            {roomName}
+            <div className="info__sub">{`최소 ${minHeadCount}인 ~ 최대 ${maxHeadCount}인`}</div>
           </div>
           <div className="info">
             <div>{`${formatNumberWithCommas(price)}원`}</div>
             <div className="info__sub">
-              {type === "PER_HOUR" ? "/ 시간" : "/ 인"}
+              {priceType === "PER_HOUR" ? "/ 시간" : "/ 인"}
             </div>
           </div>
         </StudyRoomMainInfoBox>
@@ -88,7 +89,7 @@ const StudyRoomItem = ({
           </PaidConveniencesBox>
           <UserNumberCounterBox>
             <span>인원수</span>
-            <NumberController minCount={minCount} maxCount={maxCount} />
+            <NumberController minCount={minHeadCount} maxCount={maxHeadCount} />
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
         <ExpectedPriceLayout>
