@@ -1,13 +1,12 @@
 import TabContainer from "../TabContainer";
 import RefundPolicyBox from "components/common/RefundPolicyBox";
-import { useRecoilValue } from "recoil";
-import { detailsRefundPolicySelector } from "recoil/selectors/studyCafeDetails";
+import { useRefundPolicy } from "hooks/queries/useStudyCafeDetails";
 
-const RefundPolicy = () => {
-  const { refundPolicy } = useRecoilValue(detailsRefundPolicySelector);
+const RefundPolicy = ({ studyCafeId }) => {
+  const { data } = useRefundPolicy({ studyCafeId });
   return (
     <TabContainer title="환불 정책">
-      <RefundPolicyBox refundPolicy={refundPolicy} />
+      <RefundPolicyBox refundPolicy={data} />
     </TabContainer>
   );
 };
