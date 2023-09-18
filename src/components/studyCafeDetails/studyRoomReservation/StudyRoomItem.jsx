@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import NumberController from "components/common/NumberController";
+import TimeControler from "components/Search/TimeControler";
 import useRedirectLogin from "hooks/useRedirectLogin";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { setCookie } from "utils/cookie";
+import { useSetRecoilState } from "recoil";
+import { reservationReqState } from "recoil/atoms/reservationReqState";
 
 const StudyRoomItem = ({
   roomData: {
@@ -20,29 +22,33 @@ const StudyRoomItem = ({
     canReserveDatetime,
     photos,
   },
-  selectedDate,
+  date,
 }) => {
   const navigate = useNavigate();
   const { handleRedirect } = useRedirectLogin();
-  const [startTime, setStartTime] = useState("00:00");
-  const [endTime, setEndTime] = useState("00:00");
+  const canReserveDates = Object.keys(canReserveDatetime);
+  const canReserveTimes = Object.values(canReserveDatetime);
+  const canReserveDateTimeArr = canReserveDates.map((date, index) => ({
+    date,
+    times: canReserveTimes[index],
+  }));
+  const [startTime, setStartTime] = useState(canReserveDateTimeArr[0].times[0]);
+  const [endTime, setEndTime] = useState(canReserveDateTimeArr[0].times[0]);
   const [duration, setDuration] = useState(0);
   const [headCount, setHeadCount] = useState(minHeadCount);
-  const pathname = useLocation().pathname.slice(1);
-  const cafeId = pathname.slice(pathname.indexOf("/") + 1);
+  const { pathname } = useLocation();
+  const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
+  const setReservationReqState = useSetRecoilState(reservationReqState);
   const handleClickReservation = () => {
-    setCookie({
-      key: "reservationInfo",
-      value: {
-        cafeId,
-        roomId: id,
-        date: selectedDate,
-        startTime,
-        endTime,
-        duration,
-        headCount,
-        price,
-      },
+    setReservationReqState({
+      cafeId,
+      roomId: id,
+      date,
+      startTime,
+      endTime,
+      duration,
+      headCount,
+      price,
     });
     if (!handleRedirect()) {
       navigate(`/studyCafe/${id}/reservation`);
@@ -78,6 +84,7 @@ const StudyRoomItem = ({
               name="paidConveniences"
               className="select"
               defaultValue={"선택하기"}
+              onChange={(e) => {}}
             >
               <option>선택하기</option>
               {paidConveniences.map((item, itemIndex) => (
@@ -92,6 +99,7 @@ const StudyRoomItem = ({
             <NumberController minCount={minHeadCount} maxCount={maxHeadCount} />
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
+        {/* <TimeControler hourlySchedules={}/> */}
         <ExpectedPriceLayout>
           <div>
             <span>예상 결제 금액</span>

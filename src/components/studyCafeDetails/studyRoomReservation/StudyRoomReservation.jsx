@@ -11,11 +11,11 @@ const StudyRoomReservation = ({ studyCafeId }) => {
     studyCafeId,
     date: "2023-09-18",
   });
-  console.log(data);
   const [isShowCalendar, setIsShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const handleSelectDate = (date) => {
     setSelectedDate(date);
+    setIsShowCalendar(false);
   };
   return (
     <>
