@@ -4,22 +4,11 @@ import { ReactComponent as ThumbsUpIcon } from "assets/icons/thumbsUp.svg";
 import ProgressBar from "components/common/ProgressBar";
 import StarsGrade from "components/common/StarsGrade";
 import ReviewsList from "./ReviewsList";
-import { detailsReviewsSelector } from "recoil/selectors/studyCafeDetails";
-import { useRecoilValue } from "recoil";
 import Pagination from "components/Pagination";
 import { useAllStudyRoomsReviews } from "hooks/queries/useStudyCafeDetails";
 import { useState } from "react";
 
 const Reviews = ({ studyCafeId }) => {
-  // const {
-  //   reviewInfo,
-  //   recommendationRate,
-  //   cleanliness,
-  //   deafening,
-  //   fixturesStatus,
-  //   total,
-  // } = useRecoilValue(detailsReviewsSelector);
-
   const [currentPage, setCurrentPage] = useState(1);
   const { data } = useAllStudyRoomsReviews({
     studyCafeId,
@@ -27,7 +16,6 @@ const Reviews = ({ studyCafeId }) => {
     size: 3,
   });
 
-  console.log(data);
   const LIST_ITEMS_PER_PAGE = 3;
   return (
     <TabContainer title={"리뷰"}>
