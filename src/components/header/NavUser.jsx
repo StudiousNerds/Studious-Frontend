@@ -30,5 +30,8 @@ export default NavUser;
 const NavLayout = styled.div`
   display: flex;
   gap: 1rem;
+  z-index: 5;
 `;
-const NavButton = styled.button``;
+const NavButton = styled.button`
+  width: 5rem;
+`;

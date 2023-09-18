@@ -21,7 +21,7 @@ const ReviewsList = ({ reviewData }) => {
             (option, optionIndex) => (
               <button
                 key={optionIndex}
-                className={optionIndex === 0 && "firstOption"}
+                className={optionIndex === 0 ? "firstOption" : ""}
               >
                 {option}
               </button>

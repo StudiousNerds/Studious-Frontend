@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import NumberController from "components/common/NumberController";
+import useRedirectLogin from "hooks/useRedirectLogin";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { setCookie } from "utils/cookie";
 
 const StudyRoomItem = ({
   roomData: {
@@ -15,12 +19,39 @@ const StudyRoomItem = ({
     canReserveDatetime,
     photos,
   },
+  selectedDate,
 }) => {
+  const navigate = useNavigate();
+  const { handleRedirect } = useRedirectLogin();
+  const [startTime, setStartTime] = useState("00:00");
+  const [endTime, setEndTime] = useState("00:00");
+  const [duration, setDuration] = useState(0);
+  const [headCount, setHeadCount] = useState(minCount);
+  const pathname = useLocation().pathname.slice(1);
+  const cafeId = pathname.slice(pathname.indexOf("/") + 1);
+  const handleClickReservation = () => {
+    setCookie({
+      key: "reservationInfo",
+      value: {
+        cafeId,
+        roomId: id,
+        date: selectedDate,
+        startTime,
+        endTime,
+        duration,
+        headCount,
+        price,
+      },
+    });
+    if (!handleRedirect()) {
+      navigate(`/studyCafe/${id}/reservation`);
+    }
+  };
   return (
     <ItemContainer>
       <ItemLeftSection>
         <img src={photos[0]} alt="스터디룸 이미지" />
-        <SmallImagesSlider gap={"9px"}>
+        <SmallImagesSlider gap={0.9}>
           {photos.slice(1).map((photo, photoIndex) => {
             return <img key={photoIndex} src={photo} alt="스터디룸 이미지" />;
           })}
@@ -68,7 +99,9 @@ const StudyRoomItem = ({
             )}원`}</span>
           </div>
         </ExpectedPriceLayout>
-        <ReservationButton>예약하기</ReservationButton>
+        <ReservationButton onClick={handleClickReservation}>
+          예약하기
+        </ReservationButton>
       </ItemRightSection>
     </ItemContainer>
   );
@@ -98,7 +131,7 @@ const ItemLeftSection = styled.section`
 
 const SmallImagesSlider = styled.div`
   display: flex;
-  gap: ${({ gap }) => parseInt(gap) + "px"};
+  gap: ${({ gap }) => `${Number(gap)}rem`};
   padding-bottom: 0.7rem;
   overflow-x: auto;
   &::-webkit-scrollbar {
@@ -112,7 +145,7 @@ const SmallImagesSlider = styled.div`
   }
   img {
     border-radius: 2rem;
-    width: calc(30% - ${({ gap }) => parseInt(gap) + "px"});
+    width: calc(30% - ${({ gap }) => `${Number(gap)}rem`});
     height: 10rem;
   }
 `;
@@ -158,7 +191,7 @@ const PaidConveniencesBox = styled.div`
     height: 3rem;
     border-radius: 1rem;
     border: 1px solid ${({ theme }) => theme.colors.gray500};
-    padding: 0 12px;
+    padding: 0 1.2rem;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
