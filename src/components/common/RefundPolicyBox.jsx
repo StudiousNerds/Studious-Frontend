@@ -16,7 +16,8 @@ const RefundPolicyBox = ({ refundPolicy }) => {
       </div>
       <div>
         <RefundPolicyList>
-          {refundPolicy?.length !== 0 &&
+          {refundPolicy &&
+            refundPolicy?.length !== 0 &&
             refundPolicy.map(({ day, rate }, index) => {
               return (
                 <Fragment key={index}>
