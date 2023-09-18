@@ -20,7 +20,7 @@ const StudyRoomItem = ({
     <ItemContainer>
       <ItemLeftSection>
         <img src={photos[0]} alt="스터디룸 이미지" />
-        <SmallImagesSlider gap={"9px"}>
+        <SmallImagesSlider gap={0.9}>
           {photos.slice(1).map((photo, photoIndex) => {
             return <img key={photoIndex} src={photo} alt="스터디룸 이미지" />;
           })}
@@ -98,7 +98,7 @@ const ItemLeftSection = styled.section`
 
 const SmallImagesSlider = styled.div`
   display: flex;
-  gap: ${({ gap }) => parseInt(gap) + "px"};
+  gap: ${({ gap }) => `${Number(gap)}rem`};
   padding-bottom: 0.7rem;
   overflow-x: auto;
   &::-webkit-scrollbar {
@@ -112,7 +112,7 @@ const SmallImagesSlider = styled.div`
   }
   img {
     border-radius: 2rem;
-    width: calc(30% - ${({ gap }) => parseInt(gap) + "px"});
+    width: calc(30% - ${({ gap }) => `${Number(gap)}rem`});
     height: 10rem;
   }
 `;
@@ -158,7 +158,7 @@ const PaidConveniencesBox = styled.div`
     height: 3rem;
     border-radius: 1rem;
     border: 1px solid ${({ theme }) => theme.colors.gray500};
-    padding: 0 12px;
+    padding: 0 1.2rem;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

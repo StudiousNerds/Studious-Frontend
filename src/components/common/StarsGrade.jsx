@@ -65,7 +65,7 @@ const StarsBackgroundLayout = styled.div`
   left: 0;
   div.stars-container {
     display: flex;
-    gap: 8px;
+    gap: 0.8rem;
     z-index: 1;
   }
   div.star {
