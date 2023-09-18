@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { ReactComponent as ToggleBottomIcon } from "assets/icons/toggleBottom.svg";
 import { ReactComponent as ToggleUpIcon } from "assets/icons/toggleUp.svg";
 import { useRecoilValue } from "recoil";
-import { detailsCommonSelector } from "recoil/selectors/studyCafeDetails";
+import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const CommonInformationPlace = () => {
-  const commonDetails = useRecoilValue(detailsCommonSelector);
+  const commonDetails = useRecoilValue(studyCafeDetails);
   const { introduction, conveniences } = commonDetails;
   const [isUnfold, setIsUnfold] = useState(false);
 
