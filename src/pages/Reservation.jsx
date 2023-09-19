@@ -94,12 +94,15 @@ const Reservation = () => {
 
       <RemoteControlSection>
         <RemoteControl
+          cafeId={cafeId}
+          roomId={roomId}
           date={date}
           startTime={startTime}
           endTime={endTime}
           usingTime={usingTime}
-          headcount={headCount}
+          headCount={headCount}
           selectedConveniences={selectedConveniences}
+          userInfo={userInfo}
           totalPrice={totalPrice}
         />
       </RemoteControlSection>

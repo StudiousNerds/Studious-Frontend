@@ -3,16 +3,41 @@ import theme from "styles/theme";
 import Divider from "components/common/Divider";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import { Button } from "components/common/Button";
+import { useReservationMutation } from "hooks/queries/useReservation";
+import { getCookie } from "utils/cookie";
 
 const RemoteControl = ({
+  cafeId,
+  roomId,
   date,
   startTime,
   endTime,
   usingTime,
-  headcount,
+  headCount,
   selectedConveniences,
+  userInfo,
   totalPrice,
 }) => {
+  const postReservationMutation = useReservationMutation({
+    cafeId,
+    roomId,
+    token: getCookie("accessToken"),
+    body: {
+      reserveUser: userInfo,
+      reservationInfo: {
+        date,
+        startTime: `${startTime}:00`,
+        endTime: `${endTime}:00`,
+        usingTime,
+        headCount,
+        price: totalPrice,
+      },
+      paidConveniences: selectedConveniences,
+    },
+  });
+  const handlePayReservationClick = () => {
+    postReservationMutation.mutate();
+  };
   return (
     <RemoteControlBox>
       <div className="text">
@@ -27,7 +52,7 @@ const RemoteControl = ({
           </div>
           <div className="info-row">
             <div className="info-row__label">인원수</div>
-            <div className="info-row__content">{headcount}</div>
+            <div className="info-row__content">{headCount}</div>
           </div>
         </RemoteControlInfoBox>
         <Divider
@@ -69,7 +94,7 @@ const RemoteControl = ({
           </span>
         </TotalPrice>
       </div>
-      <div className="button">
+      <div className="button" onClick={handlePayReservationClick}>
         <Button
           text="결제하기"
           width={30}
