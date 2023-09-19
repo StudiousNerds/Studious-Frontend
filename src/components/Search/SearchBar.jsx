@@ -111,7 +111,6 @@ const SearchBar = ({ onClose }) => {
     conveniences,
   }) => {
     let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
-    //`/studious/search?page=${page}`로 변경
 
     const queryParams = [];
 
@@ -136,6 +135,7 @@ const SearchBar = ({ onClose }) => {
 
     try {
       const response = await GET(url);
+      //const response = await axios.get(url);
 
       if (response.status === 200) {
         const responseData = response.data;
@@ -302,7 +302,6 @@ const SearchBarWrapper = styled.div`
   justify-content: center;
   position: relative;
 `;
-
 const SearchBarLayout = styled.div`
   position: relative;
   display: flex;

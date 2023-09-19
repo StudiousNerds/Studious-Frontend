@@ -226,6 +226,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
+  margin-bottom: 2rem;
 `;
 
 const ApplyButton = styled.button`

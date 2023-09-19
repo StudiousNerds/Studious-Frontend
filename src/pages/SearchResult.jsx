@@ -14,97 +14,19 @@ const SearchResult = () => {
   const [sortOption, setSortOption] = useState("GRADE_DESC");
   const [currentPage, setCurrentPage] = useState(1);
   const initialSearchResult = location.state?.searchResult || [];
-  // const initialSearchResultFake = [
-  //   {
-  //     Id: 1,
-  //     name: "스터디카페1",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 2,
-  //     name: "스터디카페2",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 12,
-  //     distance: "700m",
-  //     grade: 3.8,
-  //     hashtags: ["편안한", "음료 다양", "서비스 좋음"],
-  //   },
-  //   {
-  //     Id: 3,
-  //     name: "스터디카페3",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 4,
-  //     name: "스터디카페4",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 5,
-  //     name: "스터디카페5",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 6,
-  //     name: "스터디카페6",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 7,
-  //     name: "스터디카페7",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 8,
-  //     name: "스터디카페8",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  //   {
-  //     Id: 9,
-  //     name: "스터디카페9",
-  //     photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-  //     accumRevCnt: 20,
-  //     distance: "500m",
-  //     grade: 4.5,
-  //     hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-  //   },
-  // ];
-  const [searchResult, setSearchResult] = useState(initialSearchResult);
-  const searchBarData = location.state?.searchParameters || [];
 
-  // const { data: searchResultData } = useSearchResult({
+  // const searchResult = useSearchResult({
   //   currentPage,
   //   sortOption,
-  //   searchBarData,
+  //   searchBarData: location.state?.searchParameters || [],
   // });
+
+  const [searchResult, setSearchResult] = useState(initialSearchResult);
+  const searchBarData = location.state?.searchParameters || [];
+  const [minGrade, setMinGrade] = useState("");
+  const [eventInProgress, setEventInProgress] = useState("");
+  const [hashtags, setHashtags] = useState([]);
+  const [conveniences, setConveniences] = useState([]);
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
@@ -116,39 +38,76 @@ const SearchResult = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleSortOptionChange = (e) => {
-    setSortOption(e.target.value);
-    setCurrentPage(1);
+  const handleSortOptionChange = async (e) => {
+    const newSortOption = e.target.value;
+    setSortOption(newSortOption);
+
+    try {
+      let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=1&sortType=${newSortOption}`;
+      if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+      if (searchBarData.startTime)
+        apiUrl += `&startTime=${searchBarData.startTime}`;
+      if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+      if (searchBarData.headCount)
+        apiUrl += `&headCount=${searchBarData.headCount}`;
+      if (minGrade) apiUrl += `&minGrade=${minGrade}`;
+      if (eventInProgress) apiUrl += `&eventInProgress=${eventInProgress}`;
+      if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+      if (conveniences.length > 0)
+        apiUrl += `&conveniences=${conveniences.join(",")}`;
+
+      const response = await GET(apiUrl);
+      if (response.status === 200) {
+        const responseData = response.data;
+        setSearchResult(responseData);
+      }
+    } catch (error) {
+      console.error("Error data:", error);
+    }
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  useEffect(() => {
-    handleApplyFilters();
-  }, []);
-
   const handleApplyFilters = async (filterData) => {
     const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
-    const url = `/studious/search`;
+    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search`;
 
-    const params = {
-      page: currentPage,
-      keyword: searchBarData.keyword,
-      date: searchBarData.date,
-      startTime: searchBarData.startTime,
-      endTime: searchBarData.endTime,
-      headCount: searchBarData.headCount,
-      sortType: sortOption,
-      minGrade: minGrade,
-      eventInProgress: eventInProgress,
-      hashtags: hashtags.join(","),
-      conveniences: conveniences.join(","),
-    };
+    const queryParams = [];
+
+    if (searchBarData.keyword) {
+      queryParams.push(`keyword=${searchBarData.keyword}`);
+    }
+    if (searchBarData.date) {
+      queryParams.push(`date=${searchBarData.date}`);
+    }
+    if (searchBarData.startTime) {
+      queryParams.push(`startTime=${searchBarData.startTime}`);
+    }
+    if (searchBarData.endTime) {
+      queryParams.push(`endTime=${searchBarData.endTime}`);
+    }
+    if (searchBarData.headCount) {
+      queryParams.push(`headCount=${searchBarData.headCount}`);
+    }
+    queryParams.push(`sortType=${sortOption}`);
+    queryParams.push(`minGrade=${minGrade}`);
+    queryParams.push(`eventInProgress=${eventInProgress}`);
+
+    if (hashtags.length > 0) {
+      queryParams.push(`hashtags=${hashtags.join(",")}`);
+    }
+    if (conveniences.length > 0) {
+      queryParams.push(`conveniences=${conveniences.join(",")}`);
+    }
+
+    if (queryParams.length > 0) {
+      url += `?${queryParams.join("&")}`;
+    }
 
     try {
-      const response = await GET(url, null, params);
+      const response = await GET(url);
 
       if (response.status === 200) {
         const responseData = response.data;
