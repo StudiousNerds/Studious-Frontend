@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import NumberController from "components/common/NumberController";
-import TimeControler from "components/Search/TimeControler";
+import TimeController from "components/common/TimeController";
 import useRedirectLogin from "hooks/useRedirectLogin";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
+import { formatDateToString } from "utils/formatDate";
+import useTimeController from "hooks/useTimeController";
 
 const StudyRoomItem = ({
   roomData: {
@@ -26,15 +28,8 @@ const StudyRoomItem = ({
 }) => {
   const navigate = useNavigate();
   const { handleRedirect } = useRedirectLogin();
-  const canReserveDates = Object.keys(canReserveDatetime);
-  const canReserveTimes = Object.values(canReserveDatetime);
-  const canReserveDateTimeArr = canReserveDates.map((date, index) => ({
-    date,
-    times: canReserveTimes[index],
-  }));
-  const [startTime, setStartTime] = useState(canReserveDateTimeArr[0].times[0]);
-  const [endTime, setEndTime] = useState(canReserveDateTimeArr[0].times[0]);
-  const [duration, setDuration] = useState(0);
+  const [startTime, setStartTime] = useState(undefined);
+  const [endTime, setEndTime] = useState(undefined);
   const [headCount, setHeadCount] = useState(minHeadCount);
   const { pathname } = useLocation();
   const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
@@ -43,10 +38,10 @@ const StudyRoomItem = ({
     setReservationReqState({
       cafeId,
       roomId: id,
-      date,
+      date: formatDateToString(date, "-"),
       startTime,
       endTime,
-      duration,
+      duration: !!endTime ? endTime - startTime : 1,
       headCount,
       price,
     });
@@ -54,6 +49,13 @@ const StudyRoomItem = ({
       navigate(`/studyCafe/${id}/reservation`);
     }
   };
+
+  const { onSelectTimeBlock } = useTimeController({
+    startTime,
+    setStartTime,
+    setEndTime,
+  });
+
   return (
     <ItemContainer>
       <ItemLeftSection>
@@ -99,7 +101,12 @@ const StudyRoomItem = ({
             <NumberController minCount={minHeadCount} maxCount={maxHeadCount} />
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
-        {/* <TimeControler hourlySchedules={}/> */}
+        <TimeController
+          hours={canReserveDatetime[formatDateToString(date, "-")]}
+          selectedStartTime={startTime}
+          selectedEndTime={endTime}
+          onSelectTimeBlock={onSelectTimeBlock}
+        />
         <ExpectedPriceLayout>
           <div>
             <span>예상 결제 금액</span>
