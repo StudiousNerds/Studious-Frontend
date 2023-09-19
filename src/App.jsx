@@ -12,6 +12,7 @@ import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
+import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
@@ -49,6 +50,10 @@ function App() {
                 />
                 <Route
                   path="/studyCafe/:studyCafeId/reservation"
+                  element={<Reservation />}
+                />
+                <Route
+                  path="/studyCafe/:studyCafeId/payment"
                   element={<Reservation />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />

@@ -5,6 +5,7 @@ import { formatNumberWithCommas } from "utils/formatNumber";
 import { Button } from "components/common/Button";
 import { useReservationMutation } from "hooks/queries/useReservation";
 import { getCookie } from "utils/cookie";
+import { useNavigate } from "react-router-dom";
 
 const RemoteControl = ({
   cafeId,
@@ -35,8 +36,10 @@ const RemoteControl = ({
       paidConveniences: selectedConveniences,
     },
   });
+  const navigate = useNavigate();
   const handlePayReservationClick = () => {
     postReservationMutation.mutate();
+    navigate(`/studyCafe/${cafeId}/payment`);
   };
   return (
     <RemoteControlBox>
