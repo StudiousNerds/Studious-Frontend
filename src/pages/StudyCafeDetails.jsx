@@ -39,18 +39,6 @@ const StudyCafeDetails = () => {
   ];
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { data, isSuccess } = useStudyRoomReservations({
-    studyCafeId,
-    date: "2023-09-18",
-  });
-  const setStudyCafeDetailsState = useSetRecoilState(studyCafeDetails);
-
-  useEffect(() => {
-    if (isSuccess) {
-      setStudyCafeDetailsState(data);
-    }
-  }, [data, isSuccess, setStudyCafeDetailsState]);
-
   return (
     <>
       <CommonInformation />

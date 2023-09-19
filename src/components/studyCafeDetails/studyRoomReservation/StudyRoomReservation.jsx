@@ -1,22 +1,32 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TabContainer from "../TabContainer";
 import Calendar from "components/Search/Calendar";
 import { ReactComponent as CalendarIcon } from "assets/icons/calendar.svg";
 import StudyRoomItem from "./StudyRoomItem";
 import { useStudyRoomReservations } from "hooks/queries/useStudyCafeDetails";
+import { formatDateToString } from "utils/formatDate";
+import { useSetRecoilState } from "recoil";
+import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const StudyRoomReservation = ({ studyCafeId }) => {
-  const { data } = useStudyRoomReservations({
-    studyCafeId,
-    date: "2023-09-18",
-  });
   const [isShowCalendar, setIsShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const handleSelectDate = (date) => {
     setSelectedDate(date);
     setIsShowCalendar(false);
   };
+  const { data, isSuccess } = useStudyRoomReservations({
+    studyCafeId,
+    date: formatDateToString(selectedDate, "-"),
+  });
+  const setStudyCafeDetailsState = useSetRecoilState(studyCafeDetails);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setStudyCafeDetailsState(data);
+    }
+  }, [data, isSuccess, setStudyCafeDetailsState]);
   return (
     <>
       <TabContainer title={"스터디룸 예약"}>
