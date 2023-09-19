@@ -48,9 +48,15 @@ function App() {
                   element={<StudyCafeDetails />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/reviews" element={<Reviews />} />
-                <Route path="/reviews/write" element={<ReviewWrite />} />
-                <Route path="/review/edit/:reviewId" component={ReviewEdit} />
+                <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route
+                  path="/myPage/reviews/:reviewId/write"
+                  element={<ReviewWrite />}
+                />
+                <Route
+                  path="/myPage/reviews/:reviewId/write"
+                  component={ReviewEdit}
+                />
               </Routes>
             </Layout>
           </ThemeProvider>

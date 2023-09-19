@@ -16,95 +16,100 @@ const Reviews = () => {
 
   const IMG_DUMMY_URL =
     "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
+
   // useEffect(() => {
   //   // 작성 가능한 리뷰 목록 가져오기
   //   axios
-  //     .get("http://localhost:8080/studious/mypage/{userd}/reviews")
+  //     .get(
+  //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1'"
+  //     )
   //     .then((response) => {
   //       setWritableReviews(response.data);
   //     });
 
   //   // 작성한 리뷰 목록 가져오기
   //   axios
-  //     .get("http://localhost:8080/studious/mypage/{userd}/reviews")
+  //     .get(
+  //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'"
+  //     )
   //     .then((response) => {
   //       setWrittenReviews(response.data);
   //     });
   // }, []);
 
-  const DUMMY_DATA1 = [
-    {
-      reservationId: 1,
-      cafeId: 1,
-      cafeName: "혜화 열정공장",
-      cafePhoto: null,
-      roomName: "스터디룸 이름",
-      payType: "카카오페이",
-      price: "5,000",
-      date: "2023년 05월 11일",
-      startTime: "19:00",
-      endTime: "21:00",
-      duration: "2시간",
-      validDate: "2023.6.30",
-    },
-    {
-      reservationId: 2,
-      cafeId: 2,
-      cafeName: "스캇",
-      cafePhoto: null,
-      roomName: "스터디룸 이름",
-      payType: "카카오페이",
-      price: "5,000",
-      date: "2023년 05월 11일",
-      startTime: "19:00",
-      endTime: "21:00",
-      duration: "2시간",
-      validDate: "2023.6.30",
-    },
-  ];
+  // const DUMMY_DATA1 = [
+  //   {
+  //     reservationId: 1,
+  //     cafeId: 1,
+  //     cafeName: "혜화 열정공장",
+  //     cafePhoto: null,
+  //     roomName: "스터디룸 이름",
+  //     payType: "카카오페이",
+  //     price: "5,000",
+  //     date: "2023년 05월 11일",
+  //     startTime: "19:00",
+  //     endTime: "21:00",
+  //     duration: "2시간",
+  //     validDate: "2023.6.30",
+  //   },
+  //   {
+  //     reservationId: 2,
+  //     cafeId: 2,
+  //     cafeName: "스캇",
+  //     cafePhoto: null,
+  //     roomName: "스터디룸 이름",
+  //     payType: "카카오페이",
+  //     price: "5,000",
+  //     date: "2023년 05월 11일",
+  //     startTime: "19:00",
+  //     endTime: "21:00",
+  //     duration: "2시간",
+  //     validDate: "2023.6.30",
+  //   },
+  // ];
 
-  const DUMMY_DATA2 = [
-    {
-      reservationId: 1,
-      cafeId: 1,
-      cafeName: "혜화 열정공장",
-      cafePhoto: null,
-      roomName: "스터디룸 이름",
-      payType: "카카오페이",
-      price: "5,000",
-      date: "2023.05.10 (금)",
-      startTime: "19:00",
-      endTime: "21:00",
-      duration: "2시간",
-      writedate: "2023.5.12",
-      cleanliness: 5,
-      deafening: 0,
-      fixtureStatus: 0,
-      reviewPhoto: null,
-      detail:
-        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
-    },
-    {
-      reservationId: 2,
-      cafeId: 2,
-      cafeName: "스캇",
-      cafePhoto: null,
-      roomName: "스터디룸 이름",
-      payType: "카카오페이",
-      price: "5,000",
-      date: "2023.05.10 (금)",
-      startTime: "19:00",
-      endTime: "21:00",
-      duration: "2시간",
-      writedate: "2023.5.12",
-      cleanliness: 5,
-      deafening: 2,
-      fixtureStatus: 0,
-      reviewPhoto: null,
-      detail:
-        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
-    },
-  ];
+  // const DUMMY_DATA2 = [
+  //   {
+  //     reservationId: 1,
+  //     cafeId: 1,
+  //     cafeName: "혜화 열정공장",
+  //     cafePhoto: null,
+  //     roomName: "스터디룸 이름",
+  //     payType: "카카오페이",
+  //     price: "5,000",
+  //     date: "2023.05.10 (금)",
+  //     startTime: "19:00",
+  //     endTime: "21:00",
+  //     duration: "2시간",
+  //     writedate: "2023.5.12",
+  //     cleanliness: 5,
+  //     deafening: 0,
+  //     fixtureStatus: 0,
+  //     reviewPhoto: null,
+  //     detail:
+  //       "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
+  //   },
+  //   {
+  //     reservationId: 2,
+  //     cafeId: 2,
+  //     cafeName: "스캇",
+  //     cafePhoto: null,
+  //     roomName: "스터디룸 이름",
+  //     payType: "카카오페이",
+  //     price: "5,000",
+  //     date: "2023.05.10 (금)",
+  //     startTime: "19:00",
+  //     endTime: "21:00",
+  //     duration: "2시간",
+  //     writedate: "2023.5.12",
+  //     cleanliness: 5,
+  //     deafening: 2,
+  //     fixtureStatus: 0,
+  //     reviewPhoto: null,
+  //     detail:
+  //       "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
+  //   },
+  // ];
 
   const StarRating = ({ value }) => {
     const stars = [];
@@ -117,11 +122,21 @@ const Reviews = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "writable") {
-      setWritableReviews([...DUMMY_DATA1]);
-      setWrittenReviews([]);
+      axios
+        .get(
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1'"
+        )
+        .then((response) => {
+          setWritableReviews(response.data);
+        });
     } else if (tab === "written") {
-      setWritableReviews([]);
-      setWrittenReviews([...DUMMY_DATA2]);
+      axios
+        .get(
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'"
+        )
+        .then((response) => {
+          setWrittenReviews(response.data);
+        });
     }
   };
 
@@ -142,7 +157,7 @@ const Reviews = () => {
   };
 
   useEffect(() => {
-    setWritableReviews([...DUMMY_DATA1]);
+    //setWritableReviews([...DUMMY_DATA1]);
   }, []);
 
   return (
