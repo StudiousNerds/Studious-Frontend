@@ -41,7 +41,7 @@ const StudyRoomItem = ({
       date: formatDateToString(date, "-"),
       startTime,
       endTime,
-      duration: !!endTime ? endTime - startTime : 1,
+      usingTime: !!endTime ? endTime - startTime : 1,
       headCount,
       price,
     });

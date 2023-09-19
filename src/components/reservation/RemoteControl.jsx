@@ -8,7 +8,7 @@ const RemoteControl = ({
   date,
   startTime,
   endTime,
-  duration,
+  usingTime,
   headcount,
   selectedConveniences,
   totalPrice,
@@ -23,7 +23,7 @@ const RemoteControl = ({
           </div>
           <div className="info-row">
             <div className="info-row__label">예약시간</div>
-            <div className="info-row__content">{`${startTime} - ${endTime} (${duration}시간)`}</div>
+            <div className="info-row__content">{`${startTime} - ${endTime} (${usingTime}시간)`}</div>
           </div>
           <div className="info-row">
             <div className="info-row__label">인원수</div>
@@ -40,16 +40,17 @@ const RemoteControl = ({
           <div className="info-row__label">추가 내역</div>
           <div className="info-row__content">
             {selectedConveniences.length ? (
-              selectedConveniences.map(
-                ({ convenienceName, conveniencePrice }) => {
-                  return (
-                    <div className="info-row__content--row">
-                      <span>{convenienceName}</span>
-                      <span>{formatNumberWithCommas(conveniencePrice)}</span>
-                    </div>
-                  );
-                }
-              )
+              selectedConveniences.map(({ convenienceName, price }, index) => {
+                return (
+                  <div
+                    className="info-row__content--row"
+                    key={convenienceName + price + index}
+                  >
+                    <span>{convenienceName}</span>
+                    <span>{formatNumberWithCommas(price)}</span>
+                  </div>
+                );
+              })
             ) : (
               <span>-</span>
             )}
