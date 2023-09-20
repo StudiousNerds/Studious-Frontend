@@ -23,13 +23,17 @@ const NavBarContainer = styled.nav`
   margin: 5rem 0;
   display: flex;
   width: 100%;
-  height: 5rem;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
 `;
 
 const NavBarItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 8rem;
   ${({ theme }) => theme.fonts.heading2Bold}
   color: ${({ isCurrent, theme }) =>
     isCurrent ? theme.colors.mainDark : theme.colors.gray800};
