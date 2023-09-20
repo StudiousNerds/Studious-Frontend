@@ -9,8 +9,8 @@ const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridItem = ({
   item: {
-    studycafeId,
-    studycafeName,
+    id,
+    name,
     photo,
     grade,
     accumRevCnt,
@@ -21,7 +21,7 @@ const StudyCafeGridItem = ({
 }) => {
   const navigate = useNavigate();
   const handleClickItem = () => {
-    navigate(`/studyCafe/${studycafeId}`);
+    navigate(`/studyCafe/${id}`);
   };
   return (
     <ItemLayout>
@@ -30,7 +30,7 @@ const StudyCafeGridItem = ({
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {studycafeName}
+          {name}
           <div className="star">
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
@@ -40,11 +40,14 @@ const StudyCafeGridItem = ({
           </div>
         </ItemDetailsTitle>
         <ItemDetailsMeta>
-          {walkingTime &&
+          {nearestStation &&
+            walkingTime &&
             `${nearestStation.match(/[가-힣]+역/g)} 도보 ${walkingTime}분`}
         </ItemDetailsMeta>
+
         <ItemDetailsHashtags>
-          {hashtags.length > 0 &&
+          {hashtags &&
+            hashtags.length > 0 &&
             hashtags.map((hashtag, hashtagIndex) => (
               <div key={hashtagIndex}>#{hashtag}</div>
             ))}
