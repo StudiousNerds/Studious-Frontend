@@ -54,7 +54,7 @@ function App() {
                 />
                 <Route
                   path="/studyCafe/:studyCafeId/payment"
-                  element={<Reservation />}
+                  element={<Payment />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
