@@ -4,7 +4,7 @@ import NumberController from "components/common/NumberController";
 import TimeController from "components/common/TimeController";
 import useRedirectLogin from "hooks/useRedirectLogin";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { useSetRecoilState } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
 import { formatDateToString } from "utils/formatDate";
@@ -34,12 +34,20 @@ const StudyRoomItem = ({
   const { pathname } = useLocation();
   const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
   const setReservationReqState = useSetRecoilState(reservationReqState);
-  const handleClickReservation = () => {
+  const getEndTimeUsingTime = (startTime, endTime) => {
     let definedEndTime = endTime + 1;
-    if (!endTime) {
+    if (!definedEndTime) {
       definedEndTime = startTime + 1;
     }
-    const duration = definedEndTime - startTime;
+
+    const usingTime = definedEndTime - startTime;
+    return { usingTime, definedEndTime };
+  };
+  const handleClickReservation = () => {
+    const { usingTime, definedEndTime } = getEndTimeUsingTime(
+      startTime,
+      endTime
+    );
     if (definedEndTime - startTime < minUsingTime) {
       alert(`최소 이용 시간은 ${minUsingTime}시간입니다.`);
       return;
@@ -50,9 +58,9 @@ const StudyRoomItem = ({
       date: formatDateToString(date, "-"),
       startTime: `${startTime.toString().padStart(2, "0")}:00`,
       endTime: `${definedEndTime.toString().padStart(2, "0")}:00`,
-      usingTime: duration,
+      usingTime,
       headCount: userCount,
-      price,
+      price: price * userCount * usingTime,
     });
     if (!handleRedirect()) {
       navigate(`/studyCafe/${id}/reservation`);
@@ -68,9 +76,14 @@ const StudyRoomItem = ({
     maxHeadCount
   );
 
+  const totalPrice = useMemo(
+    () => price * userCount * getEndTimeUsingTime(startTime, endTime).usingTime,
+    [userCount, startTime, endTime, price]
+  );
+
   return (
     <ItemContainer>
-      <ItemLeftSection>
+      <ItemLeftSection isSingleImage={photos.length === 1}>
         <img src={photos[0]} alt="스터디룸 이미지" />
         <SmallImagesSlider gap={0.9}>
           {photos.slice(1).map((photo, photoIndex) => {
@@ -122,14 +135,16 @@ const StudyRoomItem = ({
           selectedEndTime={endTime}
           onSelectTimeBlock={onSelectTimeBlock}
         />
-        <ExpectedPriceLayout>
-          <div>
-            <span>예상 결제 금액</span>
-            <span className="highlight">{`${formatNumberWithCommas(
-              15000
-            )}원`}</span>
-          </div>
-        </ExpectedPriceLayout>
+        {(startTime || endTime) && (
+          <ExpectedPriceLayout>
+            <div>
+              <span>예상 결제 금액</span>
+              <span className="highlight">{`${formatNumberWithCommas(
+                totalPrice
+              )}원`}</span>
+            </div>
+          </ExpectedPriceLayout>
+        )}
         <ReservationButton onClick={handleClickReservation}>
           예약하기
         </ReservationButton>
@@ -151,6 +166,8 @@ const ItemContainer = styled.div`
 
 const ItemLeftSection = styled.section`
   width: 50%;
+  display: flex;
+  align-items: ${({ isSingleImage }) => (isSingleImage ? "center" : "stretch")};
 
   > img {
     border-radius: 2.5rem;
@@ -183,6 +200,7 @@ const SmallImagesSlider = styled.div`
 
 const ItemRightSection = styled.section`
   width: 50%;
+  position: relative;
 `;
 
 const StudyRoomMainInfoBox = styled.div`
@@ -256,6 +274,9 @@ const ExpectedPriceLayout = styled.div`
     }
   }
   margin-bottom: 1rem;
+  position: absolute;
+  bottom: 5rem;
+  right: 0;
 `;
 
 const ReservationButton = styled.button`
@@ -268,4 +289,6 @@ const ReservationButton = styled.button`
   background-color: ${({ theme }) => theme.colors.mainDark};
   ${({ theme }) => theme.fonts.body1Bold};
   color: #fff;
+  position: absolute;
+  bottom: 0;
 `;
