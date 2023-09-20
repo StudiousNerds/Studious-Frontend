@@ -15,12 +15,6 @@ const SearchResult = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const initialSearchResult = location.state?.searchResult || [];
 
-  // const searchResult = useSearchResult({
-  //   currentPage,
-  //   sortOption,
-  //   searchBarData: location.state?.searchParameters || [],
-  // });
-
   const [searchResult, setSearchResult] = useState(initialSearchResult);
   const searchBarData = location.state?.searchParameters || [];
   const [minGrade, setMinGrade] = useState("");
@@ -28,22 +22,35 @@ const SearchResult = () => {
   const [hashtags, setHashtags] = useState([]);
   const [conveniences, setConveniences] = useState([]);
 
+  const [axiosKey, setAxiosKey] = useState(0);
+
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, searchResult.length);
   const displayedItems = searchResult.slice(startIndex, endIndex);
 
-  const handleFilterButtonClick = () => {
-    setIsModalOpen(!isModalOpen);
+  const buildApiUrl = () => {
+    let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=1`;
+    if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+    if (searchBarData.startTime)
+      apiUrl += `&startTime=${searchBarData.startTime}`;
+    if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+    if (searchBarData.headCount)
+      apiUrl += `&headCount=${searchBarData.headCount}`;
+    apiUrl += `&sortType=${sortOption}`;
+    apiUrl += `&minGrade=${minGrade}`;
+    apiUrl += `&eventInProgress=${eventInProgress}`;
+    if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+    if (conveniences.length > 0)
+      apiUrl += `&conveniences=${conveniences.join(",")}`;
+
+    return apiUrl;
   };
 
-  const handleSortOptionChange = async (e) => {
-    const newSortOption = e.target.value;
-    setSortOption(newSortOption);
-
+  const axiosData = async () => {
     try {
-      let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=1&sortType=${newSortOption}`;
+      let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${currentPage}&sortType=${sortOption}`;
       if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
       if (searchBarData.startTime)
         apiUrl += `&startTime=${searchBarData.startTime}`;
@@ -66,57 +73,35 @@ const SearchResult = () => {
     }
   };
 
+  const handleFilterButtonClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleSortOptionChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  const handleApplyFilters = async (filterData) => {
+  const handleApplyFilters = (filterData) => {
     const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
-    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=1`;
-
-    const queryParams = [];
-
-    if (searchBarData.keyword) {
-      queryParams.push(`keyword=${searchBarData.keyword}`);
-    }
-    if (searchBarData.date) {
-      queryParams.push(`date=${searchBarData.date}`);
-    }
-    if (searchBarData.startTime) {
-      queryParams.push(`startTime=${searchBarData.startTime}`);
-    }
-    if (searchBarData.endTime) {
-      queryParams.push(`endTime=${searchBarData.endTime}`);
-    }
-    if (searchBarData.headCount) {
-      queryParams.push(`headCount=${searchBarData.headCount}`);
-    }
-    queryParams.push(`sortType=${sortOption}`);
-    queryParams.push(`minGrade=${minGrade}`);
-    queryParams.push(`eventInProgress=${eventInProgress}`);
-
-    if (hashtags.length > 0) {
-      queryParams.push(`hashtags=${hashtags.join(",")}`);
-    }
-    if (conveniences.length > 0) {
-      queryParams.push(`conveniences=${conveniences.join(",")}`);
-    }
-
-    if (queryParams.length > 0) {
-      url += `&${queryParams.join("&")}`;
-    }
-
-    try {
-      const response = await GET(url);
-
-      if (response.status === 200) {
-        const responseData = response.data;
-        setSearchResult(responseData);
-      }
-    } catch (error) {
-      console.error("Error data:", error);
-    }
+    setMinGrade(minGrade);
+    setEventInProgress(eventInProgress);
+    setHashtags(hashtags);
+    setConveniences(conveniences);
+    setAxiosKey((preKey) => preKey + 1);
+    setCurrentPage(1);
   };
+
+  useEffect(() => {
+    axiosData();
+  }, [axiosKey]);
+
+  useEffect(() => {
+    setSearchResult(initialSearchResult);
+  }, [initialSearchResult]);
 
   return (
     <SearchResultContainer>
