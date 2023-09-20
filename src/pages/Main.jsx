@@ -1,10 +1,12 @@
 import SwiperStudyCafeGridItems from "components/SwiperStudyCafeGridItems";
+import Loading from "components/common/Loading";
 import { useMainStudyCafeItemsQuery } from "hooks/queries/useMainStudyCafeItems";
 
 const Main = () => {
-  const { data } = useMainStudyCafeItemsQuery();
+  const { data, isLoading } = useMainStudyCafeItemsQuery();
   return (
     <>
+      {isLoading && <Loading />}
       <SwiperStudyCafeGridItems
         items={data?.recommend}
         title={"오늘의 추천 스터디카페"}
