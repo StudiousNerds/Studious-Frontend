@@ -17,6 +17,7 @@ import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
 import Account from "pages/myPage/Account";
+import RedirectPayment from "pages/RedirectPayment";
 
 function App() {
   const queryClient = new QueryClient();
@@ -57,8 +58,20 @@ function App() {
                   element={<Payment />}
                 />
                 <Route
-                  path="/payment/success"
-                  element={<RedirectPaymentSuccess />}
+                  path="/payments/success"
+                  element={<RedirectPayment status="success" virtual={false} />}
+                />
+                <Route
+                  path="/payments/fail"
+                  element={<RedirectPayment status="fail" virtual={false} />}
+                />
+                <Route
+                  path="/payments/virtual/success"
+                  element={<RedirectPayment status="success" virtual={true} />}
+                />
+                <Route
+                  path="/payments/virtual/fail"
+                  element={<RedirectPayment status="success" virtual={true} />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
