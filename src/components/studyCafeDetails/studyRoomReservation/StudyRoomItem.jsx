@@ -77,10 +77,11 @@ const StudyRoomItem = ({
   );
 
   const totalPrice = useMemo(() => {
+    const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
     if (priceType === "PER_PERSON") {
-      return price * userCount;
+      return price * userCount * usingTime;
     }
-    return price * getEndTimeUsingTime(startTime, endTime).usingTime;
+    return price * usingTime;
   }, [userCount, startTime, endTime, price, priceType]);
 
   return (
