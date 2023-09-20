@@ -3,16 +3,41 @@ import theme from "styles/theme";
 import Divider from "components/common/Divider";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import { Button } from "components/common/Button";
+import { useReservationMutation } from "hooks/queries/useReservation";
+import { getCookie } from "utils/cookie";
 
 const RemoteControl = ({
+  cafeId,
+  roomId,
   date,
   startTime,
   endTime,
-  duration,
-  headcount,
+  usingTime,
+  headCount,
   selectedConveniences,
+  userInfo,
   totalPrice,
 }) => {
+  const postReservationMutation = useReservationMutation({
+    cafeId,
+    roomId,
+    token: getCookie("accessToken"),
+    body: {
+      reserveUser: userInfo,
+      reservationInfo: {
+        date,
+        startTime,
+        endTime,
+        usingTime,
+        headCount,
+        price: totalPrice,
+      },
+      paidConveniences: selectedConveniences,
+    },
+  });
+  const handlePayReservationClick = () => {
+    postReservationMutation.mutate();
+  };
   return (
     <RemoteControlBox>
       <div className="text">
@@ -23,11 +48,11 @@ const RemoteControl = ({
           </div>
           <div className="info-row">
             <div className="info-row__label">예약시간</div>
-            <div className="info-row__content">{`${startTime} - ${endTime} (${duration}시간)`}</div>
+            <div className="info-row__content">{`${startTime} - ${endTime} (${usingTime}시간)`}</div>
           </div>
           <div className="info-row">
             <div className="info-row__label">인원수</div>
-            <div className="info-row__content">{headcount}</div>
+            <div className="info-row__content">{headCount}</div>
           </div>
         </RemoteControlInfoBox>
         <Divider
@@ -40,16 +65,17 @@ const RemoteControl = ({
           <div className="info-row__label">추가 내역</div>
           <div className="info-row__content">
             {selectedConveniences.length ? (
-              selectedConveniences.map(
-                ({ convenienceName, conveniencePrice }) => {
-                  return (
-                    <div className="info-row__content--row">
-                      <span>{convenienceName}</span>
-                      <span>{formatNumberWithCommas(conveniencePrice)}</span>
-                    </div>
-                  );
-                }
-              )
+              selectedConveniences.map(({ convenienceName, price }, index) => {
+                return (
+                  <div
+                    className="info-row__content--row"
+                    key={convenienceName + price + index}
+                  >
+                    <span>{convenienceName}</span>
+                    <span>{formatNumberWithCommas(price)}</span>
+                  </div>
+                );
+              })
             ) : (
               <span>-</span>
             )}
@@ -68,7 +94,7 @@ const RemoteControl = ({
           </span>
         </TotalPrice>
       </div>
-      <div className="button">
+      <div className="button" onClick={handlePayReservationClick}>
         <Button
           text="결제하기"
           width={30}

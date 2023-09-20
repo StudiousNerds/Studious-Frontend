@@ -1,23 +1,26 @@
 import styled from "styled-components";
 import TabContainer from "../TabContainer";
 import { EditableDiv } from "components/common/Editor";
-import { detailsNoticeSelector } from "recoil/selectors/studyCafeDetails";
-import { useRecoilValue } from "recoil";
+import { useNotices } from "hooks/queries/useStudyCafeDetails";
 
-const Notice = () => {
-  const { notice } = useRecoilValue(detailsNoticeSelector);
+const Notice = ({ studyCafeId }) => {
+  const { data } = useNotices({ studyCafeId });
   return (
     <TabContainer title="유의사항">
       <EditableDiv readOnly={true}>
         <NoticeLayout>
-          {notice.map((noticeItem, index) => {
-            return (
-              <NoticeRow key={index}>
-                <div className="no">{`${index + 1}.`}</div>
-                <div>{noticeItem}</div>
-              </NoticeRow>
-            );
-          })}
+          {data && data?.length !== 0 ? (
+            data.map((noticeItem, index) => {
+              return (
+                <NoticeRow key={index}>
+                  <div className="no">{`${index + 1}.`}</div>
+                  <div>{noticeItem}</div>
+                </NoticeRow>
+              );
+            })
+          ) : (
+            <div>유의사항이 없습니다.</div>
+          )}
         </NoticeLayout>
       </EditableDiv>
     </TabContainer>

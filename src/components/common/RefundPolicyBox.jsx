@@ -16,12 +16,13 @@ const RefundPolicyBox = ({ refundPolicy }) => {
       </div>
       <div>
         <RefundPolicyList>
-          {refundPolicy?.length &&
+          {refundPolicy &&
+            refundPolicy?.length !== 0 &&
             refundPolicy.map(({ day, rate }, index) => {
               return (
                 <Fragment key={index}>
                   <div>{day}</div>
-                  <div>{`총 금액의 ${rate} 환불`}</div>
+                  <div>{`총 금액의 ${rate}% 환불`}</div>
                 </Fragment>
               );
             })}

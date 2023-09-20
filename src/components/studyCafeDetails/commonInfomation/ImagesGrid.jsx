@@ -4,16 +4,18 @@ import ImagesGridItem from "./ImagesGridItem";
 const ImagesGrid = ({ photos }) => {
   return (
     <GridContainer>
-      {photos.map((imgUrl, imgIndex) => {
-        return (
-          <GridItem
-            key={imgIndex}
-            isExpand={imgIndex === 0 || (photos.length === 2 && 1)}
-          >
-            <ImagesGridItem imageSrc={imgUrl} />
-          </GridItem>
-        );
-      })}
+      {photos &&
+        photos.length !== 0 &&
+        photos.map((imgUrl, imgIndex) => {
+          return (
+            <GridItem
+              key={imgIndex}
+              isExpand={imgIndex === 0 || (photos.length === 2 && 1)}
+            >
+              <ImagesGridItem imageSrc={imgUrl} />
+            </GridItem>
+          );
+        })}
     </GridContainer>
   );
 };

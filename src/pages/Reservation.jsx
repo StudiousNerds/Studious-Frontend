@@ -10,6 +10,8 @@ import RefundPolicyBox from "components/common/RefundPolicyBox";
 import { Title, TitleSub } from "components/common/Title";
 import { useReservationQuery } from "hooks/queries/useReservation";
 import { getCookie } from "utils/cookie";
+import { useRecoilValue } from "recoil";
+import { reservationReqState } from "recoil/atoms/reservationReqState";
 
 const Reservation = () => {
   const { handleRedirect } = useRedirectLogin(true);
@@ -21,15 +23,15 @@ const Reservation = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const reservationInfo = getCookie("reservationInfo");
+  const reservationInfo = useRecoilValue(reservationReqState);
   const {
     cafeId,
     roomId,
     date,
     startTime,
     endTime,
-    duration,
-    headcount,
+    usingTime,
+    headCount,
     price,
   } = reservationInfo;
   const { data } = useReservationQuery({
@@ -72,12 +74,12 @@ const Reservation = () => {
     }
   };
 
-  const handleCheckPaidConvenience = (e, convenienceName, conveniencePrice) => {
+  const handleCheckPaidConvenience = (e, convenienceName, price) => {
     setSelectedConveniences((prevConveniences) => [
       ...prevConveniences,
       {
         convenienceName,
-        conveniencePrice,
+        price,
       },
     ]);
     if (e.currentTarget.checked) {
@@ -86,18 +88,28 @@ const Reservation = () => {
     }
     setTotalPrice((totalPrice) => totalPrice - price);
   };
+
+  const handleRequestChange = (e) => {
+    setUserInfo((userInfo) => ({
+      ...userInfo,
+      request: e.target.textContent,
+    }));
+  };
   return (
     <>
       <Title>{data?.cafeName}</Title>
 
       <RemoteControlSection>
         <RemoteControl
+          cafeId={cafeId}
+          roomId={roomId}
           date={date}
           startTime={startTime}
           endTime={endTime}
-          duration={duration}
-          headcount={headcount}
+          usingTime={usingTime}
+          headCount={headCount}
           selectedConveniences={selectedConveniences}
+          userInfo={userInfo}
           totalPrice={totalPrice}
         />
       </RemoteControlSection>
@@ -150,12 +162,7 @@ const Reservation = () => {
             <TitleSub>요청사항</TitleSub>
             <EditableDiv
               placeholder="요청하실 내용을 입력해주세요."
-              onChange={(e) =>
-                setUserInfo((userInfo) => ({
-                  ...userInfo,
-                  request: e.target.value,
-                }))
-              }
+              onChange={handleRequestChange}
             />
           </div>
         </TwoColumnContainer>
@@ -172,7 +179,7 @@ const Reservation = () => {
               {data?.paidConveniences.map(
                 ({ convenienceName, price }, index) => {
                   return (
-                    <CheckBoxListItem key={index}>
+                    <CheckBoxListItem key={convenienceName + price + index}>
                       <div className="checkbox">
                         <input
                           type="checkbox"
