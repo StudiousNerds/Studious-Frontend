@@ -43,9 +43,9 @@ const Reservation = () => {
   });
 
   const [totalPrice, setTotalPrice] = useState(price);
-  const [selectedConveniences, setSelectedConveniences] = useState([
-    selectedPaidConvenience ?? null,
-  ]);
+  const [selectedConveniences, setSelectedConveniences] = useState(
+    selectedPaidConvenience
+  );
   const [userInfo, setUserInfo] = useState({
     name: data?.username,
     phoneNumber: data?.userPhoneNumber,
@@ -186,7 +186,7 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>유료 편의 시설</TitleSub>
-          {data?.paidConveniences.length ? (
+          {data?.paidConveniences.length > 0 ? (
             <CheckBoxList>
               {data?.paidConveniences.map(
                 ({ convenienceName, price }, index) => {
@@ -204,8 +204,10 @@ const Reservation = () => {
                             )
                           }
                           defaultChecked={
-                            convenienceName ===
-                            selectedPaidConvenience.convenienceName
+                            selectedPaidConvenience.length > 0
+                              ? convenienceName ===
+                                selectedPaidConvenience[0].convenienceName
+                              : false
                           }
                         />
                         <label htmlFor={convenienceName}>
