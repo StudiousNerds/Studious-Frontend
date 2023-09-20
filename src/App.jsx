@@ -56,6 +56,10 @@ function App() {
                   path="/studyCafe/:studyCafeId/payment"
                   element={<Payment />}
                 />
+                <Route
+                  path="/payment/success"
+                  element={<RedirectPaymentSuccess />}
+                />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
                 <Route path="/myPage/account" element={<Account />} />

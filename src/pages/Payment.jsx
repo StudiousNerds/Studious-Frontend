@@ -1,52 +1,62 @@
+import styled from "styled-components";
 import { useRef, useEffect } from "react";
-import {
-  loadPaymentWidget,
-  PaymentWidgetInstance,
-} from "@tosspayments/payment-widget-sdk";
-import { nanoid } from "nanoid";
+import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
+import { useSearchParams } from "react-router-dom";
+import { Button } from "components/common/Button";
 
 const Payment = () => {
+  const [searchParams] = useSearchParams();
   const paymentWidgetRef = useRef(null);
-  const price = 50_000;
+  const paymentMethodsWidgetRef = useRef(null);
+  const price = 1;
+  const clientKey = process.env.REACT_APP_TOSS_API_CLIENT_KEY;
+  const selector = "#payment-widget";
 
   useEffect(() => {
     (async () => {
-      const paymentWidget = await loadPaymentWidget(
-        process.env.REACT_APP_TOSS_API_CLIENT_KEY,
-        nanoid()
+      const paymentWidget = await loadPaymentWidget(clientKey, ANONYMOUS);
+
+      const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
+        selector,
+        { value: price }
       );
 
-      paymentWidget.renderPaymentMethods("#payment-widget", price);
+      paymentWidget.renderAgreement("#agreement");
 
       paymentWidgetRef.current = paymentWidget;
+      paymentMethodsWidgetRef.current = paymentMethodsWidget;
     })();
   }, []);
+
   return (
-    <div>
-      <h1>결제하기</h1>
+    <PaymentContainer>
       <div id="payment-widget" />
-      <button
+      <div id="agreement" />
+      <Button
+        width="30rem"
+        height="5rem"
+        text="결제하기"
+        style={{ position: "absolute", right: 0 }}
         onClick={async () => {
           const paymentWidget = paymentWidgetRef.current;
-
           try {
             await paymentWidget?.requestPayment({
-              orderId: nanoid(),
-              orderName: "토스 티셔츠 외 2건",
-              customerName: "김토스",
-              customerEmail: "customer123@gmail.com",
-              successUrl: `${window.location.origin}/success`, //TODO - url 변경
-              failUrl: `${window.location.origin}/fail`, //TODO - url 변경
+              orderId: searchParams.get("orderId"),
+              orderName: searchParams.get("orderName"),
+              successUrl: `${window.location.origin}/payment/success`,
+              failUrl: `${window.location.origin}/payment/fail`,
             });
-          } catch (err) {
-            console.log(err);
+          } catch (error) {
+            console.error(error);
           }
         }}
-      >
-        결제하기
-      </button>
-    </div>
+      />
+    </PaymentContainer>
   );
 };
 
 export default Payment;
+
+const PaymentContainer = styled.div`
+  position: relative;
+`;
