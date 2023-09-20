@@ -97,7 +97,6 @@ const Reservation = () => {
     ]);
     setTotalPrice((totalPrice) => totalPrice + price);
   };
-  console.log(selectedConveniences);
 
   const handleRequestChange = (e) => {
     setUserInfo((userInfo) => ({
