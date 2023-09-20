@@ -7,7 +7,7 @@ const ReviewItem = ({ grade, email, detail, photos, date }) => {
       <div className="profile-img" />
       <ReviewMainInfo>
         <StarsGradeRow>
-          <StarsGrade size={18} grade={grade} />
+          <StarsGrade size={1.8} grade={grade} />
           <span>{grade}</span>
         </StarsGradeRow>
         <div className="row">

@@ -1,27 +1,29 @@
 import styled from "styled-components";
-import { detailsStudyRoomsSelector } from "recoil/selectors/studyCafeDetails";
 import { useRecoilValue } from "recoil";
 import ReviewItem from "./ReviewItem";
+import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const ReviewsList = ({ reviewData }) => {
-  const studyRoomsData = useRecoilValue(detailsStudyRoomsSelector);
+  const { roomsData } = useRecoilValue(studyCafeDetails);
   return (
     <>
       <ListHeader>
         <select defaultValue="all">
           <option value="all">모든 스터디룸</option>
-          {studyRoomsData.map(({ id, name }) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
+          {roomsData &&
+            roomsData.length !== 0 &&
+            roomsData.map(({ id, roomName }) => (
+              <option key={id} value={id}>
+                {roomName}
+              </option>
+            ))}
         </select>
         <OrderBySelector>
           {["최신순", "평점 높은 순", "평점 낮은 순"].map(
             (option, optionIndex) => (
               <button
                 key={optionIndex}
-                className={optionIndex === 0 && "firstOption"}
+                className={optionIndex === 0 ? "firstOption" : ""}
               >
                 {option}
               </button>
@@ -29,21 +31,25 @@ const ReviewsList = ({ reviewData }) => {
           )}
         </OrderBySelector>
       </ListHeader>
-      {reviewData.map(({ grade, email, detail, photos, date }, reviewIndex) => (
-        <ReviewItemContainer
-          key={reviewIndex}
-          hasBorder={reviewIndex !== reviewData.length - 1}
-        >
-          <ReviewItem
-            key={reviewIndex}
-            grade={grade}
-            email={email}
-            detail={detail}
-            photos={photos}
-            date={date}
-          />
-        </ReviewItemContainer>
-      ))}
+      {reviewData &&
+        reviewData.length !== 0 &&
+        reviewData.map(
+          ({ grade, email, detail, photos, date }, reviewIndex) => (
+            <ReviewItemContainer
+              key={reviewIndex}
+              hasBorder={reviewIndex !== reviewData.length - 1}
+            >
+              <ReviewItem
+                key={reviewIndex}
+                grade={grade}
+                email={email}
+                detail={detail}
+                photos={photos}
+                date={date}
+              />
+            </ReviewItemContainer>
+          )
+        )}
     </>
   );
 };

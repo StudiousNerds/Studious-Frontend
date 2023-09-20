@@ -12,15 +12,14 @@ const Day = ({ date, isSelected, isToday, isPastDate, onClick }) => {
       isToday={isToday}
       onClick={onClick}
       isPastDate={isPastDate}
-      isSaturday={isSaturday}
-      isSunday={isSunday}>
+    >
       {date.getDate()}
       {isToday && <TodayText>오늘</TodayText>}
     </DayContainer>
   );
 };
 
-const Calendar = ({ onSelectDate }) => {
+const Calendar = ({ dafaultDate, onSelectDate }) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -47,7 +46,7 @@ const Calendar = ({ onSelectDate }) => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dafaultDate);
 
   const isPastDate = (date) => {
     const today = new Date();
@@ -99,7 +98,7 @@ const Calendar = ({ onSelectDate }) => {
             date={date}
             onClick={() => handleDateClick(date)}
             isSelected={
-              selectedDate !== null && date.getTime() === selectedDate.getTime()
+              selectedDate && date.getTime() === selectedDate.getTime()
             }
             isToday={isToday(date)}
             isPastDate={isPastDate(date)}

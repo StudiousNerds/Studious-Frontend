@@ -71,7 +71,6 @@ const StarsBackgroundLayout = styled.div`
   div.star {
     flex-shrink: 0;
     width: ${({ size }) => `${size}rem`};
-    height: ${({ size }) => `${size}rem`};
   }
 `;
 
