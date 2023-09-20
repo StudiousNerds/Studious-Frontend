@@ -3,6 +3,7 @@ import {
   useVirtualPaymentSuccessQuery,
 } from "hooks/queries/usePayment";
 import { useSearchParams } from "react-router-dom";
+import { getCookie } from "utils/cookie";
 
 const RedirectPayment = ({ status, virtual }) => {
   const [searchParams] = useSearchParams();
@@ -13,9 +14,19 @@ const RedirectPayment = ({ status, virtual }) => {
   const paymentType = searchParams.get("paymentType");
   if (status === "success") {
     if (virtual) {
-      virtualPaymentQuery({ amount, orderId, paymentType });
+      virtualPaymentQuery({
+        amount,
+        orderId,
+        paymentType,
+        token: getCookie("accessToken"),
+      });
     } else {
-      paymentQuery({ amount, orderId, paymentType });
+      paymentQuery({
+        amount,
+        orderId,
+        paymentType,
+        token: getCookie("accessToken"),
+      });
     }
   }
 
