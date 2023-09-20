@@ -33,6 +33,7 @@ const Reservation = () => {
     usingTime,
     headCount,
     price,
+    selectedPaidConvenience,
   } = reservationInfo;
   const { data } = useReservationQuery({
     cafeId,
@@ -41,7 +42,9 @@ const Reservation = () => {
   });
 
   const [totalPrice, setTotalPrice] = useState(price);
-  const [selectedConveniences, setSelectedConveniences] = useState([]);
+  const [selectedConveniences, setSelectedConveniences] = useState([
+    selectedPaidConvenience ?? null,
+  ]);
   const [userInfo, setUserInfo] = useState({
     name: data?.username,
     phoneNumber: data?.userPhoneNumber,
@@ -75,6 +78,16 @@ const Reservation = () => {
   };
 
   const handleCheckPaidConvenience = (e, convenienceName, price) => {
+    if (!e.target.checked) {
+      setTotalPrice((totalPrice) => totalPrice - price);
+      const newSelectedConveniences = selectedConveniences.filter(
+        (convenience) => {
+          return convenience.convenienceName !== e.target.id;
+        }
+      );
+      setSelectedConveniences(newSelectedConveniences);
+      return;
+    }
     setSelectedConveniences((prevConveniences) => [
       ...prevConveniences,
       {
@@ -82,12 +95,9 @@ const Reservation = () => {
         price,
       },
     ]);
-    if (e.currentTarget.checked) {
-      setTotalPrice((totalPrice) => totalPrice + price);
-      return;
-    }
-    setTotalPrice((totalPrice) => totalPrice - price);
+    setTotalPrice((totalPrice) => totalPrice + price);
   };
+  console.log(selectedConveniences);
 
   const handleRequestChange = (e) => {
     setUserInfo((userInfo) => ({
@@ -95,6 +105,7 @@ const Reservation = () => {
       request: e.target.textContent,
     }));
   };
+
   return (
     <>
       <Title>{data?.cafeName}</Title>
@@ -190,6 +201,10 @@ const Reservation = () => {
                               convenienceName,
                               price
                             )
+                          }
+                          defaultChecked={
+                            convenienceName ===
+                            selectedPaidConvenience.convenienceName
                           }
                         />
                         <label htmlFor={convenienceName}>
