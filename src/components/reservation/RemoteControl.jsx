@@ -26,8 +26,8 @@ const RemoteControl = ({
       reserveUser: userInfo,
       reservationInfo: {
         date,
-        startTime: `${startTime}:00`,
-        endTime: `${endTime}:00`,
+        startTime,
+        endTime,
         usingTime,
         headCount,
         price: totalPrice,
