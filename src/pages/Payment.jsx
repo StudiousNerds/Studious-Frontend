@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "components/common/Button";
@@ -43,8 +43,16 @@ const Payment = () => {
             await paymentWidget?.requestPayment({
               orderId: searchParams.get("orderId"),
               orderName: searchParams.get("orderName"),
-              successUrl: `${window.location.origin}/payment/success`,
-              failUrl: `${window.location.origin}/payment/fail`,
+              successUrl:
+                paymentMethodsWidgetRef.current.getSelectedPaymentMethod()
+                  .method === "가상계좌"
+                  ? `${window.location.origin}/payments/virtual/success`
+                  : `${window.location.origin}/payments/success`,
+              failUrl:
+                paymentMethodsWidgetRef.current.getSelectedPaymentMethod()
+                  .method === "가상계좌"
+                  ? `${window.location.origin}/payments/virtual/fail`
+                  : `${window.location.origin}/payments/fail`,
             });
           } catch (error) {
             console.error(error);
