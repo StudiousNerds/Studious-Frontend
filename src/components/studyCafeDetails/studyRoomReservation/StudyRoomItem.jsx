@@ -60,7 +60,7 @@ const StudyRoomItem = ({
       endTime: `${definedEndTime.toString().padStart(2, "0")}:00`,
       usingTime,
       headCount: userCount,
-      price: price * userCount * usingTime,
+      price: totalPrice,
     });
     if (!handleRedirect()) {
       navigate(`/studyCafe/${id}/reservation`);
@@ -76,10 +76,13 @@ const StudyRoomItem = ({
     maxHeadCount
   );
 
-  const totalPrice = useMemo(
-    () => price * userCount * getEndTimeUsingTime(startTime, endTime).usingTime,
-    [userCount, startTime, endTime, price]
-  );
+  const totalPrice = useMemo(() => {
+    const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
+    if (priceType === "PER_PERSON") {
+      return price * userCount * usingTime;
+    }
+    return price * usingTime;
+  }, [userCount, startTime, endTime, price, priceType]);
 
   return (
     <ItemContainer>
