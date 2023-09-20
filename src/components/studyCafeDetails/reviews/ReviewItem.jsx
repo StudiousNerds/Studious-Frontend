@@ -1,17 +1,17 @@
 import StarsGrade from "components/common/StarsGrade";
 import styled from "styled-components";
 
-const ReviewItem = ({ grade, email, detail, photos, date }) => {
+const ReviewItem = ({ totalGrade, nickname, detail, photos, date }) => {
   return (
     <ReviewItemLayout>
       <div className="profile-img" />
       <ReviewMainInfo>
         <StarsGradeRow>
-          <StarsGrade size={1.8} grade={grade} />
-          <span>{grade}</span>
+          <StarsGrade size={1.8} grade={totalGrade} />
+          <span>{totalGrade}</span>
         </StarsGradeRow>
         <div className="row">
-          <span>{email}</span>
+          <span>{nickname}</span>
           <span>{date}</span>
         </div>
         <div className="row">
@@ -35,9 +35,12 @@ const ReviewItem = ({ grade, email, detail, photos, date }) => {
 export default ReviewItem;
 
 const ReviewItemLayout = styled.div`
+  margin-top: 3rem;
   display: grid;
   grid-template-columns: 1fr 10fr 1.5fr;
-  padding: 4rem 3rem;
+  align-items: center;
+  /* padding: 4rem 3rem; */
+  min-height: 10rem;
   .profile-img {
     width: 5rem;
     height: 5rem;
@@ -67,27 +70,26 @@ const ReviewMainInfo = styled.div`
 
 const StarsGradeRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 9fr;
-  ${({ theme }) => theme.fonts.heading2Bold};
+  grid-template-columns: 1fr 5.5fr;
+  ${({ theme }) => theme.fonts.body1}
   margin-bottom: 0.5rem;
 `;
 
 const PhotosBox = styled.div`
   .photo-container {
-    position: relative;
     height: 100%;
+    position: relative;
     img {
       width: 10rem;
       height: 10rem;
       border-radius: 0.5rem;
-      position: absolute;
       right: 0;
       bottom: 0;
     }
     .photo-count {
       position: absolute;
-      bottom: 0.5rem;
-      right: 0.5rem;
+      right: 4rem;
+      bottom: 1rem;
       z-index: 3;
       display: flex;
       justify-content: center;
