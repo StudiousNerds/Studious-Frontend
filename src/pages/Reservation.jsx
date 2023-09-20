@@ -12,6 +12,7 @@ import { useReservationQuery } from "hooks/queries/useReservation";
 import { getCookie } from "utils/cookie";
 import { useRecoilValue } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
+import Loading from "components/common/Loading";
 
 const Reservation = () => {
   const { handleRedirect } = useRedirectLogin(true);
@@ -35,7 +36,7 @@ const Reservation = () => {
     price,
     selectedPaidConvenience,
   } = reservationInfo;
-  const { data } = useReservationQuery({
+  const { data, isLoading } = useReservationQuery({
     cafeId,
     roomId,
     token: getCookie("accessToken"),
@@ -105,6 +106,7 @@ const Reservation = () => {
     }));
   };
 
+  if (isLoading) return <Loading />;
   return (
     <>
       <Title>{data?.cafeName}</Title>
