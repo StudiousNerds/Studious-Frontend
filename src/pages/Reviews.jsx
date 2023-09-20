@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import ReviewCafeList from "components/ReviewCafeList";
 import DateFilter from "components/DateFilter";
+import { GET } from "apis/api";
 
 const Reviews = () => {
   const [writableReviews, setWritableReviews] = useState([]);
@@ -111,6 +112,30 @@ const Reviews = () => {
   //   },
   // ];
 
+  function getCookie(name) {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        return cookie.substring(name.length + 1);
+      }
+    }
+    return null;
+  }
+
+  const accessToken = getCookie("accessToken");
+  if (accessToken) {
+    console.log("AccessToken:", accessToken);
+  } else {
+    console.log("AccessToken이 존재하지 않습니다.");
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
   const StarRating = ({ value }) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
@@ -122,20 +147,28 @@ const Reviews = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "writable") {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1'"
-        )
+      GET(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
+        accessToken,
+        config
+      )
         .then((response) => {
           setWritableReviews(response.data);
+        })
+        .catch((error) => {
+          console.log("writable error", error);
         });
     } else if (tab === "written") {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'"
-        )
+      GET(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'",
+        accessToken,
+        config
+      )
         .then((response) => {
           setWrittenReviews(response.data);
+        })
+        .catch((error) => {
+          console.log("written error", error);
         });
     }
   };
