@@ -88,6 +88,13 @@ const Reservation = () => {
     }
     setTotalPrice((totalPrice) => totalPrice - price);
   };
+
+  const handleRequestChange = (e) => {
+    setUserInfo((userInfo) => ({
+      ...userInfo,
+      request: e.target.textContent,
+    }));
+  };
   return (
     <>
       <Title>{data?.cafeName}</Title>
@@ -155,12 +162,7 @@ const Reservation = () => {
             <TitleSub>요청사항</TitleSub>
             <EditableDiv
               placeholder="요청하실 내용을 입력해주세요."
-              onChange={(e) =>
-                setUserInfo((userInfo) => ({
-                  ...userInfo,
-                  request: e.target.value,
-                }))
-              }
+              onChange={handleRequestChange}
             />
           </div>
         </TwoColumnContainer>
