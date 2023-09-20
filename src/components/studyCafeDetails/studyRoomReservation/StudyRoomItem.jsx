@@ -157,7 +157,7 @@ export default StudyRoomItem;
 
 const ItemContainer = styled.div`
   width: 100%;
-  height: 56rem;
+  min-height: 42rem;
   background-color: ${({ theme }) => theme.colors.mostLight};
   padding: 4rem;
   display: flex;
