@@ -72,7 +72,7 @@ const SearchResult = () => {
 
   const handleApplyFilters = async (filterData) => {
     const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
-    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search`;
+    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=1`;
 
     const queryParams = [];
 
@@ -103,7 +103,7 @@ const SearchResult = () => {
     }
 
     if (queryParams.length > 0) {
-      url += `?${queryParams.join("&")}`;
+      url += `&${queryParams.join("&")}`;
     }
 
     try {
