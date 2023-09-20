@@ -4,11 +4,12 @@ import NumberController from "components/common/NumberController";
 import TimeController from "components/common/TimeController";
 import useRedirectLogin from "hooks/useRedirectLogin";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
 import { formatDateToString } from "utils/formatDate";
 import useTimeController from "hooks/useTimeController";
+import { useNumberController } from "hooks/useNumberController";
 
 const StudyRoomItem = ({
   roomData: {
@@ -30,31 +31,42 @@ const StudyRoomItem = ({
   const { handleRedirect } = useRedirectLogin();
   const [startTime, setStartTime] = useState(undefined);
   const [endTime, setEndTime] = useState(undefined);
-  const [headCount, setHeadCount] = useState(minHeadCount);
   const { pathname } = useLocation();
   const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
   const setReservationReqState = useSetRecoilState(reservationReqState);
   const handleClickReservation = () => {
+    let definedEndTime = endTime + 1;
+    if (!endTime) {
+      definedEndTime = startTime + 1;
+    }
+    const duration = definedEndTime - startTime;
+    if (definedEndTime - startTime < minUsingTime) {
+      alert(`최소 이용 시간은 ${minUsingTime}시간입니다.`);
+      return;
+    }
     setReservationReqState({
       cafeId,
       roomId: id,
       date: formatDateToString(date, "-"),
-      startTime,
-      endTime,
-      usingTime: !!endTime ? endTime - startTime : 1,
-      headCount,
+      startTime: `${startTime.toString().padStart(2, "0")}:00`,
+      endTime: `${definedEndTime.toString().padStart(2, "0")}:00`,
+      usingTime: duration,
+      headCount: userCount,
       price,
     });
     if (!handleRedirect()) {
       navigate(`/studyCafe/${id}/reservation`);
     }
   };
-
   const { onSelectTimeBlock } = useTimeController({
     startTime,
     setStartTime,
     setEndTime,
   });
+  const { userCount, handleUserCount } = useNumberController(
+    minHeadCount,
+    maxHeadCount
+  );
 
   return (
     <ItemContainer>
@@ -98,7 +110,10 @@ const StudyRoomItem = ({
           </PaidConveniencesBox>
           <UserNumberCounterBox>
             <span>인원수</span>
-            <NumberController minCount={minHeadCount} maxCount={maxHeadCount} />
+            <NumberController
+              userCount={userCount}
+              handleUserCount={handleUserCount}
+            />
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
         <TimeController
