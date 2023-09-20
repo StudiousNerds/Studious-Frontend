@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CommonInformation from "components/studyCafeDetails/commonInfomation/CommonInformation";
 import NavBar from "components/studyCafeDetails/NavBar";
 import StudyRoomReservation from "components/studyCafeDetails/studyRoomReservation/StudyRoomReservation";
@@ -7,9 +7,6 @@ import Reviews from "components/studyCafeDetails/reviews/Reviews";
 import RefundPolicy from "components/studyCafeDetails/refundPolicy/RefundPolicy";
 import Notice from "components/studyCafeDetails/notice/Notice";
 import { useLocation } from "react-router-dom";
-import { useStudyRoomReservations } from "hooks/queries/useStudyCafeDetails";
-import { useSetRecoilState } from "recoil";
-import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const StudyCafeDetails = () => {
   const { pathname } = useLocation();
