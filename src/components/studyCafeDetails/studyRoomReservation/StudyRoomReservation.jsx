@@ -8,6 +8,7 @@ import { useStudyRoomReservations } from "hooks/queries/useStudyCafeDetails";
 import { formatDateToString } from "utils/formatDate";
 import { useSetRecoilState } from "recoil";
 import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
+import Loading from "components/common/Loading";
 
 const StudyRoomReservation = ({ studyCafeId }) => {
   const [isShowCalendar, setIsShowCalendar] = useState(false);
@@ -16,7 +17,7 @@ const StudyRoomReservation = ({ studyCafeId }) => {
     setSelectedDate(date);
     setIsShowCalendar(false);
   };
-  const { data, isSuccess } = useStudyRoomReservations({
+  const { data, isSuccess, isLoading } = useStudyRoomReservations({
     studyCafeId,
     date: formatDateToString(selectedDate, "-"),
   });
@@ -29,34 +30,38 @@ const StudyRoomReservation = ({ studyCafeId }) => {
   }, [data, isSuccess, setStudyCafeDetailsState]);
   return (
     <>
-      <TabContainer title={"스터디룸 예약"}>
-        <StudyRoomTabLayout>
-          <SelectDateBox>
-            <span>예약일자</span>
-            <div onClick={() => setIsShowCalendar(!isShowCalendar)}>
-              <span>{selectedDate.toLocaleDateString()}</span>
-              <CalendarIcon />
-            </div>
-          </SelectDateBox>
-          {isShowCalendar && (
-            <Calendar
-              defaultDate={selectedDate}
-              onSelectDate={handleSelectDate}
-            />
-          )}
-          {data &&
-            data?.rooms.length !== 0 &&
-            data.rooms.map((roomData, roomIndex) => {
-              return (
-                <StudyRoomItem
-                  roomData={roomData}
-                  key={roomIndex}
-                  date={selectedDate}
-                />
-              );
-            })}
-        </StudyRoomTabLayout>
-      </TabContainer>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <TabContainer title={"스터디룸 예약"}>
+          <StudyRoomTabLayout>
+            <SelectDateBox>
+              <span>예약일자</span>
+              <div onClick={() => setIsShowCalendar(!isShowCalendar)}>
+                <span>{selectedDate.toLocaleDateString()}</span>
+                <CalendarIcon />
+              </div>
+            </SelectDateBox>
+            {isShowCalendar && (
+              <Calendar
+                defaultDate={selectedDate}
+                onSelectDate={handleSelectDate}
+              />
+            )}
+            {data &&
+              data?.rooms.length !== 0 &&
+              data.rooms.map((roomData, roomIndex) => {
+                return (
+                  <StudyRoomItem
+                    roomData={roomData}
+                    key={roomIndex}
+                    date={selectedDate}
+                  />
+                );
+              })}
+          </StudyRoomTabLayout>
+        </TabContainer>
+      )}
     </>
   );
 };

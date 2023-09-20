@@ -67,7 +67,7 @@ const RemoteControl = ({
         <div className="info-row">
           <div className="info-row__label">추가 내역</div>
           <div className="info-row__content">
-            {selectedConveniences.length ? (
+            {selectedConveniences.length > 0 ? (
               selectedConveniences.map(({ convenienceName, price }, index) => {
                 return (
                   <div
