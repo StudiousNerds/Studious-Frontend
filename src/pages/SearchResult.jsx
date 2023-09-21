@@ -7,6 +7,7 @@ import StudyCafeGridItem from "components/StudyCafeGridItem";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
+import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 
 const SearchResult = () => {
   const location = useLocation();
@@ -127,7 +128,7 @@ const SearchResult = () => {
 
       <GridContainer>
         {displayedItems.map((item) => (
-          <StudyCafeGridItem key={item.Id} item={item} />
+          <StudyCafeGridSearch key={item.Id} item={item} />
         ))}
       </GridContainer>
 
