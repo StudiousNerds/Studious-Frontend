@@ -95,7 +95,6 @@ const MyPageReservation = () => {
         }
       )
       .then((response) => {
-        console.log("here", response.data);
         setReservations(response.data.reservationRecordInfoWithStatusList);
       });
 
