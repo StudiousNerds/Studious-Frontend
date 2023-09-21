@@ -13,10 +13,11 @@ import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
 import SearchResult from "pages/SearchResult";
-import Reservation from "pages/Reservation";
+import Reservation from "pages/MyPageReservation";
 import Reviews from "pages/Reviews";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
+import MyPageReservation from "pages/MyPageReservation";
 
 function App() {
   const queryClient = new QueryClient();
@@ -56,7 +57,10 @@ function App() {
                 <Route path="/reviews" element={<Reviews />} />
                 <Route path="/reviews/write" element={<ReviewWrite />} />
                 <Route path="/review/edit/:reviewId" component={ReviewEdit} />
-                <Route path="/myPage/reservation" element={<Reservation />} />
+                <Route
+                  path="/myPage/reservation"
+                  element={<MyPageReservation />}
+                />
               </Routes>
             </AppLayout>
           </ThemeProvider>

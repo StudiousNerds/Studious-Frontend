@@ -9,7 +9,7 @@ import ReservationModal from "components/ReservationModal";
 import axios from "axios";
 import { GET } from "apis/api";
 
-const Reservation = () => {
+const MyPageReservation = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [reservations, setReservations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -219,7 +219,7 @@ const Reservation = () => {
   );
 };
 
-export default Reservation;
+export default MyPageReservation;
 
 const TabContainer = styled.div`
   display: flex;
