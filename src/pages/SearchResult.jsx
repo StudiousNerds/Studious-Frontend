@@ -126,8 +126,8 @@ const SearchResult = () => {
       )}
 
       <GridContainer>
-        {displayedItems.map((item) => (
-          <StudyCafeGridItem key={item.Id} item={item} />
+        {displayedItems.map((item, index) => (
+          <StudyCafeGridItem key={item.Id} item={item} index={index} />
         ))}
       </GridContainer>
 
