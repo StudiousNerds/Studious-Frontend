@@ -11,6 +11,7 @@ import HashTagSelector from "components/review/HashTagSelector";
 import PhotoUploader from "components/review/PhotoUploader";
 import ContentInput from "components/review/ContentInput";
 import axios from "axios";
+import { POST } from "apis/api";
 
 const ReviewWrite = () => {
   const navigate = useNavigate();
@@ -56,8 +57,7 @@ const ReviewWrite = () => {
     };
 
     try {
-      const response = await axios.post("/api/reviews", reviewData);
-      console.log("Review submitted successfully:", response.data);
+      const response = await POST("/api/reviews", reviewData);
     } catch (error) {
       console.error("Error submitting review:", error);
     }
