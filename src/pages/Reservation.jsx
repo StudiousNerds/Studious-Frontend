@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import ReviewCafeList from "components/ReviewCafeList";
 import ReservationSearchCafe from "components/ReservationSearchCafe";
 import ReservationList from "components/ReservationList";
 import FilterModal from "components/Search/FilterModal";
 import DateFilter from "components/DateFilter";
+import ReservationModal from "components/ReservationModal";
 import { GET } from "apis/api";
 
 const Reservation = () => {
@@ -15,6 +15,30 @@ const Reservation = () => {
   const [totalPageCount, setTotalPageCount] = useState(0);
   const [clickedItem, setClickedItem] = useState(null);
 
+  function getCookie(name) {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        return cookie.substring(name.length + 1);
+      }
+    }
+    return null;
+  }
+
+  const accessToken = getCookie("accessToken");
+  if (accessToken) {
+    console.log("AccessToken:", accessToken);
+  } else {
+    console.log("AccessToken이 존재하지 않습니다.");
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
   const closeModal = () => {
     setClickedItem(null);
   };
@@ -23,59 +47,59 @@ const Reservation = () => {
     setActiveTab(tab);
   };
 
-  // const DUMMY_DATA1 = [
-  //   {
-  //     reservationRecordInfoList: [
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-19",
-  //         reservationStartTime: "09:00:00",
-  //         reservationEndTime: "11:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-10",
-  //         reservationStartTime: "10:00:00",
-  //         reservationEndTime: "12:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-09",
-  //         reservationStartTime: "09:00:00",
-  //         reservationEndTime: "11:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //     ],
-  //     pageNumber: 1,
-  //     totalPage: 1,
-  //   },
-  // ];
+  const DUMMY_DATA1 = [
+    {
+      reservationRecordInfoList: [
+        {
+          studycafeName: "Nerds",
+          studycafePhoto:
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-19",
+          reservationStartTime: "09:00:00",
+          reservationEndTime: "11:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
+        },
+        {
+          studycafeName: "Nerds",
+          studycafePhoto:
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-10",
+          reservationStartTime: "10:00:00",
+          reservationEndTime: "12:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
+        },
+        {
+          studycafeName: "Nerds",
+          studycafePhoto:
+            "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+          roomName: "roomA",
+          reservationId: null,
+          reservationDate: "2023-12-09",
+          reservationStartTime: "09:00:00",
+          reservationEndTime: "11:00:00",
+          usingTime: 2,
+          price: 16000,
+          paymentMethod: "간편결제",
+          reservationStatus: "BEFORE_USING",
+          cancelReason: null,
+        },
+      ],
+      pageNumber: 1,
+      totalPage: 1,
+    },
+  ];
 
   const handleDateFilter = (dateFilterData) => {
     console.log("Selected Date Filter:", dateFilterData);
@@ -85,25 +109,31 @@ const Reservation = () => {
     setClickedItem(item);
   };
   const handle = () => {
-    try {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations/4",
-          {
-            page: 1,
-            startDate: "2023-07-30",
-            endDate: "2023-07-31",
-            studycafeName: "Nerds",
-            tab: "ALL",
-          }
-        )
-        .then((response) => {
-          console.log(response.data);
-          setReservations(response.data.reservationInfo);
-        });
-    } catch (error) {
-      console.error("Error fetching reservations:", error);
-    }
+    // try {
+    //   axios
+    //     .get(
+    //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
+    //       {
+    //         params: {
+    //           page: 1,
+    //           startDate: "2023-07-30",
+    //           endDate: "2023-07-31",
+    //           studycafeName: "Nerds",
+    //           tab: "ALL",
+    //         },
+    //         headers: {
+    //           Authorization: `Bearer ${accessToken}`,
+    //         },
+    //       }
+    //     )
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       setReservations(response.data.reservationInfo);
+    //     });
+    // } catch (error) {
+    //   console.error("Error fetching reservations:", error);
+    // }
+    setReservations(DUMMY_DATA1);
   };
 
   useEffect(() => {
@@ -133,7 +163,7 @@ const Reservation = () => {
     const axiosReservations = async () => {
       try {
         const response = await GET(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations/4",
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
           {
             page: currentPage,
             startDate: "",
@@ -230,14 +260,7 @@ const Reservation = () => {
         </>
       ))}
       {clickedItem && (
-        <ModalBackground>
-          <ReservationModal>
-            <ModalContent>
-              {/* 모달 컨텐츠에 clickedItem 데이터 렌더링 */}
-              <CloseButton onClick={closeModal}>X</CloseButton>
-            </ModalContent>
-          </ReservationModal>
-        </ModalBackground>
+        <ReservationModal item={clickedItem} onClose={closeModal} />
       )}
     </Wrapper>
   );
@@ -290,13 +313,6 @@ const FilterAndSearchContainer = styled.div`
   align-items: center;
 `;
 
-const ReservationModal = styled.div`
-  width: 75rem;
-  height: 60rem;
-  background-color: #fff;
-  border-radius: 2.5rem;
-`;
-
 const ModalContent = styled.div`
   background-color: #fff;
   border-radius: 2.5rem;
@@ -329,4 +345,10 @@ const Divider = styled.div`
   margin-left: 6rem;
   height: 0.1rem;
   background-color: #c6c6c6;
+`;
+
+const ModalText = styled.p`
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  margin-left: 10rem;
 `;
