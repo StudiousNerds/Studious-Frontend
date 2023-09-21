@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import FilterModal from "components/FilterModal";
 import StudyCafeGridItem from "components/StudyCafeGridItem";
+import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
@@ -126,8 +127,8 @@ const SearchResult = () => {
       )}
 
       <GridContainer>
-        {displayedItems.map((item, index) => (
-          <StudyCafeGridItem key={item.Id} item={item} index={index} />
+        {displayedItems.map((item) => (
+          <StudyCafeGridSearch key={item.Id} item={item} />
         ))}
       </GridContainer>
 
