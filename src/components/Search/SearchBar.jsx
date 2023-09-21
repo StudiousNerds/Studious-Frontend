@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ReactComponent as SearchIcon } from "assets/icons/search100.svg";
 import { ReactComponent as MinusIcon } from "assets/icons/minus.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeControler from "./TimeControler";
 import Calendar from "./Calendar";
+import { GET } from "apis/api";
 
 const SearchBar = ({ onClose }) => {
   const navigate = useNavigate();
@@ -103,23 +102,49 @@ const SearchBar = ({ onClose }) => {
     headCount,
     sortType,
     minGrade,
-    maxGrade,
     eventInProgress,
     hashtags,
     conveniences,
   }) => {
-    //실행할 때, 주석처리
-    const url = `http://localhost:8080/studious/search?page=1&keyword=${keyword}&date=${date}&startTime=${startTime}&endTime=${endTime}&headCount=${headCount}&sort=${sortType}`;
+    const params = {
+      page,
+      keyword,
+      date,
+      startTime,
+      endTime,
+      headCount,
+      sortType,
+      minGrade,
+      eventInProgress,
+      hashtags: Array.isArray(hashtags) ? hashtags.join(",") : [],
+      conveniences: Array.isArray(conveniences) ? conveniences.join(",") : [],
+    };
 
     try {
-      const response = await axios.get(url);
+      const response = await GET("/studious/search", null, params);
 
       if (response.status === 200) {
         const responseData = response.data;
         setSearchResult(responseData);
 
-        // 검색 결과를 SearchResult 페이지로 전달하고 페이지 이동
-        navigate("/search-result", { state: { searchResult: responseData } });
+        navigate("/search-result", {
+          state: {
+            searchResult: responseData,
+            searchParameters: {
+              page,
+              keyword,
+              date,
+              startTime,
+              endTime,
+              headCount,
+              sortType,
+              minGrade,
+              eventInProgress,
+              hashtags,
+              conveniences,
+            },
+          },
+        });
       }
     } catch (error) {
       console.error("Error data:", error);
@@ -222,22 +247,28 @@ const SearchBar = ({ onClose }) => {
           }
         : {};
 
-    await handleSearch({
+    const searchParameters = {
+      page: 1,
       keyword: searchQuery,
       date: selectedDateFormatted,
       startTime: selectedTimeRange.startTime || "",
       endTime: selectedTimeRange.endTime || "",
       headCount: count,
       sortType: "GRADE_DESC",
-    });
-    onClose();
-  };
+      minGrade: 0,
+      eventInProgress: "",
+      hashtags: "",
+      conveniences: "",
+    };
 
-  useEffect(() => {
-    if (searchResult.length > 0) {
-      navigate("/search-result", { state: { searchResult: searchResult } });
+    try {
+      await handleSearch(searchParameters);
+
+      onClose();
+    } catch (error) {
+      console.error("Error during search:", error);
     }
-  }, [searchResult]);
+  };
 
   return (
     <SearchBarWrapper>

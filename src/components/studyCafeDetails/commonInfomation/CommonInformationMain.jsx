@@ -2,16 +2,16 @@ import styled from "styled-components";
 import ImagesGrid from "./ImagesGrid";
 import HashTagsRow from "./HashTagsRow";
 import { useRecoilValue } from "recoil";
-import { detailsCommonSelector } from "recoil/selectors/studyCafeDetails";
+import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
 
 const CommonInformationMain = () => {
-  const commonDetails = useRecoilValue(detailsCommonSelector);
+  const commonDetails = useRecoilValue(studyCafeDetails);
   const {
     cafeName,
-    cafePhotos,
+    photos,
     accumResCnt,
     nearestStation,
-    distance,
+    walkingTime,
     hashtags,
   } = commonDetails;
   return (
@@ -19,16 +19,18 @@ const CommonInformationMain = () => {
       <InformationHeader>
         <div className="left-side-header">
           <div className="left-side-header__title">{cafeName}</div>
-          <div className="left-side-header__distance">
-            {`${nearestStation} 도보 ${distance}분`}
-          </div>
+          {nearestStation && walkingTime && (
+            <div className="left-side-header__distance">
+              {`${nearestStation} 도보 ${walkingTime}분`}
+            </div>
+          )}
         </div>
         <div className="right-side-header__accumResCnt">
           예약 {accumResCnt}회
         </div>
       </InformationHeader>
-      <ImagesGrid photos={cafePhotos} />
-      <HashTagsRow hashtags={hashtags} />
+      {photos?.length !== 0 && <ImagesGrid photos={photos} />}
+      {hashtags?.length !== 0 && <HashTagsRow hashtags={hashtags} />}
     </>
   );
 };

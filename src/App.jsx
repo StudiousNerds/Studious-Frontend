@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import theme from "styles/theme";
 import GlobalStyle from "styles/globalStyle";
 import { ThemeProvider } from "styled-components";
-import Layout from "components/Layout";
+import AppLayout from "components/layouts/AppLayout";
 import { RecoilRoot } from "recoil";
 import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -12,12 +12,11 @@ import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
-import Search from "pages/Search";
 import SearchResult from "pages/SearchResult";
+import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
-import Reservation from "pages/Reservation";
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,7 +26,7 @@ function App() {
         <RecoilRoot>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
-            <Layout>
+            <AppLayout>
               <Header />
               <Routes>
                 <Route path="/" element={<Main />} />
@@ -49,14 +48,17 @@ function App() {
                   path="/studyCafe/:studyCafeId"
                   element={<StudyCafeDetails />}
                 />
-                <Route path="/search" element={<Search />} />
+                <Route
+                  path="/studyCafe/:studyCafeId/reservation"
+                  element={<Reservation />}
+                />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/reviews" element={<Reviews />} />
                 <Route path="/reviews/write" element={<ReviewWrite />} />
                 <Route path="/review/edit/:reviewId" component={ReviewEdit} />
                 <Route path="/myPage/reservation" element={<Reservation />} />
               </Routes>
-            </Layout>
+            </AppLayout>
           </ThemeProvider>
         </RecoilRoot>
       </CookiesProvider>

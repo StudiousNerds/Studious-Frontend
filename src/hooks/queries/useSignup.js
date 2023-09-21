@@ -4,7 +4,6 @@ import { setToken } from "utils/setToken";
 import { useResetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { oAuthSignUpState } from "recoil/atoms/oAuthSignUpState";
-import { alertFailMessage } from "utils/failCallback";
 
 export const useSignUpMutation = (signUpInfo) => {
   const resetOAuthSignUp = useResetRecoilState(oAuthSignUpState);
@@ -16,7 +15,7 @@ export const useSignUpMutation = (signUpInfo) => {
       navigate("/");
     },
     onError: (error) => {
-      if (error.response.status === 400) alertFailMessage(error.response.data);
+      if (error.response.status === 400) alert(error.response.data.message);
       else {
         resetOAuthSignUp();
         navigate("/login");
