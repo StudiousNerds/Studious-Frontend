@@ -5,6 +5,7 @@ const IMG_DUMMY_URL =
   "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
 const ReservationList = ({ reservations, onItemClick }) => {
+  console.log("list", reservations);
   const renderButtons = (reservationStatus) => {
     switch (reservationStatus) {
       case "BEFORE_USING":
@@ -26,39 +27,41 @@ const ReservationList = ({ reservations, onItemClick }) => {
   return (
     <ListContainer>
       <ClickableItem onClick={() => onItemClick(reservations)}>
-        {reservations.map((data, index) => (
-          <div key={index}>
-            {data.reservationRecordInfoList.map((reservation, index) => (
-              <ReservationItem key={index}>
-                <CafeInfo>
-                  <CafeImage
-                    src={reservation.studycafePhoto ?? IMG_DUMMY_URL}
-                    alt="스터디카페 이미지"
-                  />
-                  <CafeDetails>
-                    <NameStatusWrapper>
-                      <ReservationInfoCafe>
-                        {reservation.studycafeName}
-                      </ReservationInfoCafe>
-                      <Status>{reservation.reservationStatus}</Status>
-                    </NameStatusWrapper>
-                    <ReservationInfo>{reservation.roomName}</ReservationInfo>
-                    <ReservationInfo>
-                      결제금액 ₩{reservation.price}원(
-                      {reservation.paymentMethod})
-                    </ReservationInfo>
-                    <ReservationInfo>
-                      {reservation.reservationDate}{" "}
-                      {reservation.reservationStartTime} -{" "}
-                      {reservation.reservationEndTime} ({reservation.usingTime})
-                    </ReservationInfo>
-                    {renderButtons(reservation.reservationStatus)}
-                  </CafeDetails>
-                </CafeInfo>
-              </ReservationItem>
-            ))}
-          </div>
-        ))}
+        {Array.isArray(reservations) &&
+          reservations.map((data, index) => (
+            <div key={index}>
+              {data.reservationRecordInfoList.map((reservation, index) => (
+                <ReservationItem key={index}>
+                  <CafeInfo>
+                    <CafeImage
+                      src={reservation.studycafePhoto ?? IMG_DUMMY_URL}
+                      alt="스터디카페 이미지"
+                    />
+                    <CafeDetails>
+                      <NameStatusWrapper>
+                        <ReservationInfoCafe>
+                          {reservation.studycafeName}
+                        </ReservationInfoCafe>
+                        <Status>{reservation.reservationStatus}</Status>
+                      </NameStatusWrapper>
+                      <ReservationInfo>{reservation.roomName}</ReservationInfo>
+                      <ReservationInfo>
+                        결제금액 ₩{reservation.price}원(
+                        {reservation.paymentMethod})
+                      </ReservationInfo>
+                      <ReservationInfo>
+                        {reservation.reservationDate}{" "}
+                        {reservation.reservationStartTime} -{" "}
+                        {reservation.reservationEndTime} (
+                        {reservation.usingTime})
+                      </ReservationInfo>
+                      {renderButtons(reservation.reservationStatus)}
+                    </CafeDetails>
+                  </CafeInfo>
+                </ReservationItem>
+              ))}
+            </div>
+          ))}
       </ClickableItem>
     </ListContainer>
   );

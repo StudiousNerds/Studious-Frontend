@@ -17,28 +17,19 @@ const Reservation = () => {
   const [clickedItem, setClickedItem] = useState(null);
 
   function getCookie(name) {
-    const cookies = document.cookie.split(";");
+    const cookies = document.cookie.split("; ");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
       if (cookie.startsWith(name + "=")) {
-        return cookie.substring(name.length + 1);
+        const tokenWithBearer = cookie.substring(name.length + 1);
+        const token = tokenWithBearer.replace("Bearer%20", "");
+        return token;
       }
     }
     return null;
   }
 
   const accessToken = getCookie("accessToken");
-  if (accessToken) {
-    console.log("AccessToken:", accessToken);
-  } else {
-    console.log("AccessToken이 존재하지 않습니다.");
-  }
-
-  // const config = {
-  //   headers: {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  // };
 
   const closeModal = () => {
     setClickedItem(null);
@@ -48,62 +39,8 @@ const Reservation = () => {
     setActiveTab(tab);
   };
 
-  // const DUMMY_DATA1 = [
-  //   {
-  //     reservationRecordInfoList: [
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-19",
-  //         reservationStartTime: "09:00:00",
-  //         reservationEndTime: "11:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-10",
-  //         reservationStartTime: "10:00:00",
-  //         reservationEndTime: "12:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //       {
-  //         studycafeName: "Nerds",
-  //         studycafePhoto:
-  //           "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-  //         roomName: "roomA",
-  //         reservationId: null,
-  //         reservationDate: "2023-12-09",
-  //         reservationStartTime: "09:00:00",
-  //         reservationEndTime: "11:00:00",
-  //         usingTime: 2,
-  //         price: 16000,
-  //         paymentMethod: "간편결제",
-  //         reservationStatus: "BEFORE_USING",
-  //         cancelReason: null,
-  //       },
-  //     ],
-  //     pageNumber: 1,
-  //     totalPage: 1,
-  //   },
-  // ];
-
   const handleDateFilter = (dateFilterData) => {
-    console.log("Selected Date Filter:", dateFilterData);
+    //console.log("Selected Date Filter:", dateFilterData);
   };
 
   const handleItemClick = (item) => {
@@ -115,73 +52,91 @@ const Reservation = () => {
         .get(
           "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
           {
-            params: {
-              page: 1,
-              startDate: "2023-07-30",
-              endDate: "2023-07-31",
-              studycafeName: "Nerds",
-              tab: "ALL",
-            },
+            // params: {
+            //   page: 1,
+            //   startDate: "2023-07-30",
+            //   endDate: "2023-07-31",
+            //   studycafeName: "Nerds",
+            //   tab: "ALL",
+            // },
             headers: {
-              Authorization: ` ${accessToken}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
             },
           }
         )
         .then((response) => {
+          console.log(response.data.reservationRecordInfoWithStatusList);
           console.log(response.data);
-          setReservations(response.data.reservationInfo);
+          setReservations(response.data.reservationRecordInfoWithStatusList);
         });
     } catch (error) {
       console.error("Error fetching reservations:", error);
     }
   };
 
-  // useEffect(() => {
-  //   // // 확정된 예약 데이터 가져오기
-  //   // axios
-  //   //   .get("http://{ORIGIN}/studious/mypage/reservation-settings")
-  //   //   .then((response) => {
-  //   //     setConfirmedReservations(response.data);
-  //   //   });
+  useEffect(() => {
+    // 확정된 예약 데이터 가져오기
+    axios
+      .get(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
+        {
+          // params: {
+          //   page: 1,
+          //   startDate: "2023-07-30",
+          //   endDate: "2023-07-31",
+          //   studycafeName: "Nerds",
+          //   tab: "ALL",
+          // },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("here", response.data.reservationRecordInfoWithStatusList);
+        setReservations(response.data.reservationRecordInfoWithStatusList);
+      });
 
-  //   // // 이용 중인 예약 데이터 가져오기
-  //   // axios.get("").then((response) => {
-  //   //   setOngoingReservations(response.data);
-  //   // });
+    // 이용 중인 예약 데이터 가져오기
+    // axios.get("").then((response) => {
+    //   setOngoingReservations(response.data);
+    // });
 
-  //   // // 지난 예약 데이터 가져오기
-  //   // axios.get("").then((response) => {
-  //   //   setPastReservations(response.data);
-  //   // });
+    // // 지난 예약 데이터 가져오기
+    // axios.get("").then((response) => {
+    //   setPastReservations(response.data);
+    // });
 
-  //   // // 취소된 예약 데이터 가져오기
-  //   // axios.get("").then((response) => {
-  //   //   setCancelledReservations(response.data);
-  //   // });
+    // // 취소된 예약 데이터 가져오기
+    // axios.get("").then((response) => {
+    //   setCancelledReservations(response.data);
+    // });
 
-  //   // 클릭한 탭에 따라 서버로 요청 보내기
-  //   const axiosReservations = async () => {
-  //     try {
-  //       const response = await GET(
-  //         "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-  //         {
-  //           page: currentPage,
-  //           startDate: "",
-  //           endDate: "",
-  //           studycafeName: "",
-  //           tab: activeTab,
-  //         }
-  //       );
+    // 클릭한 탭에 따라 서버로 요청 보내기
+    // const axiosReservations = async () => {
+    //   try {
+    //     const response = await GET(
+    //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
+    //       {
+    //         // page: currentPage,
+    //         // startDate: "",
+    //         // endDate: "",
+    //         // studycafeName: "",
+    //         // tab: activeTab,
+    //       }
+    //     );
 
-  //       setReservations(response.data.reservationInfo);
-  //       setTotalPageCount(response.data.totalPageCount);
-  //     } catch (error) {
-  //       console.error("Error fetching reservations:", error);
-  //     }
-  //   };
+    //     setReservations(response.data.reservationInfo);
+    //     setTotalPageCount(response.data.totalPageCount);
+    //   } catch (error) {
+    //     console.error("Error fetching reservations:", error);
+    //   }
+    // };
 
-  //   axiosReservations();
-  // }, [activeTab, currentPage]);
+    // axiosReservations();
+  }, [activeTab, currentPage]);
 
   return (
     <Wrapper>
@@ -247,13 +202,11 @@ const Reservation = () => {
           </MarginReservationSearchCafe>
         )}
       </FilterAndSearchContainer>
-
-      {/* 각 탭에 따른 데이터 렌더링 */}
       {reservations.map((item, index) => (
         <>
           <ReservationList
             key={index}
-            reservations={reservations}
+            reservations={item}
             onItemClick={handleItemClick}
           />
           <Divider />
