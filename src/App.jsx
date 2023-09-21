@@ -86,6 +86,10 @@ function App() {
                   path="/myPage/reviews/:reviewId/write"
                   component={ReviewEdit}
                 />
+                <Route
+                  path="/myPage/reservation"
+                  element={<MyPageReservation />}
+                />
               </Routes>
             </AppLayout>
           </ThemeProvider>

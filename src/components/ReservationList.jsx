@@ -5,7 +5,6 @@ const IMG_DUMMY_URL =
   "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
 const ReservationList = ({ reservations, onItemClick }) => {
-  console.log("list", reservations);
   const renderButtons = (reservationStatus) => {
     switch (reservationStatus) {
       case "BEFORE_USING":
@@ -24,57 +23,60 @@ const ReservationList = ({ reservations, onItemClick }) => {
     }
   };
 
+  const renderStatusText = (reservationStatus) => {
+    switch (reservationStatus) {
+      case "BEFORE_USING":
+        return "이용 전";
+      case "using":
+        return "이용 중";
+      case "after_using":
+        return "이용 후";
+      default:
+        return "";
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("ko-KR", options);
+  };
+
   return (
     <ListContainer>
       <ClickableItem onClick={() => onItemClick(reservations)}>
-        {Array.isArray(reservations) &&
-          reservations.map((data, index) => (
-            <div key={index}>
-              {data.reservationRecordInfoList.map((reservation, index) => (
-                <ReservationItem key={index}>
-                  <CafeInfo>
-                    <CafeImage
-                      src={reservation.studycafePhoto ?? IMG_DUMMY_URL}
-                      alt="스터디카페 이미지"
-                    />
-                    <CafeDetails>
-                      <NameStatusWrapper>
-                        <ReservationInfoCafe>
-                          {reservation.studycafeName}
-                        </ReservationInfoCafe>
-                        <Status>{reservation.reservationStatus}</Status>
-                      </NameStatusWrapper>
-                      <ReservationInfo>{reservation.roomName}</ReservationInfo>
-                      <ReservationInfo>
-                        결제금액 ₩{reservation.price}원(
-                        {reservation.paymentMethod})
-                      </ReservationInfo>
-                      <ReservationInfo>
-                        {reservation.reservationDate}{" "}
-                        {reservation.reservationStartTime} -{" "}
-                        {reservation.reservationEndTime} (
-                        {reservation.usingTime})
-                      </ReservationInfo>
-                      {renderButtons(reservation.reservationStatus)}
-                    </CafeDetails>
-                  </CafeInfo>
-                </ReservationItem>
-              ))}
-            </div>
-          ))}
+        <ReservationItem>
+          <CafeInfo>
+            <CafeImage
+              src={reservations.studycafePhoto ?? IMG_DUMMY_URL}
+              alt="스터디카페 이미지"
+            />
+            <CafeDetails>
+              <NameStatusWrapper>
+                <ReservationInfoCafe>
+                  {reservations.studycafeName}
+                </ReservationInfoCafe>
+                <Status>
+                  {renderStatusText(reservations.reservationStatus)}
+                </Status>
+              </NameStatusWrapper>
+              <ReservationInfo>{reservations.roomName}</ReservationInfo>
+              <ReservationInfo>
+                결제금액 ₩{reservations.price}원(
+                {reservations.paymentMethod})
+              </ReservationInfo>
+              <ReservationInfo>
+                {formatDate(reservations.reservationDate)}{" "}
+                {reservations.reservationStartTime} -{" "}
+                {reservations.reservationEndTime} ({reservations.usingTime}시간)
+              </ReservationInfo>
+              {renderButtons(reservations.reservationStatus)}
+            </CafeDetails>
+          </CafeInfo>
+        </ReservationItem>
       </ClickableItem>
     </ListContainer>
   );
 };
-
-// const ReservationItem = ({ reservation }) => {
-//   return (
-//     <ReservationItemContainer>
-//       <div>{reservation.page}</div>
-//       <div>{reservation.totalPageCount}</div>
-//     </ReservationItemContainer>
-//   );
-// };
 
 const ListContainer = styled.div`
   display: flex;
@@ -107,19 +109,19 @@ const CafeDetails = styled.div`
 const ReservationInfoCafe = styled.div`
   ${({ theme }) => theme.fonts.body1Bold};
   color: ${({ theme }) => theme.colors.gray900};
-  margin-bottom: 1rem;
+  margin-top: 2rem;
 `;
 
 const ReservationInfo = styled.div`
   ${({ theme }) => theme.fonts.body2};
   color: ${({ theme }) => theme.colors.gray800};
-  margin-bottom: 0.4rem;
+  margin-top: 0.8rem;
 `;
 
 const Status = styled.span`
   ${({ theme }) => theme.fonts.body1Bold};
   color: ${({ theme }) => theme.colors.black};
-  margin-left: 40rem;
+  margin-left: 50rem;
   width: 10rem;
   padding: 1rem;
 `;
@@ -129,6 +131,7 @@ const NameStatusWrapper = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  margin-left: 7rem;
   display: flex;
 `;
 
