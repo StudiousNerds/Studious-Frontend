@@ -34,7 +34,7 @@ const StudyRoomItem = ({
   const { pathname } = useLocation();
   const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
   const setReservationReqState = useSetRecoilState(reservationReqState);
-  const [selectedPaidConvenience, setSelectedPaidConvenience] = useState({});
+  const [selectedPaidConvenience, setSelectedPaidConvenience] = useState([]);
   const getEndTimeUsingTime = (startTime, endTime) => {
     let definedEndTime = endTime + 1;
     if (!definedEndTime) {
@@ -80,7 +80,8 @@ const StudyRoomItem = ({
 
   const totalPrice = useMemo(() => {
     const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
-    const selectedPaidConveniencePrice = selectedPaidConvenience.price ?? 0;
+    const selectedPaidConveniencePrice =
+      selectedPaidConvenience.length > 0 ? selectedPaidConvenience[0].price : 0;
     if (priceType === "PER_PERSON") {
       return price * userCount * usingTime + selectedPaidConveniencePrice;
     }
@@ -95,7 +96,7 @@ const StudyRoomItem = ({
   ]);
 
   const handleSelectPaidConvenience = (e) => {
-    setSelectedPaidConvenience(JSON.parse(e.target.value));
+    setSelectedPaidConvenience([JSON.parse(e.target.value)]);
   };
   return (
     <ItemContainer>

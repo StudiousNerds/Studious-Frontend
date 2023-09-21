@@ -12,6 +12,7 @@ import { useReservationQuery } from "hooks/queries/useReservation";
 import { getCookie } from "utils/cookie";
 import { useRecoilValue } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
+import Loading from "components/common/Loading";
 
 const Reservation = () => {
   const { handleRedirect } = useRedirectLogin(true);
@@ -35,16 +36,16 @@ const Reservation = () => {
     price,
     selectedPaidConvenience,
   } = reservationInfo;
-  const { data } = useReservationQuery({
+  const { data, isLoading } = useReservationQuery({
     cafeId,
     roomId,
     token: getCookie("accessToken"),
   });
 
   const [totalPrice, setTotalPrice] = useState(price);
-  const [selectedConveniences, setSelectedConveniences] = useState([
-    selectedPaidConvenience ?? null,
-  ]);
+  const [selectedConveniences, setSelectedConveniences] = useState(
+    selectedPaidConvenience
+  );
   const [userInfo, setUserInfo] = useState({
     name: data?.username,
     phoneNumber: data?.userPhoneNumber,
@@ -97,7 +98,6 @@ const Reservation = () => {
     ]);
     setTotalPrice((totalPrice) => totalPrice + price);
   };
-  console.log(selectedConveniences);
 
   const handleRequestChange = (e) => {
     setUserInfo((userInfo) => ({
@@ -106,6 +106,7 @@ const Reservation = () => {
     }));
   };
 
+  if (isLoading) return <Loading />;
   return (
     <>
       <Title>{data?.cafeName}</Title>
@@ -185,7 +186,7 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>유료 편의 시설</TitleSub>
-          {data?.paidConveniences.length ? (
+          {data?.paidConveniences.length > 0 ? (
             <CheckBoxList>
               {data?.paidConveniences.map(
                 ({ convenienceName, price }, index) => {
@@ -203,8 +204,10 @@ const Reservation = () => {
                             )
                           }
                           defaultChecked={
-                            convenienceName ===
-                            selectedPaidConvenience.convenienceName
+                            selectedPaidConvenience.length > 0
+                              ? convenienceName ===
+                                selectedPaidConvenience[0].convenienceName
+                              : false
                           }
                         />
                         <label htmlFor={convenienceName}>

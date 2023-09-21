@@ -44,7 +44,7 @@ const TimeController = ({
           {hours.map((hour, index) => (
             <TimeItem
               key={index + scrollPosition}
-              disabled={hour.disabled}
+              disabled={hour === null}
               selected={
                 (selectedEndTime === undefined &&
                   selectedStartTime === index) ||
@@ -57,7 +57,7 @@ const TimeController = ({
               }
             >
               <TimeTextWrapper>
-                <TimeText>{hour}</TimeText>
+                {hour && <TimeText>{`${hour}시`}</TimeText>}
               </TimeTextWrapper>
             </TimeItem>
           ))}
@@ -90,10 +90,10 @@ const TimeListWrapper = styled.div`
 const TimeList = styled.ul`
   list-style: none;
   display: flex;
-  width: 70rem;
-  height: 4.2rem;
+  min-width: 100rem;
+  height: 5rem;
   padding-top: 1rem;
-  transform: translateX(${(props) => -props.scrollPosition * 3.8}rem);
+  transform: translateX(${(props) => -props.scrollPosition * 3.7}rem);
   transition: transform 0.2s ease-in-out;
 `;
 
@@ -104,8 +104,14 @@ const TimeItem = styled.li`
   border: none;
   margin: 0.1rem;
   padding-bottom: 3rem;
-  background-color: ${({ selected, theme }) =>
-    selected ? theme.colors.mainDark : "rgba(0, 39, 176, 0.3)"};
+  background-color: ${({ selected, theme, disabled }) => {
+    if (selected) {
+      return theme.colors.mainDark;
+    } else if (disabled) {
+      return theme.colors.gray300;
+    }
+    return theme.colors.main30;
+  }};
 `;
 
 const TimeTextWrapper = styled.div`

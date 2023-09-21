@@ -28,41 +28,37 @@ const StudyRoomReservation = ({ studyCafeId }) => {
       setStudyCafeDetailsState(data);
     }
   }, [data, isSuccess, setStudyCafeDetailsState]);
+
+  if (isLoading) return <Loading />;
   return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <TabContainer title={"스터디룸 예약"}>
-          <StudyRoomTabLayout>
-            <SelectDateBox>
-              <span>예약일자</span>
-              <div onClick={() => setIsShowCalendar(!isShowCalendar)}>
-                <span>{selectedDate.toLocaleDateString()}</span>
-                <CalendarIcon />
-              </div>
-            </SelectDateBox>
-            {isShowCalendar && (
-              <Calendar
-                defaultDate={selectedDate}
-                onSelectDate={handleSelectDate}
+    <TabContainer title={"스터디룸 예약"}>
+      <StudyRoomTabLayout>
+        <SelectDateBox>
+          <span>예약일자</span>
+          <div onClick={() => setIsShowCalendar(!isShowCalendar)}>
+            <span>{selectedDate.toLocaleDateString()}</span>
+            <CalendarIcon />
+          </div>
+        </SelectDateBox>
+        {isShowCalendar && (
+          <Calendar
+            defaultDate={selectedDate}
+            onSelectDate={handleSelectDate}
+          />
+        )}
+        {data &&
+          data?.rooms.length !== 0 &&
+          data.rooms.map((roomData, roomIndex) => {
+            return (
+              <StudyRoomItem
+                roomData={roomData}
+                key={roomIndex}
+                date={selectedDate}
               />
-            )}
-            {data &&
-              data?.rooms.length !== 0 &&
-              data.rooms.map((roomData, roomIndex) => {
-                return (
-                  <StudyRoomItem
-                    roomData={roomData}
-                    key={roomIndex}
-                    date={selectedDate}
-                  />
-                );
-              })}
-          </StudyRoomTabLayout>
-        </TabContainer>
-      )}
-    </>
+            );
+          })}
+      </StudyRoomTabLayout>
+    </TabContainer>
   );
 };
 

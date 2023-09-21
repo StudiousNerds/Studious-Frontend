@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import theme from "styles/theme";
 import Divider from "components/common/Divider";
+import Loading from "components/common/Loading";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import { Button } from "components/common/Button";
 import { useReservationMutation } from "hooks/queries/useReservation";
@@ -38,6 +39,8 @@ const RemoteControl = ({
   const handlePayReservationClick = () => {
     postReservationMutation.mutate();
   };
+
+  if (postReservationMutation.isLoading) return <Loading />;
   return (
     <RemoteControlBox>
       <div className="text">
@@ -64,7 +67,7 @@ const RemoteControl = ({
         <div className="info-row">
           <div className="info-row__label">추가 내역</div>
           <div className="info-row__content">
-            {selectedConveniences.length > 0 ? (
+            {selectedConveniences.length > 0 && selectedConveniences[0] ? (
               selectedConveniences.map(({ convenienceName, price }, index) => {
                 return (
                   <div
