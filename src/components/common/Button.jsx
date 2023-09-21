@@ -15,13 +15,16 @@ export const Button = ({
   height,
   colorTheme = "dark",
   onClick,
-  ...props
+  style,
 }) => {
   return (
-    <ButtonContainer width={width} height={height} colorTheme={colorTheme}>
-      <button style={{ ...props.style }} onClick={onClick}>
-        {text ? text : ""}
-      </button>
+    <ButtonContainer
+      width={width}
+      height={height}
+      colorTheme={colorTheme}
+      style={style}
+    >
+      <button onClick={onClick}>{text ? text : ""}</button>
     </ButtonContainer>
   );
 };

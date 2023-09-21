@@ -12,11 +12,12 @@ import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
+import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
-import ReviewWrite from "pages/ReviewWrite";
-import ReviewEdit from "pages/ReviewEdit";
+import Account from "pages/myPage/Account";
+import RedirectPayment from "pages/RedirectPayment";
 
 function App() {
   const queryClient = new QueryClient();
@@ -51,6 +52,26 @@ function App() {
                 <Route
                   path="/studyCafe/:studyCafeId/reservation"
                   element={<Reservation />}
+                />
+                <Route
+                  path="/studyCafe/:studyCafeId/payment"
+                  element={<Payment />}
+                />
+                <Route
+                  path="/payments/success"
+                  element={<RedirectPayment status="success" virtual={false} />}
+                />
+                <Route
+                  path="/payments/fail"
+                  element={<RedirectPayment status="fail" virtual={false} />}
+                />
+                <Route
+                  path="/payments/virtual/success"
+                  element={<RedirectPayment status="success" virtual={true} />}
+                />
+                <Route
+                  path="/payments/virtual/fail"
+                  element={<RedirectPayment status="success" virtual={true} />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/reviews" element={<Reviews />} />

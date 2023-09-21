@@ -1,44 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-
-const conveniencesData = [
-  { id: "PARKING", label: "주차" },
-  { id: "PRINT", label: "프린트" },
-  { id: "ELEVATOR", label: "엘리베이터" },
-  { id: "PURIFIER", label: "정수기" },
-  { id: "BLANKET", label: "담요" },
-  { id: "BEVERAGE", label: "음료" },
-  { id: "TABLET_PC", label: "태블릿 PC" },
-  { id: "READING_DESK", label: "독서대" },
-  { id: "WIFI", label: "와이파이" },
-  { id: "NO_KIES_ZONE", label: "노키즈존" },
-  { id: "HDMI", label: "HDMI" },
-  { id: "MONITOR", label: "모니터" },
-  { id: "PEN", label: "보드마카" },
-  { id: "BOARD", label: "화이트보드" },
-  { id: "BEAM", label: "빔 프로젝터" },
-  { id: "POWER_SOCKET", label: "콘센트" },
-  { id: "POINTER", label: "레이저 포인터" },
-  { id: "NOTEBOOK", label: "노트북" },
-  { id: "AIR_CONDITIONER", label: "에어컨" },
-  { id: "NO_FOOD", label: "음식물 반입 금지" },
-  { id: "CHARGER", label: "충전기" },
-];
-
-const hashtagsData = [
-  { id: "KIND", label: "친절해요" },
-  { id: "CLEAN", label: "깨끗해요" },
-  { id: "PLEASANT", label: "쾌적해요" },
-  { id: "INTERVIEW", label: "면접용" },
-  { id: "STATION_AREA", label: "역세권" },
-  { id: "LATEST", label: "최신식" },
-  { id: "ACCESS", label: "접근성" },
-  { id: "SAME_AS_DESCRIPTION", label: "설명과 동일" },
-  { id: "QUITE", label: "조용해요" },
-  { id: "COST_EFFECTIVE", label: "갓성비" },
-  { id: "FOCUS", label: "집중 잘돼요" },
-  { id: "PRIVATE", label: "프라이빗" },
-];
+import { conveniencesData } from "./constants/ConvenienceData";
+import { hashtagsData } from "./constants/HashtagsData";
 
 const minGradeData = [
   { id: "0", label: "0점" },
@@ -263,6 +226,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
+  margin-bottom: 2rem;
 `;
 
 const ApplyButton = styled.button`

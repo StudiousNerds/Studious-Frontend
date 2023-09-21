@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import ReviewCafeList from "components/ReviewCafeList";
-import ReservationSearchCafe from "components/ReservationSearchCafe";
-import ReservationList from "components/ReservationList";
-import FilterModal from "components/Search/FilterModal";
-import DateFilter from "components/DateFilter";
-import ReservationModal from "components/ReservationModal";
-import axios from "axios";
-import { GET } from "apis/api";
+import RemoteControl from "components/reservation/RemoteControl";
+import { useState, useEffect } from "react";
+import useRedirectLogin from "hooks/useRedirectLogin";
+import Divider from "components/common/Divider";
+import { EditableDiv } from "components/common/Editor";
+import theme from "styles/theme";
+import { formatNumberWithCommas } from "utils/formatNumber";
+import RefundPolicyBox from "components/common/RefundPolicyBox";
+import { Title, TitleSub } from "components/common/Title";
+import { useReservationQuery } from "hooks/queries/useReservation";
+import { getCookie } from "utils/cookie";
+import { useRecoilValue } from "recoil";
+import { reservationReqState } from "recoil/atoms/reservationReqState";
+import Loading from "components/common/Loading";
 
 const Reservation = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -29,11 +35,33 @@ const Reservation = () => {
     return null;
   }
 
-  const accessToken = getCookie("accessToken");
+  const reservationInfo = useRecoilValue(reservationReqState);
+  const {
+    cafeId,
+    roomId,
+    date,
+    startTime,
+    endTime,
+    usingTime,
+    headCount,
+    price,
+    selectedPaidConvenience,
+  } = reservationInfo;
+  const { data, isLoading } = useReservationQuery({
+    cafeId,
+    roomId,
+    token: getCookie("accessToken"),
+  });
 
-  const closeModal = () => {
-    setClickedItem(null);
-  };
+  const [totalPrice, setTotalPrice] = useState(price);
+  const [selectedConveniences, setSelectedConveniences] = useState(
+    selectedPaidConvenience
+  );
+  const [userInfo, setUserInfo] = useState({
+    name: data?.username,
+    phoneNumber: data?.userPhoneNumber,
+    request: "",
+  });
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -43,90 +71,38 @@ const Reservation = () => {
     //console.log("Selected Date Filter:", dateFilterData);
   };
 
-  const handleItemClick = (item) => {
-    setClickedItem(item);
-  };
-  const handle = () => {
-    try {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-          {
-            // params: {
-            //   page: 1,
-            //   startDate: "2023-07-30",
-            //   endDate: "2023-07-31",
-            //   studycafeName: "Nerds",
-            //   tab: "ALL",
-            // },
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data.reservationRecordInfoWithStatusList);
-          console.log(response.data);
-          setReservations(response.data.reservationRecordInfoWithStatusList);
-        });
-    } catch (error) {
-      console.error("Error fetching reservations:", error);
-    }
-  };
-
-  useEffect(() => {
-    // 확정된 예약 데이터 가져오기
-    axios
-      .get(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-        {
-          // params: {
-          //   page: 1,
-          //   startDate: "2023-07-30",
-          //   endDate: "2023-07-31",
-          //   studycafeName: "Nerds",
-          //   tab: "ALL",
-          // },
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
+  const handleCheckPaidConvenience = (e, convenienceName, price) => {
+    if (!e.target.checked) {
+      setTotalPrice((totalPrice) => totalPrice - price);
+      const newSelectedConveniences = selectedConveniences.filter(
+        (convenience) => {
+          return convenience.convenienceName !== e.target.id;
         }
-      )
-      .then((response) => {
-        console.log("here", response.data.reservationRecordInfoWithStatusList);
-        setReservations(response.data.reservationRecordInfoWithStatusList);
-      });
+      );
+      setSelectedConveniences(newSelectedConveniences);
+      return;
+    }
+    setSelectedConveniences((prevConveniences) => [
+      ...prevConveniences,
+      {
+        convenienceName,
+        price,
+      },
+    ]);
+    setTotalPrice((totalPrice) => totalPrice + price);
+  };
 
-    // 이용 중인 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setOngoingReservations(response.data);
-    // });
+  const handleRequestChange = (e) => {
+    setUserInfo((userInfo) => ({
+      ...userInfo,
+      request: e.target.textContent,
+    }));
+  };
 
-    // // 지난 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setPastReservations(response.data);
-    // });
-
-    // // 취소된 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setCancelledReservations(response.data);
-    // });
-
-    // 클릭한 탭에 따라 서버로 요청 보내기
-    // const axiosReservations = async () => {
-    //   try {
-    //     const response = await GET(
-    //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-    //       {
-    //         // page: currentPage,
-    //         // startDate: "",
-    //         // endDate: "",
-    //         // studycafeName: "",
-    //         // tab: activeTab,
-    //       }
-    //     );
+  if (isLoading) return <Loading />;
+  return (
+    <>
+      <Title>{data?.cafeName}</Title>
 
     //     setReservations(response.data.reservationInfo);
     //     setTotalPageCount(response.data.totalPageCount);
@@ -138,27 +114,46 @@ const Reservation = () => {
     // axiosReservations();
   }, [activeTab, currentPage]);
 
-  return (
-    <Wrapper>
-      <ReservationText>예약 관리</ReservationText>
-      <TabContainer>
-        {/* 전체 예약 탭 */}
-        <TabWrapper>
-          <TabButton active={activeTab === "all"} onClick={() => handle()}>
-            전체
-          </TabButton>
-          <TabIndicator active={activeTab === "all"} />
-        </TabWrapper>
-
-        {/* 이용 전 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "confirmed"}
-            onClick={() => handleTabChange("confirmed")}>
-            이용 전 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "confirmed"} />
-        </TabWrapper>
+        <RowContainer>
+          <TitleSub>유료 편의 시설</TitleSub>
+          {data?.paidConveniences.length > 0 ? (
+            <CheckBoxList>
+              {data?.paidConveniences.map(
+                ({ convenienceName, price }, index) => {
+                  return (
+                    <CheckBoxListItem key={convenienceName + price + index}>
+                      <div className="checkbox">
+                        <input
+                          type="checkbox"
+                          id={convenienceName}
+                          onChange={(e) =>
+                            handleCheckPaidConvenience(
+                              e,
+                              convenienceName,
+                              price
+                            )
+                          }
+                          defaultChecked={
+                            selectedPaidConvenience.length > 0
+                              ? convenienceName ===
+                                selectedPaidConvenience[0].convenienceName
+                              : false
+                          }
+                        />
+                        <label htmlFor={convenienceName}>
+                          {convenienceName}
+                        </label>
+                      </div>
+                      <span>₩ {formatNumberWithCommas(price)}</span>
+                    </CheckBoxListItem>
+                  );
+                }
+              )}
+            </CheckBoxList>
+          ) : (
+            <span>유료 편의시설이 없습니다.</span>
+          )}
+        </RowContainer>
 
         {/* 이용 중인 예약 탭 */}
         <TabWrapper>
