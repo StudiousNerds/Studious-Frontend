@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = process.env.REACT_APP_BASE_URL;
+const baseURL = "ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com";
 const request = async ({ url, method, body, params, token }) => {
   try {
     const config = {

@@ -4,8 +4,10 @@ import styled from "styled-components";
 import ReviewCafeList from "components/ReviewCafeList";
 import DateFilter from "components/DateFilter";
 import { GET } from "apis/api";
+import { useNavigate } from "react-router-dom";
 
 const Reviews = () => {
+  const navigate = useNavigate();
   const [writableReviews, setWritableReviews] = useState([]);
   const [writtenReviews, setWrittenReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("writable");
@@ -18,120 +20,46 @@ const Reviews = () => {
   const IMG_DUMMY_URL =
     "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
-  // useEffect(() => {
-  //   // 작성 가능한 리뷰 목록 가져오기
-  //   axios
-  //     .get(
-  //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1'"
-  //     )
-  //     .then((response) => {
-  //       setWritableReviews(response.data);
-  //     });
+  useEffect(() => {
+    // 작성 가능한 리뷰 목록 가져오기
+    axios
+      .get(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
+        config
+      )
+      .then((response) => {
+        setWritableReviews(response.data.availableReviewInfo);
+      });
 
-  //   // 작성한 리뷰 목록 가져오기
-  //   axios
-  //     .get(
-  //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'"
-  //     )
-  //     .then((response) => {
-  //       setWrittenReviews(response.data);
-  //     });
-  // }, []);
-
-  // const DUMMY_DATA1 = [
-  //   {
-  //     reservationId: 1,
-  //     cafeId: 1,
-  //     cafeName: "혜화 열정공장",
-  //     cafePhoto: null,
-  //     roomName: "스터디룸 이름",
-  //     payType: "카카오페이",
-  //     price: "5,000",
-  //     date: "2023년 05월 11일",
-  //     startTime: "19:00",
-  //     endTime: "21:00",
-  //     duration: "2시간",
-  //     validDate: "2023.6.30",
-  //   },
-  //   {
-  //     reservationId: 2,
-  //     cafeId: 2,
-  //     cafeName: "스캇",
-  //     cafePhoto: null,
-  //     roomName: "스터디룸 이름",
-  //     payType: "카카오페이",
-  //     price: "5,000",
-  //     date: "2023년 05월 11일",
-  //     startTime: "19:00",
-  //     endTime: "21:00",
-  //     duration: "2시간",
-  //     validDate: "2023.6.30",
-  //   },
-  // ];
-
-  // const DUMMY_DATA2 = [
-  //   {
-  //     reservationId: 1,
-  //     cafeId: 1,
-  //     cafeName: "혜화 열정공장",
-  //     cafePhoto: null,
-  //     roomName: "스터디룸 이름",
-  //     payType: "카카오페이",
-  //     price: "5,000",
-  //     date: "2023.05.10 (금)",
-  //     startTime: "19:00",
-  //     endTime: "21:00",
-  //     duration: "2시간",
-  //     writedate: "2023.5.12",
-  //     cleanliness: 5,
-  //     deafening: 0,
-  //     fixtureStatus: 0,
-  //     reviewPhoto: null,
-  //     detail:
-  //       "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
-  //   },
-  //   {
-  //     reservationId: 2,
-  //     cafeId: 2,
-  //     cafeName: "스캇",
-  //     cafePhoto: null,
-  //     roomName: "스터디룸 이름",
-  //     payType: "카카오페이",
-  //     price: "5,000",
-  //     date: "2023.05.10 (금)",
-  //     startTime: "19:00",
-  //     endTime: "21:00",
-  //     duration: "2시간",
-  //     writedate: "2023.5.12",
-  //     cleanliness: 5,
-  //     deafening: 2,
-  //     fixtureStatus: 0,
-  //     reviewPhoto: null,
-  //     detail:
-  //       "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
-  //   },
-  // ];
+    // 작성한 리뷰 목록 가져오기
+    // axios
+    //   .get(
+    //     "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
+    //     config
+    //   )
+    //   .then((response) => {
+    //     setWrittenReviews(response.data);
+    //   });
+  }, []);
 
   function getCookie(name) {
-    const cookies = document.cookie.split(";");
+    const cookies = document.cookie.split("; ");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
       if (cookie.startsWith(name + "=")) {
-        return cookie.substring(name.length + 1);
+        const tokenWithBearer = cookie.substring(name.length + 1);
+        const token = tokenWithBearer.replace("Bearer%20", "");
+        return token;
       }
     }
     return null;
   }
 
   const accessToken = getCookie("accessToken");
-  if (accessToken) {
-    console.log("AccessToken:", accessToken);
-  } else {
-    console.log("AccessToken이 존재하지 않습니다.");
-  }
 
   const config = {
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -147,25 +75,26 @@ const Reviews = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "writable") {
-      GET(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
-        accessToken,
-        config
-      )
+      axios
+        .get(
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
+          config
+        )
         .then((response) => {
-          setWritableReviews(response.data);
+          setWritableReviews(response.data.availableReviewInfo);
         })
         .catch((error) => {
           console.log("writable error", error);
         });
     } else if (tab === "written") {
-      GET(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1'",
-        accessToken,
-        config
-      )
+      axios
+        .get(
+          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
+          config
+        )
         .then((response) => {
-          setWrittenReviews(response.data);
+          console.log(response.data);
+          setWrittenReviews(response.data.writtenReviewInfos);
         })
         .catch((error) => {
           console.log("written error", error);
@@ -175,6 +104,9 @@ const Reviews = () => {
 
   const handleWriteReview = (review) => {
     console.log("리뷰 작성 페이지로 이동:", review);
+    const { reservationId } = review;
+    const writeReviewPath = `/myPage/reviews/${reservationId}/write`;
+    navigate(writeReviewPath);
   };
 
   const handleUpdateReview = (review) => {
@@ -186,12 +118,12 @@ const Reviews = () => {
   };
 
   const handleDateFilterChange = (dateFilter) => {
-    setSelectedDateFilter(dateFilter);
+    //setSelectedDateFilter(dateFilter);
   };
 
-  useEffect(() => {
-    //setWritableReviews([...DUMMY_DATA1]);
-  }, []);
+  // useEffect(() => {
+  //   //setWritableReviews([...DUMMY_DATA1]);
+  // }, []);
 
   return (
     <Wrapper>
@@ -230,38 +162,45 @@ const Reviews = () => {
       ) : (
         <>
           {activeTab === "written"}
-          <DateFilter onDateFilter={handleWriteReview} />
+          <DateFilter onDateFilter={handleDateFilterChange} />
           {writtenReviews.map((review) => (
-            <div key={review.id}>
-              <ReviewContainer key={review.id}>
+            <div key={review.reservationId}>
+              <ReviewContainer key={review.reervationId}>
                 <CafeInfo>
                   <CafeImage
-                    src={review.cafePhoto ?? IMG_DUMMY_URL}
+                    src={review.studycafeInfo.studycafePhoto ?? IMG_DUMMY_URL}
                     alt="스터디카페 이미지"
                   />
                   <CafeDetails>
-                    <ReviewInfoCafe>{review.cafeName}</ReviewInfoCafe>
-                    <ReviewInfo>이용일자: {review.date}</ReviewInfo>
-                    <ReviewInfo>{review.roomName}</ReviewInfo>
+                    <ReviewInfoCafe>
+                      {review.studycafeInfo.studycafeName}
+                    </ReviewInfoCafe>
+                    <ReviewInfo>
+                      이용일자: {review.studycafeInfo.date}
+                    </ReviewInfo>
+                    <ReviewInfo>{review.studycafeInfo.roomName}</ReviewInfo>
                   </CafeDetails>
                 </CafeInfo>
                 <SmallDivider></SmallDivider>
                 <ReviewInlineInfo>
                   <ReviewStar>
                     <span>청결도</span>{" "}
-                    <StarRating value={review.cleanliness} />
-                    <span>방음</span> <StarRating value={review.deafening} />
+                    <StarRating value={review.gradeInfo.cleanliness} />
+                    <span>방음</span>{" "}
+                    <StarRating value={review.gradeInfo.deafening} />
                     <span>비품상태</span>{" "}
-                    <StarRating value={review.fixtureStatus} />
+                    <StarRating value={review.gradeInfo.fixtureStatus} />
                   </ReviewStar>
-                  <ReviewInfoDate>작성 일자: {review.writedate}</ReviewInfoDate>
+                  <ReviewInfoDate>
+                    작성 일자: {review.reviewInfo.writedate}
+                  </ReviewInfoDate>
                 </ReviewInlineInfo>
                 <ReviewImageDetail>
                   <ReviewImage
-                    src={review.reviewPhoto ?? IMG_DUMMY_URL}
+                    src={review.reviewInfo.reviewPhoto ?? IMG_DUMMY_URL}
                     alt="리뷰 이미지"
                   />
-                  <ReviewInfoText>{review.detail}</ReviewInfoText>
+                  <ReviewInfoText>{review.reviewInfo.detail}</ReviewInfoText>
                 </ReviewImageDetail>
                 <ReviewButtonWrapper>
                   <UpdateButton onClick={() => handleUpdateReview(review)}>
