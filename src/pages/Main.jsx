@@ -1,8 +1,10 @@
 import SwiperStudyCafeGridItems from "components/SwiperStudyCafeGridItems";
+import Loading from "components/common/Loading";
 import { useMainStudyCafeItemsQuery } from "hooks/queries/useMainStudyCafeItems";
 
 const Main = () => {
-  const { data } = useMainStudyCafeItemsQuery();
+  const { data, isLoading } = useMainStudyCafeItemsQuery();
+  if (isLoading) return <Loading />;
   return (
     <>
       <SwiperStudyCafeGridItems

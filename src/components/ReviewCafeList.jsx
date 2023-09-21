@@ -68,3 +68,5 @@ const ReviewInfo = styled.div`
   color: ${({ theme }) => theme.colors.gray800};
   margin-bottom: 0.4rem;
 `;
+
+const ClickableItem = styled.div``;

@@ -14,97 +14,15 @@ const SearchResult = () => {
   const [sortOption, setSortOption] = useState("GRADE_DESC");
   const [currentPage, setCurrentPage] = useState(1);
   const initialSearchResult = location.state?.searchResult || [];
-  const initialSearchResultFake = [
-    {
-      Id: 1,
-      name: "스터디카페1",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 2,
-      name: "스터디카페2",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 12,
-      distance: "700m",
-      grade: 3.8,
-      hashtags: ["편안한", "음료 다양", "서비스 좋음"],
-    },
-    {
-      Id: 3,
-      name: "스터디카페3",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 4,
-      name: "스터디카페4",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 5,
-      name: "스터디카페5",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 6,
-      name: "스터디카페6",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 7,
-      name: "스터디카페7",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 8,
-      name: "스터디카페8",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-    {
-      Id: 9,
-      name: "스터디카페9",
-      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
-      accumRevCnt: 20,
-      distance: "500m",
-      grade: 4.5,
-      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
-    },
-  ];
-  const [searchResult, setSearchResult] = useState(initialSearchResultFake);
-  const searchBarData = location.state?.searchParameters || [];
 
-  const { data: searchResultData } = useSearchResult({
-    currentPage,
-    sortOption,
-    searchBarData,
-  });
+  const [searchResult, setSearchResult] = useState(initialSearchResult);
+  const searchBarData = location.state?.searchParameters || [];
+  const [minGrade, setMinGrade] = useState("");
+  const [eventInProgress, setEventInProgress] = useState("");
+  const [hashtags, setHashtags] = useState([]);
+  const [conveniences, setConveniences] = useState([]);
+
+  const [axiosKey, setAxiosKey] = useState(0);
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
@@ -112,49 +30,78 @@ const SearchResult = () => {
   const endIndex = Math.min(startIndex + itemsPerPage, searchResult.length);
   const displayedItems = searchResult.slice(startIndex, endIndex);
 
-  const handleFilterButtonClick = () => {
-    setIsModalOpen(!isModalOpen);
+  const buildApiUrl = () => {
+    let apiUrl = `/studious/search?page=1`;
+    if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+    if (searchBarData.startTime)
+      apiUrl += `&startTime=${searchBarData.startTime}`;
+    if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+    if (searchBarData.headCount)
+      apiUrl += `&headCount=${searchBarData.headCount}`;
+    apiUrl += `&sortType=${sortOption}`;
+    apiUrl += `&minGrade=${minGrade}`;
+    apiUrl += `&eventInProgress=${eventInProgress}`;
+    if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+    if (conveniences.length > 0)
+      apiUrl += `&conveniences=${conveniences.join(",")}`;
+
+    return apiUrl;
   };
 
-  const handleSortOptionChange = (e) => {
-    setSortOption(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-
-  const handleApplyFilters = async (filterData) => {
-    const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
-    const url = `/studious/search`;
-
-    const params = {
-      page: currentPage,
-      keyword: searchBarData.keyword,
-      date: searchBarData.date,
-      startTime: searchBarData.startTime,
-      endTime: searchBarData.endTime,
-      headCount: searchBarData.headCount,
-      sortType: sortOption,
-      minGrade: minGrade,
-      eventInProgress: eventInProgress,
-      hashtags: hashtags.join(","),
-      conveniences: conveniences.join(","),
-    };
-
+  const axiosData = async () => {
     try {
-      const response = await GET(url, null, params);
+      let apiUrl = `/studious/search?page=${currentPage}&sortType=${sortOption}`;
+      if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+      if (searchBarData.startTime)
+        apiUrl += `&startTime=${searchBarData.startTime}`;
+      if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+      if (searchBarData.headCount)
+        apiUrl += `&headCount=${searchBarData.headCount}`;
+      if (minGrade) apiUrl += `&minGrade=${minGrade}`;
+      if (eventInProgress) apiUrl += `&eventInProgress=${eventInProgress}`;
+      if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+      if (conveniences.length > 0)
+        apiUrl += `&conveniences=${conveniences.join(",")}`;
 
+      const response = await GET(apiUrl);
       if (response.status === 200) {
         const responseData = response.data;
         setSearchResult(responseData);
       }
     } catch (error) {
       console.error("Error data:", error);
-      console.log(url);
     }
   };
+
+  const handleFilterButtonClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleSortOptionChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleApplyFilters = (filterData) => {
+    const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
+    setMinGrade(minGrade);
+    setEventInProgress(eventInProgress);
+    setHashtags(hashtags);
+    setConveniences(conveniences);
+    setAxiosKey((preKey) => preKey + 1);
+    setCurrentPage(1);
+  };
+
+  useEffect(() => {
+    axiosData();
+  }, [axiosKey]);
+
+  useEffect(() => {
+    setSearchResult(initialSearchResult);
+  }, [initialSearchResult]);
 
   return (
     <SearchResultContainer>
