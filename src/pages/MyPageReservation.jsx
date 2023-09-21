@@ -169,6 +169,7 @@ const MyPageReservation = () => {
           </TabButton>
           <TabIndicator active={activeTab === "ongoing"} />
         </TabWrapper>
+
         {/* 지난 예약 탭 */}
         <TabWrapper>
           <TabButton
@@ -271,7 +272,7 @@ const MarginReservationSearchCafe = styled.div`
 `;
 
 const Divider = styled.div`
-  width: 93rem;
+  width: 100rem;
   margin-left: 6rem;
   height: 0.1rem;
   background-color: #c6c6c6;

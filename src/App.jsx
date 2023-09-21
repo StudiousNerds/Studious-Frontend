@@ -88,7 +88,7 @@ function App() {
                 />
                 <Route
                   path="/myPage/reservation"
-                  component={<MyPageReservation />}
+                  element={<MyPageReservation />}
                 />
               </Routes>
             </AppLayout>
