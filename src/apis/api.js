@@ -5,7 +5,9 @@ const request = async ({ url, method, body, params, token }) => {
     const config = {
       baseURL,
       params,
-      headers: {},
+      headers: {
+        withCredentials: true,
+      },
     };
     if (token && config.headers) {
       config.headers["Authorization"] = token;
