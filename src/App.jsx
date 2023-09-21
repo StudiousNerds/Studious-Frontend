@@ -84,7 +84,11 @@ function App() {
                 />
                 <Route
                   path="/myPage/reviews/:reviewId/write"
-                  component={ReviewEdit}
+                  component={<ReviewEdit />}
+                />
+                <Route
+                  path="/myPage/reservation"
+                  component={<MyPageReservation />}
                 />
               </Routes>
             </AppLayout>
