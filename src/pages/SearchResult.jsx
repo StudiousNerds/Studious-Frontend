@@ -8,7 +8,6 @@ import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
-import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 
 const SearchResult = () => {
   const location = useLocation();
