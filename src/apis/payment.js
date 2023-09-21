@@ -2,12 +2,12 @@ import { GET } from "./api";
 
 export const getPaymentSuccess = async ({
   amount,
-  paymentType,
+  paymentKey,
   orderId,
   token,
 }) => {
   const { data } = await GET(
-    `/studious/payments/success?amount=${amount}&paymentType=${paymentType}&orderId=${orderId}`,
+    `/studious/payments/success?amount=${amount}&paymentKey=${paymentKey}&orderId=${orderId}`,
     token
   );
   return data;
@@ -15,12 +15,12 @@ export const getPaymentSuccess = async ({
 
 export const getVirtualPaymentSuccess = async ({
   amount,
-  paymentType,
+  paymentKey,
   orderId,
   token,
 }) => {
   const { data } = await GET(
-    `/studious/payments/virtual/success?amount=${amount}&paymentType=${paymentType}&orderId=${orderId}`,
+    `/studious/payments/virtual/success?amount=${amount}&paymentKey=${paymentKey}&orderId=${orderId}`,
     token
   );
   return data;

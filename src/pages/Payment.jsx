@@ -8,7 +8,7 @@ const Payment = () => {
   const [searchParams] = useSearchParams();
   const paymentWidgetRef = useRef(null);
   const paymentMethodsWidgetRef = useRef(null);
-  const price = 1;
+  const price = searchParams.get("amount");
   const clientKey = process.env.REACT_APP_TOSS_API_CLIENT_KEY;
   const selector = "#payment-widget";
 

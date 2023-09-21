@@ -77,7 +77,6 @@ const StudyRoomItem = ({
     minHeadCount,
     maxHeadCount
   );
-  console.log("selectedPaidConvenience", selectedPaidConvenience);
 
   const totalPrice = useMemo(() => {
     const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
