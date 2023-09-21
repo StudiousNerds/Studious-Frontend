@@ -1,5 +1,5 @@
-const { getPaymentSuccess, getVirtualPaymentSuccess } = require("apis/payment");
-const { useQuery } = require("react-query");
+import { useQuery } from "react-query";
+import { getPaymentSuccess, getVirtualPaymentSuccess } from "apis/payment";
 
 export const useRedirectPayment = ({
   orderId,
