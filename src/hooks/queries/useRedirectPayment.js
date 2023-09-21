@@ -13,10 +13,15 @@ export const useRedirectPayment = ({
     queryKey: ["useRedirectPayment", orderId],
     queryFn: async () => {
       if (virtual) {
-        const data = getPaymentSuccess({ orderId, paymentKey, amount, token });
+        const data = getVirtualPaymentSuccess({
+          orderId,
+          paymentKey,
+          amount,
+          token,
+        });
         return data;
       }
-      const data = getVirtualPaymentSuccess({
+      const data = getPaymentSuccess({
         orderId,
         paymentKey,
         amount,
