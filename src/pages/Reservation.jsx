@@ -13,6 +13,8 @@ import { getCookie } from "utils/cookie";
 import { useRecoilValue } from "recoil";
 import { reservationReqState } from "recoil/atoms/reservationReqState";
 import Loading from "components/common/Loading";
+import * as ConvenienceIcons from "components/common/convenienceIcons";
+import { convenienceDic } from "components/constants/ConvenienceData";
 
 const Reservation = () => {
   const { handleRedirect } = useRedirectLogin(true);
@@ -132,6 +134,26 @@ const Reservation = () => {
           </div>
           <div className="right">
             <StudyRoomName>{data?.roomName}</StudyRoomName>
+
+            <IconSection>
+              {data?.conveniences &&
+                data?.conveniences.length > 0 &&
+                data?.conveniences.map((convenienceName, index) => {
+                  return (
+                    <IconContainer>
+                      <IconBox>
+                        <img
+                          src={ConvenienceIcons[convenienceName]}
+                          width={"100%"}
+                          height={"100%"}
+                          alt="편의시설 아이콘"
+                        />
+                      </IconBox>
+                      <IconLabel>{convenienceDic[convenienceName]}</IconLabel>
+                    </IconContainer>
+                  );
+                })}
+            </IconSection>
           </div>
         </TwoColumnContainer>
         <TwoColumnContainer>
@@ -240,6 +262,28 @@ const Reservation = () => {
 };
 
 export default Reservation;
+
+const IconSection = styled.div`
+  margin: 3rem 0;
+  display: flex;
+  row-gap: 1rem;
+  column-gap: 2rem;
+  flex-wrap: wrap;
+`;
+const IconContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-direction: column;
+`;
+const IconBox = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+const IconLabel = styled.div`
+  font-size: small;
+`;
 
 const RemoteControlSection = styled.section`
   width: 30%;
