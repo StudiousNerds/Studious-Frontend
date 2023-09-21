@@ -58,6 +58,7 @@ export default StarsGrade;
 
 const StarsContainer = styled.div`
   position: relative;
+  display: block;
 `;
 const StarsBackgroundLayout = styled.div`
   position: absolute;
@@ -71,7 +72,6 @@ const StarsBackgroundLayout = styled.div`
   div.star {
     flex-shrink: 0;
     width: ${({ size }) => `${size}rem`};
-    height: ${({ size }) => `${size}rem`};
   }
 `;
 

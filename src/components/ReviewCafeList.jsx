@@ -3,23 +3,28 @@ import styled from "styled-components";
 const IMG_DUMMY_URL =
   "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
 const ReviewCafeList = ({ item }) => {
   return (
     <ReviewContainer>
       <CafeInfo>
         <CafeImage
-          src={item.cafePhoto ?? IMG_DUMMY_URL}
+          src={item.studycafePhoto ?? IMG_DUMMY_URL}
           alt="스터디카페 이미지"
         />
         <CafeDetails>
-          <ReviewInfoCafe>{item.cafeName}</ReviewInfoCafe>
+          <ReviewInfoCafe>{item.studycafeName}</ReviewInfoCafe>
           <ReviewInfo>{item.roomName}</ReviewInfo>
           <ReviewInfo>
-            결제금액 ₩{item.price}원({item.payType})
+            결제금액 ₩{item.price}원({item.paymentType})
           </ReviewInfo>
-          <ReviewInfo>{item.date}</ReviewInfo>
           <ReviewInfo>
-            {item.startTime} - {item.endTime}
+            {formatDate(item.date)} {item.startTime} - {item.endTime} (
+            {item.usingTime}시간)
           </ReviewInfo>
         </CafeDetails>
       </CafeInfo>
@@ -55,7 +60,7 @@ const CafeDetails = styled.div`
 const ReviewInfoCafe = styled.div`
   ${({ theme }) => theme.fonts.body1Bold};
   color: ${({ theme }) => theme.colors.gray900};
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 `;
 
 const ReviewInfo = styled.div`
@@ -63,3 +68,5 @@ const ReviewInfo = styled.div`
   color: ${({ theme }) => theme.colors.gray800};
   margin-bottom: 0.4rem;
 `;
+
+const ClickableItem = styled.div``;
