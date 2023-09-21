@@ -7,8 +7,8 @@ import { formatNumberWithCommas } from "utils/formatNumber";
 // 서버에서 가져온 데이터에 이미지가 없는 경우 사용할 대체 이미지입니다.
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
-const StudyCafeGridItem = ({
-  item: {
+const StudyCafeGridItem = ({ item }) => {
+  const {
     studycafeId,
     studycafeName,
     photo,
@@ -17,12 +17,15 @@ const StudyCafeGridItem = ({
     nearestStation,
     walkingTime,
     hashtags,
-  },
-}) => {
+  } = item;
+
   const navigate = useNavigate();
   const handleClickItem = () => {
     navigate(`/studyCafe/${studycafeId}`);
   };
+
+  console.log(item);
+  if (!item) return;
   return (
     <ItemLayout>
       <ItemImageBox onClick={handleClickItem}>
@@ -40,11 +43,14 @@ const StudyCafeGridItem = ({
           </div>
         </ItemDetailsTitle>
         <ItemDetailsMeta>
-          {walkingTime &&
+          {nearestStation &&
+            walkingTime &&
             `${nearestStation.match(/[가-힣]+역/g)} 도보 ${walkingTime}분`}
         </ItemDetailsMeta>
+
         <ItemDetailsHashtags>
-          {hashtags.length > 0 &&
+          {hashtags &&
+            hashtags.length > 0 &&
             hashtags.map((hashtag, hashtagIndex) => (
               <div key={hashtagIndex}>#{hashtag}</div>
             ))}

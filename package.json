@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tosspayments/payment-widget-sdk": "^0.9.3",
     "axios": "^1.4.0",
     "axios-mock-adapter": "^1.21.5",
     "i": "^0.3.7",

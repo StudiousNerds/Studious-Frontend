@@ -34,15 +34,15 @@ const ReviewsList = ({ reviewData }) => {
       {reviewData &&
         reviewData.length !== 0 &&
         reviewData.map(
-          ({ grade, email, detail, photos, date }, reviewIndex) => (
+          ({ totalGrade, nickname, detail, photos, date }, reviewIndex) => (
             <ReviewItemContainer
               key={reviewIndex}
               hasBorder={reviewIndex !== reviewData.length - 1}
             >
               <ReviewItem
                 key={reviewIndex}
-                grade={grade}
-                email={email}
+                totalGrade={totalGrade}
+                nickname={nickname}
                 detail={detail}
                 photos={photos}
                 date={date}

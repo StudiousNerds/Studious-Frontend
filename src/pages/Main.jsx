@@ -4,9 +4,9 @@ import { useMainStudyCafeItemsQuery } from "hooks/queries/useMainStudyCafeItems"
 
 const Main = () => {
   const { data, isLoading } = useMainStudyCafeItemsQuery();
+  if (isLoading) return <Loading />;
   return (
     <>
-      {isLoading && <Loading />}
       <SwiperStudyCafeGridItems
         items={data?.recommend}
         title={"오늘의 추천 스터디카페"}

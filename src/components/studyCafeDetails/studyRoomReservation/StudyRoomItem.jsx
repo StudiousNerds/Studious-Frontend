@@ -34,6 +34,7 @@ const StudyRoomItem = ({
   const { pathname } = useLocation();
   const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
   const setReservationReqState = useSetRecoilState(reservationReqState);
+  const [selectedPaidConvenience, setSelectedPaidConvenience] = useState([]);
   const getEndTimeUsingTime = (startTime, endTime) => {
     let definedEndTime = endTime + 1;
     if (!definedEndTime) {
@@ -60,6 +61,7 @@ const StudyRoomItem = ({
       endTime: `${definedEndTime.toString().padStart(2, "0")}:00`,
       usingTime,
       headCount: userCount,
+      selectedPaidConvenience: selectedPaidConvenience,
       price: totalPrice,
     });
     if (!handleRedirect()) {
@@ -78,12 +80,24 @@ const StudyRoomItem = ({
 
   const totalPrice = useMemo(() => {
     const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
+    const selectedPaidConveniencePrice =
+      selectedPaidConvenience.length > 0 ? selectedPaidConvenience[0].price : 0;
     if (priceType === "PER_PERSON") {
-      return price * userCount * usingTime;
+      return price * userCount * usingTime + selectedPaidConveniencePrice;
     }
-    return price * usingTime;
-  }, [userCount, startTime, endTime, price, priceType]);
+    return price * usingTime + selectedPaidConveniencePrice;
+  }, [
+    userCount,
+    startTime,
+    endTime,
+    price,
+    priceType,
+    selectedPaidConvenience,
+  ]);
 
+  const handleSelectPaidConvenience = (e) => {
+    setSelectedPaidConvenience([JSON.parse(e.target.value)]);
+  };
   return (
     <ItemContainer>
       <ItemLeftSection isSingleImage={photos.length === 1}>
@@ -114,12 +128,14 @@ const StudyRoomItem = ({
               name="paidConveniences"
               className="select"
               defaultValue={"선택하기"}
-              onChange={(e) => {}}
+              onChange={handleSelectPaidConvenience}
             >
               <option>선택하기</option>
               {paidConveniences.map((item, itemIndex) => (
                 <option value={JSON.stringify(item)} key={itemIndex}>
-                  {item.convenienceName}
+                  {`${item.convenienceName} (+${formatNumberWithCommas(
+                    item.price
+                  )})`}
                 </option>
               ))}
             </select>
