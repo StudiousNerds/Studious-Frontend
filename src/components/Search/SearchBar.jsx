@@ -110,7 +110,7 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    let url = `/studious/search?page=${page}`;
+    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
 
     const queryParams = [];
 
