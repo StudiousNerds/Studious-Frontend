@@ -14,7 +14,7 @@ import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
 import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
-import Reservation from "pages/MyPageReservation";
+import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
 import Account from "pages/myPage/Account";
 import RedirectPayment from "pages/RedirectPayment";
