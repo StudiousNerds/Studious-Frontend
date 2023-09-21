@@ -10,6 +10,8 @@ import { reservationReqState } from "recoil/atoms/reservationReqState";
 import { formatDateToString } from "utils/formatDate";
 import useTimeController from "hooks/useTimeController";
 import { useNumberController } from "hooks/useNumberController";
+import * as ConvenienceIcons from "components/common/convenienceIcons";
+import { convenienceDic } from "components/constants/ConvenienceData";
 
 const StudyRoomItem = ({
   roomData: {
@@ -164,6 +166,26 @@ const StudyRoomItem = ({
             </div>
           </ExpectedPriceLayout>
         )}
+
+        <IconSection>
+          {conveniences &&
+            conveniences.length > 0 &&
+            conveniences.map((convenienceName, index) => {
+              return (
+                <IconContainer>
+                  <IconBox>
+                    <img
+                      src={ConvenienceIcons[convenienceName]}
+                      width={"100%"}
+                      height={"100%"}
+                      alt="편의시설 아이콘"
+                    />
+                  </IconBox>
+                  <IconLabel>{convenienceDic[convenienceName]}</IconLabel>
+                </IconContainer>
+              );
+            })}
+        </IconSection>
         <ReservationButton onClick={handleClickReservation}>
           예약하기
         </ReservationButton>
@@ -173,6 +195,26 @@ const StudyRoomItem = ({
 };
 
 export default StudyRoomItem;
+
+const IconSection = styled.div`
+  margin: 1rem 0;
+  display: flex;
+  row-gap: 1rem;
+  column-gap: 2rem;
+  flex-wrap: wrap;
+`;
+const IconContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-direction: column;
+`;
+const IconBox = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+const IconLabel = styled.div``;
 
 const ItemContainer = styled.div`
   width: 100%;
