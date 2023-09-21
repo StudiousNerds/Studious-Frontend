@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import RemoteControl from "components/reservation/RemoteControl";
 import { useState, useEffect } from "react";
@@ -16,24 +15,14 @@ import { reservationReqState } from "recoil/atoms/reservationReqState";
 import Loading from "components/common/Loading";
 
 const Reservation = () => {
-  const [activeTab, setActiveTab] = useState("all");
-  const [reservations, setReservations] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPageCount, setTotalPageCount] = useState(0);
-  const [clickedItem, setClickedItem] = useState(null);
+  const { handleRedirect } = useRedirectLogin(true);
+  useEffect(() => {
+    handleRedirect();
+  }, [handleRedirect]);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const reservationInfo = useRecoilValue(reservationReqState);
   const {
@@ -63,12 +52,30 @@ const Reservation = () => {
     request: "",
   });
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+  const handleChangeMemberInfo = (e, key) => {
+    let name = userInfo.name;
+    let phoneNumber = userInfo.phoneNumber;
+    if (key === "name") name = e.target.value;
+    else if (key === "phoneNumber") phoneNumber = e.target.value;
+    else
+      throw new Error(
+        "name, phoneNumber 중 어떤 값이 변경되었는지 인자를 전달해주세요"
+      );
+    setUserInfo((userInfo) => ({
+      ...userInfo,
+      name,
+      phoneNumber,
+    }));
   };
 
-  const handleDateFilter = (dateFilterData) => {
-    //console.log("Selected Date Filter:", dateFilterData);
+  const handleCheckSameAsPersonalInfo = (e) => {
+    if (e.target.checked) {
+      setUserInfo((userInfo) => ({
+        ...userInfo,
+        name: data?.username,
+        phoneNumber: data?.userPhoneNumber,
+      }));
+    }
   };
 
   const handleCheckPaidConvenience = (e, convenienceName, price) => {
@@ -104,15 +111,78 @@ const Reservation = () => {
     <>
       <Title>{data?.cafeName}</Title>
 
-    //     setReservations(response.data.reservationInfo);
-    //     setTotalPageCount(response.data.totalPageCount);
-    //   } catch (error) {
-    //     console.error("Error fetching reservations:", error);
-    //   }
-    // };
+      <RemoteControlSection>
+        <RemoteControl
+          cafeId={cafeId}
+          roomId={roomId}
+          date={date}
+          startTime={startTime}
+          endTime={endTime}
+          usingTime={usingTime}
+          headCount={headCount}
+          selectedConveniences={selectedConveniences}
+          userInfo={userInfo}
+          totalPrice={totalPrice}
+        />
+      </RemoteControlSection>
+      <MainSection>
+        <TwoColumnContainer>
+          <div className="left">
+            <img src={data?.studycafePhoto} alt="스터디카페 이미지" />
+          </div>
+          <div className="right">
+            <StudyRoomName>{data?.roomName}</StudyRoomName>
+          </div>
+        </TwoColumnContainer>
+        <TwoColumnContainer>
+          <div className="left">
+            <TitleSub>예약자 정보</TitleSub>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <div className="input-row">
+                <label htmlFor="name">이름</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={userInfo.name}
+                  onChange={(e) => handleChangeMemberInfo(e, "name")}
+                />
+              </div>
+              <div className="input-row">
+                <label htmlFor="contact">연락처</label>
+                <input
+                  type="text"
+                  id="contact"
+                  value={userInfo.phoneNumber}
+                  onChange={(e) => handleChangeMemberInfo(e, "phoneNumber")}
+                />
+              </div>
+              <CheckBoxListItem>
+                <div className="checkbox">
+                  <input
+                    type="checkbox"
+                    id="sameAsPersonalInfo"
+                    onChange={handleCheckSameAsPersonalInfo}
+                  />
+                  <label htmlFor="sameAsPersonalInfo">
+                    회원 정보와 동일하게
+                  </label>
+                </div>
+              </CheckBoxListItem>
+            </Form>
+          </div>
+          <div className="right">
+            <TitleSub>요청사항</TitleSub>
+            <EditableDiv
+              placeholder="요청하실 내용을 입력해주세요."
+              onChange={handleRequestChange}
+            />
+          </div>
+        </TwoColumnContainer>
 
-    // axiosReservations();
-  }, [activeTab, currentPage]);
+        <Divider
+          length="100%"
+          style={{ backgroundColor: theme.colors.gray200 }}
+        />
 
         <RowContainer>
           <TitleSub>유료 편의 시설</TitleSub>
@@ -155,119 +225,83 @@ const Reservation = () => {
           )}
         </RowContainer>
 
-        {/* 이용 중인 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "ongoing"}
-            onClick={() => handleTabChange("ongoing")}>
-            이용중인 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "ongoing"} />
-        </TabWrapper>
-        {/* 지난 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "past"}
-            onClick={() => handleTabChange("past")}>
-            지난 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "past"} />
-        </TabWrapper>
+        <Divider
+          length="100%"
+          style={{ backgroundColor: theme.colors.gray200 }}
+        />
 
-        {/* 취소된 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "cancelled"}
-            onClick={() => handleTabChange("cancelled")}>
-            취소된 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "cancelled"} />
-        </TabWrapper>
-      </TabContainer>
-
-      <FilterAndSearchContainer>
-        {activeTab !== "confirmed" ? (
-          <>
-            <DateFilter onDateFilter={handleDateFilter}></DateFilter>
-            <ReservationSearchCafe></ReservationSearchCafe>
-          </>
-        ) : (
-          <MarginReservationSearchCafe>
-            <ReservationSearchCafe></ReservationSearchCafe>
-          </MarginReservationSearchCafe>
-        )}
-      </FilterAndSearchContainer>
-      {reservations.map((item, index) => (
-        <>
-          <ReservationList
-            key={index}
-            reservations={item}
-            onItemClick={handleItemClick}
-          />
-          <Divider />
-        </>
-      ))}
-      {clickedItem && (
-        <ReservationModal item={clickedItem} onClose={closeModal} />
-      )}
-    </Wrapper>
+        <RowContainer>
+          <TitleSub>환불 규정</TitleSub>
+          <RefundPolicyBox refundPolicy={data?.refundPolicy} />
+        </RowContainer>
+      </MainSection>
+    </>
   );
 };
 
 export default Reservation;
 
-const TabContainer = styled.div`
+const RemoteControlSection = styled.section`
+  width: 30%;
+  float: right;
+  height: 100vh;
+`;
+
+const MainSection = styled.section`
+  width: 70%;
+  padding-right: 5rem;
+`;
+
+const RowContainer = styled.div`
+  margin-bottom: 7rem;
+  ${({ theme }) => theme.fonts.body1};
+`;
+
+const TwoColumnContainer = styled(RowContainer)`
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 5rem;
+  .left {
+    img {
+      border-radius: 1.5rem;
+      max-width: 100%;
+    }
+  }
+`;
+
+const StudyRoomName = styled.div`
+  ${({ theme }) => theme.fonts.heading2}
+`;
+
+const Form = styled.form`
   display: flex;
-  align-items: center;
-  margin: 6rem 8rem;
+  flex-direction: column;
+  gap: 2.2rem;
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+
+    input {
+      margin-left: 1rem;
+      border: none;
+      border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+    }
+  }
 `;
 
-const Wrapper = styled.div`
-  margin-top: 5rem;
-`;
-
-const ReservationText = styled.div`
-  ${({ theme }) => theme.fonts.heading1Bold};
-  color: ${({ theme }) => theme.colors.gray900};
-`;
-
-const TabWrapper = styled.div`
-  position: relative;
-  width: 25rem;
-`;
-
-const TabButton = styled.button`
-  ${({ theme }) => theme.fonts.heading2Bold};
-  color: ${({ theme, active }) =>
-    active ? theme.colors.mainDark : theme.colors.gray500};
-  background-color: white;
-  border: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  margin-left: 3rem;
-`;
-
-const TabIndicator = styled.div`
-  height: 0.3rem;
-  width: 20rem;
-  background-color: ${({ theme, active }) =>
-    active ? theme.colors.mainDark : theme.colors.gray500};
-  position: absolute;
-  bottom: 0;
-`;
-
-const FilterAndSearchContainer = styled.div`
+const CheckBoxList = styled.ul`
+  width: 40%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
-const MarginReservationSearchCafe = styled.div`
-  margin-left: 70rem;
-`;
-
-const Divider = styled.div`
-  width: 93rem;
-  margin-left: 6rem;
-  height: 0.1rem;
-  background-color: #c6c6c6;
+const CheckBoxListItem = styled.li`
+  .checkbox {
+    display: flex;
+    gap: 1rem;
+  }
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
 `;

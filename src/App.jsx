@@ -14,10 +14,13 @@ import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
 import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
-import Reservation from "pages/Reservation";
+import Reservation from "pages/MyPageReservation";
 import Reviews from "pages/Reviews";
 import Account from "pages/myPage/Account";
 import RedirectPayment from "pages/RedirectPayment";
+import ReviewWrite from "pages/ReviewWrite";
+import ReviewEdit from "pages/ReviewEdit";
+import MyPageReservation from "pages/MyPageReservation";
 
 function App() {
   const queryClient = new QueryClient();
