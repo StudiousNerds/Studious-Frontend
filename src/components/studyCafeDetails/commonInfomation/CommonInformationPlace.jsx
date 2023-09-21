@@ -4,6 +4,8 @@ import { ReactComponent as ToggleBottomIcon } from "assets/icons/toggleBottom.sv
 import { ReactComponent as ToggleUpIcon } from "assets/icons/toggleUp.svg";
 import { useRecoilValue } from "recoil";
 import { studyCafeDetails } from "recoil/atoms/studyCafeDetails";
+import * as ConvenienceIcons from "components/common/convenienceIcons";
+import { convenienceDic } from "components/constants/ConvenienceData";
 
 const CommonInformationPlace = () => {
   const commonDetails = useRecoilValue(studyCafeDetails);
@@ -30,7 +32,25 @@ const CommonInformationPlace = () => {
             {introduction}
           </div>
         </PlaceIntroTextBox>
-        <PlaceIntroIconsBox></PlaceIntroIconsBox>
+        <PlaceIntroIconsContainer>
+          {conveniences &&
+            conveniences.length > 0 &&
+            conveniences.map((convenienceName, index) => {
+              return (
+                <IconContainer>
+                  <IconBox>
+                    <img
+                      src={ConvenienceIcons[convenienceName]}
+                      width={"100%"}
+                      height={"100%"}
+                      alt="편의시설 아이콘"
+                    />
+                  </IconBox>
+                  <IconLabel>{convenienceDic[convenienceName]}</IconLabel>
+                </IconContainer>
+              );
+            })}
+        </PlaceIntroIconsContainer>
       </PlaceIntroContainer>
     </>
   );
@@ -85,7 +105,23 @@ const PlaceIntroTextBox = styled.div`
   }
 `;
 
-const PlaceIntroIconsBox = styled.div`
+const IconContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: center;
+`;
+const IconBox = styled.div`
+  width: 4rem;
+  height: 4rem;
+`;
+
+const IconLabel = styled.div``;
+
+const PlaceIntroIconsContainer = styled.div`
   width: 50%;
   padding: 5.1rem 4.3rem;
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
 `;
