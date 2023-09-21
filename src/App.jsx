@@ -74,8 +74,10 @@ function App() {
                   element={<RedirectPayment status="success" virtual={true} />}
                 />
                 <Route path="/search-result" element={<SearchResult />} />
-                <Route path="/myPage/reviews" element={<Reviews />} />
-                <Route path="/myPage/account" element={<Account />} />
+                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/reviews/write" element={<ReviewWrite />} />
+                <Route path="/review/edit/:reviewId" component={ReviewEdit} />
+                <Route path="/myPage/reservation" element={<Reservation />} />
               </Routes>
             </AppLayout>
           </ThemeProvider>

@@ -165,6 +165,82 @@ const SearchBar = ({ onClose }) => {
     }
   };
 
+  setSearchResult([
+    {
+      name: "스터디카페1",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페2",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 12,
+      distance: "700m",
+      grade: 3.8,
+      hashtags: ["편안한", "음료 다양", "서비스 좋음"],
+    },
+    {
+      name: "스터디카페3",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페4",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페5",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페6",
+      photo: "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페7",
+      photo: "https://example.com/cafe1.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페8",
+      photo: "https://example.com/cafe1.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+    {
+      name: "스터디카페9",
+      photo: "https://example.com/cafe1.jpg",
+      accumRevCnt: 20,
+      distance: "500m",
+      grade: 4.5,
+      hashtags: ["조용한", "와이파이 빠름", "좌석 넓음"],
+    },
+  ]);
+  navigate("/search-result", { state: { searchResult: searchResult } });
+
   const handleSearchButtonClick = async () => {
     const searchQuery = inputValue;
     const year = selectedDate.getFullYear();

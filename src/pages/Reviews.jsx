@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import ReviewCafeList from "components/ReviewCafeList";
+import DateFilter from "components/DateFilter";
 
 const Reviews = () => {
   const [writableReviews, setWritableReviews] = useState([]);
   const [writtenReviews, setWrittenReviews] = useState([]);
-  const [activeTab, setActiveTab] = useState("writable"); // 기본으로 작성 가능한 리뷰 탭이 활성화
+  const [activeTab, setActiveTab] = useState("writable");
+  const [selectedDateFilter, setSelectedDateFilter] = useState({
+    filter: "1year",
+    startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+    endDate: new Date(),
+  });
 
   const IMG_DUMMY_URL =
     "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
@@ -28,7 +34,7 @@ const Reviews = () => {
 
   const DUMMY_DATA1 = [
     {
-      id: 1,
+      reservationId: 1,
       cafeId: 1,
       cafeName: "혜화 열정공장",
       cafePhoto: null,
@@ -42,7 +48,7 @@ const Reviews = () => {
       validDate: "2023.6.30",
     },
     {
-      id: 1,
+      reservationId: 2,
       cafeId: 2,
       cafeName: "스캇",
       cafePhoto: null,
@@ -59,7 +65,7 @@ const Reviews = () => {
 
   const DUMMY_DATA2 = [
     {
-      id: 1,
+      reservationId: 1,
       cafeId: 1,
       cafeName: "혜화 열정공장",
       cafePhoto: null,
@@ -76,10 +82,10 @@ const Reviews = () => {
       fixtureStatus: 0,
       reviewPhoto: null,
       detail:
-        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환견에서 팀원들이랑 어쩌구 나중에도",
+        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
     },
     {
-      id: 1,
+      reservationId: 2,
       cafeId: 2,
       cafeName: "스캇",
       cafePhoto: null,
@@ -96,14 +102,27 @@ const Reviews = () => {
       fixtureStatus: 0,
       reviewPhoto: null,
       detail:
-        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환견에서 팀원들이랑 어쩌구 나중에도",
+        "스터디룸이 깔끔하고 어쩌구 비품도 관리가 잘 되어있고 어쩌구 쾌적한 환경에서 팀원들이랑 어쩌구 나중에도 이용할 ",
     },
   ];
 
+  const StarRating = ({ value }) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(<Star key={i} filled={i < value} />);
+    }
+    return <StarContainer>{stars}</StarContainer>;
+  };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    setWritableReviews(DUMMY_DATA1);
-    setWrittenReviews(DUMMY_DATA2);
+    if (tab === "writable") {
+      setWritableReviews([...DUMMY_DATA1]);
+      setWrittenReviews([]);
+    } else if (tab === "written") {
+      setWritableReviews([]);
+      setWrittenReviews([...DUMMY_DATA2]);
+    }
   };
 
   const handleWriteReview = (review) => {
@@ -117,6 +136,14 @@ const Reviews = () => {
   const handleDeleteReview = (review) => {
     console.log("리뷰 삭제", review);
   };
+
+  const handleDateFilterChange = (dateFilter) => {
+    setSelectedDateFilter(dateFilter);
+  };
+
+  useEffect(() => {
+    setWritableReviews([...DUMMY_DATA1]);
+  }, []);
 
   return (
     <Wrapper>
@@ -142,45 +169,63 @@ const Reviews = () => {
       {activeTab === "writable" ? (
         <>
           {writableReviews.map((review) => (
-            <>
-              <ReviewCafeList item={review} key={review.id} />
+            <div key={review.id}>
+              <ReviewCafeList item={review} />
               <Validdate>{review.validDate}까지 작성 가능</Validdate>
               <WriteButton onClick={() => handleWriteReview(review)}>
                 리뷰 작성하기
               </WriteButton>
               <Separator />
-            </>
+            </div>
           ))}
         </>
       ) : (
         <>
+          {activeTab === "written"}
+          <DateFilter onDateFilter={handleWriteReview} />
           {writtenReviews.map((review) => (
-            <ReviewContainer key={review.id}>
-              <CafeInfo>
-                <CafeImage
-                  src={review.cafePhoto ?? IMG_DUMMY_URL}
-                  alt="스터디카페 이미지"
-                />
-                <CafeDetails>
-                  <ReviewInfoCafe>{review.cafeName}</ReviewInfoCafe>
-                  <ReviewInfo>이용일자: {review.date}</ReviewInfo>
-                  <ReviewInfo>{review.roomName}</ReviewInfo>
-                </CafeDetails>
-              </CafeInfo>
-              <SmallDivider></SmallDivider>
-              <ReviewStar>청결도 {review.cleanliness}</ReviewStar>
-              <ReviewStar>방음 {review.deafening}</ReviewStar>
-              <ReviewStar>비품상태 {review.fixtureStatus}</ReviewStar>
-              <ReviewInfoDate>작성 일자: {review.writedate}</ReviewInfoDate>
-              <ReviewInfoText>{review.detail}</ReviewInfoText>
-              <WriteButton onClick={() => handleUpdateReview(review)}>
-                리뷰 수정
-              </WriteButton>
-              <WriteButton onClick={() => handleDeleteReview(review)}>
-                리뷰 삭제
-              </WriteButton>
-              <Divider></Divider>
-            </ReviewContainer>
+            <div key={review.id}>
+              <ReviewContainer key={review.id}>
+                <CafeInfo>
+                  <CafeImage
+                    src={review.cafePhoto ?? IMG_DUMMY_URL}
+                    alt="스터디카페 이미지"
+                  />
+                  <CafeDetails>
+                    <ReviewInfoCafe>{review.cafeName}</ReviewInfoCafe>
+                    <ReviewInfo>이용일자: {review.date}</ReviewInfo>
+                    <ReviewInfo>{review.roomName}</ReviewInfo>
+                  </CafeDetails>
+                </CafeInfo>
+                <SmallDivider></SmallDivider>
+                <ReviewInlineInfo>
+                  <ReviewStar>
+                    <span>청결도</span>{" "}
+                    <StarRating value={review.cleanliness} />
+                    <span>방음</span> <StarRating value={review.deafening} />
+                    <span>비품상태</span>{" "}
+                    <StarRating value={review.fixtureStatus} />
+                  </ReviewStar>
+                  <ReviewInfoDate>작성 일자: {review.writedate}</ReviewInfoDate>
+                </ReviewInlineInfo>
+                <ReviewImageDetail>
+                  <ReviewImage
+                    src={review.reviewPhoto ?? IMG_DUMMY_URL}
+                    alt="리뷰 이미지"
+                  />
+                  <ReviewInfoText>{review.detail}</ReviewInfoText>
+                </ReviewImageDetail>
+                <ReviewButtonWrapper>
+                  <UpdateButton onClick={() => handleUpdateReview(review)}>
+                    리뷰 수정
+                  </UpdateButton>
+                  <UpdateButton onClick={() => handleDeleteReview(review)}>
+                    리뷰 삭제
+                  </UpdateButton>
+                </ReviewButtonWrapper>
+                <Divider></Divider>
+              </ReviewContainer>
+            </div>
           ))}
         </>
       )}
@@ -263,15 +308,25 @@ const SmallDivider = styled.div`
 const ReviewStar = styled.div`
   ${({ theme }) => theme.fonts.body1Bold};
   color: #000000;
+  margin-top: 2rem;
+  display: flex;
+  span {
+    margin-right: 1rem;
+  }
 `;
 const ReviewInfoDate = styled.div`
   ${({ theme }) => theme.fonts.body3};
   color: ${({ theme }) => theme.colors.gray800};
+  width: 12rem;
+  margin-left: 24rem;
+  margin-top: 2rem;
 `;
 const ReviewInfoText = styled.div`
   color: #000000;
   font-family: Noto Sans KR;
   ${({ theme }) => theme.fonts.caption1};
+  margin-top: 3.5rem;
+  width: 30rem;
 `;
 const Validdate = styled.div`
   font-family: Noto Sans KR;
@@ -281,18 +336,20 @@ const Validdate = styled.div`
   margin-top: -18rem;
   margin-bottom: 13rem;
 `;
+const ReviewButtonWrapper = styled.div`
+  display: flex;
+  margin-left: 70rem;
+`;
 const WriteButton = styled.button`
   font-family: Noto Sans KR;
   ${({ theme }) => theme.fonts.body1};
   color: ${({ theme }) => theme.colors.mainDark};
   border: 1px solid #0027b0;
-  padding: 6px 12px;
   cursor: pointer;
   width: 15rem;
   height: 4rem;
   border-radius: 12px;
   margin-left: 88rem;
-  margin-top: -5rem;
 `;
 const Separator = styled.div`
   width: 105rem;
@@ -305,4 +362,36 @@ const Divider = styled.div`
   height: 0.1rem;
   margin-top: 2rem;
   background-color: ${({ theme }) => theme.colors.gray300};
+`;
+const UpdateButton = styled.button`
+  ${({ theme }) => theme.fonts.body1};
+  color: ${({ theme }) => theme.colors.mainDark};
+  border: 1px solid #0027b0;
+  cursor: pointer;
+  width: 15rem;
+  height: 4rem;
+  border-radius: 12px;
+  margin-left: 1rem;
+`;
+const ReviewImage = styled.img`
+  width: 25rem;
+  height: 14rem;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  margin-right: 3rem;
+`;
+const ReviewInlineInfo = styled.div`
+  display: flex;
+`;
+const ReviewImageDetail = styled.div`
+  display: flex;
+`;
+const StarContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const Star = styled.span`
+  font-size: 1.2rem;
+  margin-right: 0.2rem;
+  color: ${({ filled }) => (filled ? "#ffcd00" : "#d2d2d2")};
 `;
