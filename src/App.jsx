@@ -90,6 +90,10 @@ function App() {
                   path="/myPage/reviews/:reviewId/write"
                   element={<ReviewEdit />}
                 />
+                <Route
+                  path="/myPage/reservation"
+                  element={<MyPageReservation />}
+                />
               </Routes>
             </AppLayout>
           </ThemeProvider>
