@@ -98,6 +98,7 @@ const MyPageReservation = () => {
         }
       )
       .then((response) => {
+        console.log("here", response.data);
         setReservations(response.data.reservationRecordInfoWithStatusList);
         setIsLoading(false);
       });
@@ -161,8 +162,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "confirmed"}
-                onClick={() => handleTabChange("confirmed")}
-              >
+                onClick={() => handleTabChange("confirmed")}>
                 이용 전 예약
               </TabButton>
               <TabIndicator active={activeTab === "confirmed"} />
@@ -172,8 +172,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "ongoing"}
-                onClick={() => handleTabChange("ongoing")}
-              >
+                onClick={() => handleTabChange("ongoing")}>
                 이용중인 예약
               </TabButton>
               <TabIndicator active={activeTab === "ongoing"} />
@@ -183,8 +182,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "past"}
-                onClick={() => handleTabChange("past")}
-              >
+                onClick={() => handleTabChange("past")}>
                 지난 예약
               </TabButton>
               <TabIndicator active={activeTab === "past"} />
@@ -194,8 +192,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "cancelled"}
-                onClick={() => handleTabChange("cancelled")}
-              >
+                onClick={() => handleTabChange("cancelled")}>
                 취소된 예약
               </TabButton>
               <TabIndicator active={activeTab === "cancelled"} />
@@ -285,6 +282,7 @@ const MarginReservationSearchCafe = styled.div`
 `;
 
 const Divider = styled.div`
+  width: 100rem;
   width: 100rem;
   margin-left: 6rem;
   height: 0.1rem;
