@@ -65,6 +65,7 @@ const ReviewWrite = () => {
   const handleSubmit = async () => {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     };
 
     const reviewData = {
