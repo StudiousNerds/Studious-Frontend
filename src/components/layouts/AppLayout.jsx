@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Layout = ({ children }) => {
+const AppLayout = ({ children }) => {
   return (
     <main>
       <MainSectionLayout>{children}</MainSectionLayout>;
@@ -13,4 +13,4 @@ const MainSectionLayout = styled.section`
   max-width: 112rem;
 `;
 
-export default Layout;
+export default AppLayout;

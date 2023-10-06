@@ -1,13 +1,13 @@
 import axios from "axios";
-const baseURL =
-  "http://ec2-54-180-201-100.ap-northeast-2.compute.amazonaws.com:8080";
-
+const baseURL = process.env.REACT_APP_BASE_URL;
 const request = async ({ url, method, body, params, token }) => {
   try {
     const config = {
       baseURL,
       params,
-      headers: {},
+      headers: {
+        withCredentials: true,
+      },
     };
     if (token && config.headers) {
       config.headers["Authorization"] = token;

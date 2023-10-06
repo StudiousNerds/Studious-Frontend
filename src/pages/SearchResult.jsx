@@ -1,21 +1,79 @@
 import styled from "styled-components";
 import { ReactComponent as FilterIcon } from "assets/icons/filter.svg";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import FilterModal from "components/Search/FilterModal";
+import FilterModal from "components/FilterModal";
 import StudyCafeGridItem from "components/StudyCafeGridItem";
 import Pagination from "components/Pagination";
+import { GET } from "apis/api";
+import useSearchResult from "hooks/queries/useSearchResult";
+import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 
 const SearchResult = () => {
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortOption, setSortOption] = useState("GRADE_DESC");
-  const location = useLocation();
-  const searchResult = location.state?.searchResult || [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const initialSearchResult = location.state?.searchResult || [];
+
+  const [searchResult, setSearchResult] = useState(initialSearchResult);
+  const searchBarData = location.state?.searchParameters || [];
+  const [minGrade, setMinGrade] = useState("");
+  const [eventInProgress, setEventInProgress] = useState("");
+  const [hashtags, setHashtags] = useState([]);
+  const [conveniences, setConveniences] = useState([]);
+
+  const [axiosKey, setAxiosKey] = useState(0);
 
   const itemsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(searchResult.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, searchResult.length);
+  const displayedItems = searchResult.slice(startIndex, endIndex);
 
-  console.log(searchResult);
+  const buildApiUrl = () => {
+    let apiUrl = `/studious/search?page=1`;
+    if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+    if (searchBarData.startTime)
+      apiUrl += `&startTime=${searchBarData.startTime}`;
+    if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+    if (searchBarData.headCount)
+      apiUrl += `&headCount=${searchBarData.headCount}`;
+    apiUrl += `&sortType=${sortOption}`;
+    apiUrl += `&minGrade=${minGrade}`;
+    apiUrl += `&eventInProgress=${eventInProgress}`;
+    if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+    if (conveniences.length > 0)
+      apiUrl += `&conveniences=${conveniences.join(",")}`;
+
+    return apiUrl;
+  };
+
+  const axiosData = async () => {
+    try {
+      let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${currentPage}&sortType=${sortOption}`;
+      if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
+      if (searchBarData.startTime)
+        apiUrl += `&startTime=${searchBarData.startTime}`;
+      if (searchBarData.endTime) apiUrl += `&endTime=${searchBarData.endTime}`;
+      if (searchBarData.headCount)
+        apiUrl += `&headCount=${searchBarData.headCount}`;
+      if (minGrade) apiUrl += `&minGrade=${minGrade}`;
+      if (eventInProgress) apiUrl += `&eventInProgress=${eventInProgress}`;
+      if (hashtags.length > 0) apiUrl += `&hashtags=${hashtags.join(",")}`;
+      if (conveniences.length > 0)
+        apiUrl += `&conveniences=${conveniences.join(",")}`;
+
+      const response = await GET(apiUrl);
+      if (response.status === 200) {
+        const responseData = response.data;
+        setSearchResult(responseData);
+      }
+    } catch (error) {
+      console.error("Error data:", error);
+    }
+  };
+
   const handleFilterButtonClick = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -24,25 +82,36 @@ const SearchResult = () => {
     setSortOption(e.target.value);
   };
 
-  const totalPages = Math.ceil(searchResult.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, searchResult.length);
-  const displayedItems = searchResult
-    ? searchResult.slice(startIndex, endIndex)
-    : [];
-
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  const handleApplyFilters = (filterData) => {
+    const { minGrade, eventInProgress, hashtags, conveniences } = filterData;
+    setMinGrade(minGrade);
+    setEventInProgress(eventInProgress);
+    setHashtags(hashtags);
+    setConveniences(conveniences);
+    setAxiosKey((preKey) => preKey + 1);
+    setCurrentPage(1);
+  };
+
+  useEffect(() => {
+    axiosData();
+  }, [axiosKey]);
+
+  useEffect(() => {
+    setSearchResult(initialSearchResult);
+  }, [initialSearchResult]);
 
   return (
     <SearchResultContainer>
       <FilterSortContainer>
         <SortSelect value={sortOption} onChange={handleSortOptionChange}>
-          <option value="리뷰많은순">리뷰 많은 순</option>
+          <option value="REVIEW_DESC">리뷰 많은 순</option>
           <option value="RESERVATION_DESC">예약 많은 순</option>
           <option value="GRADE_DESC">평점 높은 순</option>
-          <option value="GRADE_ASC">평점 낮은 순</option>
+          <option value="CREATED_DESC">최신순</option>
         </SortSelect>
 
         <FilterButton onClick={handleFilterButtonClick}>
@@ -50,11 +119,16 @@ const SearchResult = () => {
         </FilterButton>
       </FilterSortContainer>
 
-      {isModalOpen && <FilterModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <FilterModal
+          onClose={handleFilterButtonClick}
+          applyFilters={handleApplyFilters}
+        />
+      )}
 
       <GridContainer>
-        {displayedItems.map((item, index) => (
-          <StudyCafeGridItem key={item.id} item={item} index={index} />
+        {displayedItems.map((item) => (
+          <StudyCafeGridSearch key={item.Id} item={item} />
         ))}
       </GridContainer>
 

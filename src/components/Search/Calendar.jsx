@@ -2,19 +2,24 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 
 const Day = ({ date, isSelected, isToday, isPastDate, onClick }) => {
+  const dayOfWeek = date.getDay();
+  const isSaturday = dayOfWeek === 6;
+  const isSunday = dayOfWeek === 0;
+
   return (
     <DayContainer
       isSelected={isSelected}
       isToday={isToday}
       onClick={onClick}
-      isPastDate={isPastDate}>
+      isPastDate={isPastDate}
+    >
       {date.getDate()}
       {isToday && <TodayText>오늘</TodayText>}
     </DayContainer>
   );
 };
 
-const Calendar = ({ onSelectDate }) => {
+const Calendar = ({ dafaultDate, onSelectDate }) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -41,7 +46,7 @@ const Calendar = ({ onSelectDate }) => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dafaultDate);
 
   const isPastDate = (date) => {
     const today = new Date();
@@ -73,13 +78,13 @@ const Calendar = ({ onSelectDate }) => {
         </CalendarButton>
       </CalendarHeader>
       <CalendarWeekdays>
-        <Weekday>일</Weekday>
+        <Weekday isSunday>일</Weekday>
         <Weekday>월</Weekday>
         <Weekday>화</Weekday>
         <Weekday>수</Weekday>
         <Weekday>목</Weekday>
         <Weekday>금</Weekday>
-        <Weekday>토</Weekday>
+        <Weekday isSaturday>토</Weekday>
       </CalendarWeekdays>
       <CalendarDays>
         {Array(startDayOfWeek)
@@ -93,7 +98,7 @@ const Calendar = ({ onSelectDate }) => {
             date={date}
             onClick={() => handleDateClick(date)}
             isSelected={
-              selectedDate !== null && date.getTime() === selectedDate.getTime()
+              selectedDate && date.getTime() === selectedDate.getTime()
             }
             isToday={isToday(date)}
             isPastDate={isPastDate(date)}
@@ -140,6 +145,7 @@ const CalendarWeekdays = styled.div`
 const Weekday = styled.div`
   ${({ theme }) => theme.fonts.body2};
   padding: 1.2rem;
+  color: ${({ theme }) => theme.colors.gray900};
 `;
 
 const CalendarDays = styled.div`
@@ -165,6 +171,9 @@ const DayContainer = styled.div`
   &:hover {
     background-color: rgba(0, 39, 176, 0.3);
   }
+
+  color: ${({ isSaturday, isSunday, theme }) =>
+    isSaturday ? "#2F5DFF" : isSunday ? "#FF4B4B" : theme.colors.gray900};
 
   ${(props) =>
     props.isSelected &&
