@@ -17,3 +17,5 @@ export const getCookie = (key) => {
     console.error(e);
   }
 };
+
+export const getToken = () => getCookie("accessToken");

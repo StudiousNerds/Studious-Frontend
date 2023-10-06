@@ -6,11 +6,10 @@ import {
   patchPassword,
   postWithdrawAccount,
 } from "apis/myPageAccount";
-import useRedirectLogin from "hooks/useRedirectLogin";
+import { getToken } from "utils/cookie";
 
 export const useMyPageAccount = () => {
-  const { token, handleRedirect } = useRedirectLogin();
-  handleRedirect();
+  const token = getToken();
   return useQuery(["useMyPageAccount"], () => getMyPageAccount(token));
 };
 
