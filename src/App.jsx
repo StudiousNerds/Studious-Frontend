@@ -78,6 +78,7 @@ function App() {
                 />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route path="/myPage/account" element={<Account />} />
                 <Route
                   path="/myPage/reviews/:reviewId/write"
                   element={<ReviewWrite />}
