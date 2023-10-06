@@ -1,10 +1,13 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
+import bookmarkOn from "assets/icons/bookmarkOn.svg";
+import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
+import axios from "axios";
 
-// 서버에서 가져온 데이터에 이미지가 없는 경우 사용할 대체 이미지입니다.
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridSearch = ({
@@ -20,13 +23,69 @@ const StudyCafeGridSearch = ({
   },
 }) => {
   const navigate = useNavigate();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        const tokenWithBearer = cookie.substring(name.length + 1);
+        const token = tokenWithBearer.replace("Bearer%20", "");
+        return token;
+      }
+    }
+    return null;
+  }
+
+  const accessToken = getCookie("accessToken");
+
   const handleClickItem = () => {
     navigate(`/studyCafe/${id}`);
   };
+
+  const handleBookmarkClick = () => {
+    setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
+
+    const itemId = id;
+    const bookmarkStatus = !isBookmarked;
+
+    axios
+      .post(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/bookmarks",
+        {
+          studycafeId: itemId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <ItemLayout>
-      <ItemImageBox onClick={handleClickItem}>
-        <img src={photo ? photo : IMG_DUMMY_URL} alt="스터디카페 이미지" />
+      <ItemImageBox>
+        <img
+          onClick={handleClickItem}
+          src={photo ? photo : IMG_DUMMY_URL}
+          alt="스터디카페 이미지"
+        />
+        <BookmarkButton onClick={handleBookmarkClick}>
+          {isBookmarked ? (
+            <Icon iconSrc={bookmarkOff} size={3} alt="북마크 채워진 아이콘" />
+          ) : (
+            <Icon iconSrc={bookmarkOn} size={3} alt="북마크 비워진 아이콘" />
+          )}
+        </BookmarkButton>
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
@@ -68,6 +127,7 @@ const ItemLayout = styled.div`
 `;
 const ItemImageBox = styled.div`
   width: 100%;
+  position: relative;
   img {
     border-radius: 2rem;
     width: 100%;
@@ -103,4 +163,13 @@ const ItemDetailsHashtags = styled.div`
   ${({ theme }) => theme.fonts.caption1};
   display: flex;
   gap: 5px;
+`;
+const BookmarkButton = styled.button`
+  background-color: transprent;
+  cursor: pointer;
+  position: absolute;
+  top: -6.9rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
 `;
