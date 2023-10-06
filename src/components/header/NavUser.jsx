@@ -21,7 +21,7 @@ const NavUser = () => {
     },
     {
       itemName: "북마크",
-      itemClickEventHandler: () => {},
+      itemClickEventHandler: () => navigate(`/myPage/bookmarks`),
     },
     {
       itemName: "로그아웃",

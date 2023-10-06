@@ -94,6 +94,8 @@ function App() {
                   path="/myPage/reservation"
                   element={<MyPageReservation />}
                 />
+                {/* TODO 북마크 페이지 element 추가 */}
+                <Route path="/myPage/bookmarks" />
               </Routes>
             </AppLayout>
           </ThemeProvider>
