@@ -79,7 +79,9 @@ const Account = () => {
               <AccountInformationRow>
                 <div>닉네임</div>
                 <div className="edit-column">
-                  {data?.nickname.trim()}
+                  {newNickname && !isEditNickname
+                    ? newNickname
+                    : data?.nickname.trim()}
                   {isEditNickname && (
                     <EditInputBox
                       onChange={(e) => setNewNickname(e.target.value)}
@@ -112,7 +114,9 @@ const Account = () => {
               <AccountInformationRow>
                 <div>휴대전화</div>
                 <div className="edit-column">
-                  {data?.phoneNumber}
+                  {newPhoneNumber && isEditPhoneNumber
+                    ? newPhoneNumber
+                    : data?.phoneNumber}
                   {isEditPhoneNumber && (
                     <EditInputBox
                       onChange={(e) => setNewPhoneNumber(e.target.value)}
