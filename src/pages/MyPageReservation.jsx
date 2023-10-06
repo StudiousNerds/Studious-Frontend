@@ -8,6 +8,7 @@ import DateFilter from "components/DateFilter";
 import ReservationModal from "components/ReservationModal";
 import axios from "axios";
 import { GET } from "apis/api";
+import Loading from "components/common/Loading";
 
 const MyPageReservation = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -15,6 +16,7 @@ const MyPageReservation = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPageCount, setTotalPageCount] = useState(0);
   const [clickedItem, setClickedItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function getCookie(name) {
     const cookies = document.cookie.split("; ");
@@ -77,6 +79,7 @@ const MyPageReservation = () => {
 
   useEffect(() => {
     // 확정된 예약 데이터 가져오기
+    setIsLoading(true);
     axios
       .get(
         "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
@@ -97,6 +100,7 @@ const MyPageReservation = () => {
       .then((response) => {
         console.log("here", response.data);
         setReservations(response.data.reservationRecordInfoWithStatusList);
+        setIsLoading(false);
       });
 
     // 이용 중인 예약 데이터 가져오기
@@ -139,84 +143,90 @@ const MyPageReservation = () => {
   }, [activeTab, currentPage]);
 
   return (
-    <Wrapper>
-      <ReservationText>예약 관리</ReservationText>
-      <TabContainer>
-        {/* 전체 예약 탭 */}
-        <TabWrapper>
-          <TabButton active={activeTab === "all"} onClick={() => handle()}>
-            전체
-          </TabButton>
-          <TabIndicator active={activeTab === "all"} />
-        </TabWrapper>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Wrapper>
+          <ReservationText>예약 관리</ReservationText>
+          <TabContainer>
+            {/* 전체 예약 탭 */}
+            <TabWrapper>
+              <TabButton active={activeTab === "all"} onClick={() => handle()}>
+                전체
+              </TabButton>
+              <TabIndicator active={activeTab === "all"} />
+            </TabWrapper>
 
-        {/* 이용 전 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "confirmed"}
-            onClick={() => handleTabChange("confirmed")}>
-            이용 전 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "confirmed"} />
-        </TabWrapper>
+            {/* 이용 전 예약 탭 */}
+            <TabWrapper>
+              <TabButton
+                active={activeTab === "confirmed"}
+                onClick={() => handleTabChange("confirmed")}>
+                이용 전 예약
+              </TabButton>
+              <TabIndicator active={activeTab === "confirmed"} />
+            </TabWrapper>
 
-        {/* 이용 중인 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "ongoing"}
-            onClick={() => handleTabChange("ongoing")}>
-            이용중인 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "ongoing"} />
-        </TabWrapper>
+            {/* 이용 중인 예약 탭 */}
+            <TabWrapper>
+              <TabButton
+                active={activeTab === "ongoing"}
+                onClick={() => handleTabChange("ongoing")}>
+                이용중인 예약
+              </TabButton>
+              <TabIndicator active={activeTab === "ongoing"} />
+            </TabWrapper>
 
-        {/* 지난 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "past"}
-            onClick={() => handleTabChange("past")}>
-            지난 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "past"} />
-        </TabWrapper>
+            {/* 지난 예약 탭 */}
+            <TabWrapper>
+              <TabButton
+                active={activeTab === "past"}
+                onClick={() => handleTabChange("past")}>
+                지난 예약
+              </TabButton>
+              <TabIndicator active={activeTab === "past"} />
+            </TabWrapper>
 
-        {/* 취소된 예약 탭 */}
-        <TabWrapper>
-          <TabButton
-            active={activeTab === "cancelled"}
-            onClick={() => handleTabChange("cancelled")}>
-            취소된 예약
-          </TabButton>
-          <TabIndicator active={activeTab === "cancelled"} />
-        </TabWrapper>
-      </TabContainer>
+            {/* 취소된 예약 탭 */}
+            <TabWrapper>
+              <TabButton
+                active={activeTab === "cancelled"}
+                onClick={() => handleTabChange("cancelled")}>
+                취소된 예약
+              </TabButton>
+              <TabIndicator active={activeTab === "cancelled"} />
+            </TabWrapper>
+          </TabContainer>
 
-      <FilterAndSearchContainer>
-        {activeTab !== "confirmed" ? (
-          <>
-            <DateFilter onDateFilter={handleDateFilter}></DateFilter>
-            <ReservationSearchCafe></ReservationSearchCafe>
-          </>
-        ) : (
-          <MarginReservationSearchCafe>
-            <ReservationSearchCafe></ReservationSearchCafe>
-          </MarginReservationSearchCafe>
-        )}
-      </FilterAndSearchContainer>
-      {reservations.map((item, index) => (
-        <>
-          <ReservationList
-            key={index}
-            reservations={item}
-            onItemClick={handleItemClick}
-          />
-          <Divider />
-        </>
-      ))}
-      {clickedItem && (
-        <ReservationModal item={clickedItem} onClose={closeModal} />
+          <FilterAndSearchContainer>
+            {activeTab !== "confirmed" ? (
+              <>
+                <DateFilter onDateFilter={handleDateFilter}></DateFilter>
+                <ReservationSearchCafe></ReservationSearchCafe>
+              </>
+            ) : (
+              <MarginReservationSearchCafe>
+                <ReservationSearchCafe></ReservationSearchCafe>
+              </MarginReservationSearchCafe>
+            )}
+          </FilterAndSearchContainer>
+          {reservations.map((item, index) => (
+            <>
+              <ReservationList
+                key={index}
+                reservations={item}
+                onItemClick={handleItemClick}
+              />
+              <Divider />
+            </>
+          ))}
+          {clickedItem && (
+            <ReservationModal item={clickedItem} onClose={closeModal} />
+          )}
+        </Wrapper>
       )}
-    </Wrapper>
+    </>
   );
 };
 

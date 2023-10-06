@@ -31,6 +31,7 @@ const HashTagSelector = ({ onSelect }) => {
         setSelectedTags([...selectedTags, tag]);
       }
     }
+    onSelect(selectedTags);
   };
 
   const selectedCount = selectedTags.length;

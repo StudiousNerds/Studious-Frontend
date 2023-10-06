@@ -18,11 +18,14 @@ const Reviews = () => {
   useEffect(() => {
     // 작성 가능한 리뷰 목록 가져오기
     axios
-      .get("http://localhost:8080/studious/reviews/available", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .get(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       .then((response) => {
         setWritableReviews(response.data);
       })
@@ -103,7 +106,9 @@ const Reviews = () => {
 
   const handleWriteReview = (review) => {
     console.log("리뷰 작성 페이지로 이동:", review);
-    navigate(`/myPage/reviews/${review.id}/write`, { state: { review } });
+    const { reservationId } = review;
+    const writeReviewPath = `/myPage/reviews/${reservationId}/write`;
+    navigate(writeReviewPath, { state: { review: review } });
   };
 
   const handleUpdateReview = (review) => {

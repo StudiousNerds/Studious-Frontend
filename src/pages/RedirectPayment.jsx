@@ -71,7 +71,12 @@ const RedirectPayment = ({ status, virtual }) => {
               <span>{data?.paymentInfo.completeTime}</span>
             </div>
           </SubInformationSection>
-          <Button text="예약 내역보기" colorTheme="light" height={6}></Button>
+          <Button
+            text="예약 내역보기"
+            colorTheme="light"
+            height={6}
+            onClick={() => navigate("/myPage/reservation")}
+          />
         </PaymentResultContainer>
       )}
     </>

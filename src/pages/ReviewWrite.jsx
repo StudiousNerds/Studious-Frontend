@@ -22,7 +22,7 @@ const ReviewWrite = () => {
   const [soundproofingRating, setSoundproofingRating] = useState(0);
   const [equipmentRating, setEquipmentRating] = useState(0);
 
-  const [isRecommended, setIsRecommended] = useState(false);
+  const [isRecommended, setIsRecommended] = useState("");
   const [isNotRecommended, setIsNotRecommended] = useState(false);
 
   const [selectedHashtags, setSelectedHashtags] = useState([]);
@@ -43,21 +43,50 @@ const ReviewWrite = () => {
     setIsNotRecommended(true);
   };
 
+  const handleTagSelect = (selectedTags) => {
+    setSelectedHashtags(selectedTags);
+  };
+
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        const tokenWithBearer = cookie.substring(name.length + 1);
+        const token = tokenWithBearer.replace("Bearer%20", "");
+        return token;
+      }
+    }
+    return null;
+  }
+
+  const accessToken = getCookie("accessToken");
+
   const handleSubmit = async () => {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+
     const reviewData = {
-      cafeId: review.cafeId,
       reservationId: review.reservationId,
       cleanliness: cleanlinessRating,
       deafening: soundproofingRating,
       fixtureStatus: equipmentRating,
       isRecommend: isRecommended,
       hashtags: selectedHashtags,
-      photos: selectedPhotos.map((photo) => photo.uri),
+      //photos: selectedPhotos.map((photo) => photo.uri),
       detail: content,
     };
 
     try {
-      const response = await POST("/api/reviews", reviewData);
+      const response = await axios.post(
+        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews",
+        reviewData,
+        {
+          headers,
+        }
+      );
+      console.log("등록성공", response.data);
     } catch (error) {
       console.error("Error submitting review:", error);
     }
@@ -88,7 +117,7 @@ const ReviewWrite = () => {
             onChange={setEquipmentRating}
           />
         </StarRatingWrapper>
-        <HashTagSelector setSelectedHashtags={setSelectedHashtags} />
+        <HashTagSelector onSelect={handleTagSelect} />
       </ContentWrapper>
 
       <RecommendContainer>
