@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Divider from "./Divider";
@@ -28,14 +29,14 @@ const ListDropdown = ({ buttonChildren, listItemsObjArr }) => {
           <ul>
             {listItemsObjArr &&
               listItemsObjArr.map(
-                ({ itemName, itemClickEventHandler, hasBorderTop }) => {
+                ({ itemName, itemClickEventHandler, hasBorderTop }, index) => {
                   return (
-                    <>
+                    <React.Fragment key={index + itemName}>
                       {hasBorderTop && <Divider />}
                       <ListItem onClick={itemClickEventHandler}>
                         {itemName}
                       </ListItem>
-                    </>
+                    </React.Fragment>
                   );
                 }
               )}
