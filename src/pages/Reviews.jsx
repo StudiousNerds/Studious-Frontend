@@ -106,7 +106,7 @@ const Reviews = () => {
     console.log("리뷰 작성 페이지로 이동:", review);
     const { reservationId } = review;
     const writeReviewPath = `/myPage/reviews/${reservationId}/write`;
-    navigate(writeReviewPath);
+    navigate(writeReviewPath, { state: { review: review } });
   };
 
   const handleUpdateReview = (review) => {

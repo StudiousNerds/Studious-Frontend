@@ -20,9 +20,6 @@ const ReviewCafeList = ({ item }) => {
           <ReviewInfoCafe>{item.studycafeName}</ReviewInfoCafe>
           <ReviewInfo>{item.roomName}</ReviewInfo>
           <ReviewInfo>
-            결제금액 ₩{item.price}원({item.paymentType})
-          </ReviewInfo>
-          <ReviewInfo>
             {formatDate(item.date)} {item.startTime} - {item.endTime} (
             {item.usingTime}시간)
           </ReviewInfo>
