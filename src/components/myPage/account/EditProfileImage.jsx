@@ -4,6 +4,7 @@ import ProfileImg from "components/common/ProfileImg";
 import { useRef, useState } from "react";
 import { useProfileImageMutation } from "hooks/queries/useMyPageAccount";
 import { getToken } from "utils/cookie";
+import DotLoader from "components/common/DotLoader";
 
 const EditProfileImage = ({ imageSrc }) => {
   const fileInputRef = useRef(null);
@@ -26,7 +27,13 @@ const EditProfileImage = ({ imageSrc }) => {
   return (
     <div>
       <AccountProfileImageSection>
-        <ProfileImg imageSrc={profileImageUrl} size={18} />
+        {profileImageMutation.isLoading ? (
+          <LoaderContainer>
+            <DotLoader size="1rem" />
+          </LoaderContainer>
+        ) : (
+          <ProfileImg imageSrc={profileImageUrl} size={18} />
+        )}
         <SettingsIcon
           style={{ position: "absolute", right: 0 }}
           onClick={() => fileInputRef.current.click()}
@@ -46,4 +53,14 @@ const AccountProfileImageSection = styled.div`
   input {
     display: none;
   }
+`;
+
+const LoaderContainer = styled.div`
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.gray200};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
