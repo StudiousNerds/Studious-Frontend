@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import theme from "styles/theme";
 import GlobalStyle from "styles/globalStyle";
 import { ThemeProvider } from "styled-components";
-import Layout from "components/Layout";
+import AppLayout from "components/layouts/AppLayout";
 import { RecoilRoot } from "recoil";
 import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -12,10 +12,15 @@ import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
+import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
 import MyReservationCancel from "pages/MyReservationCancel";
+import RedirectPayment from "pages/RedirectPayment";
+import ReviewWrite from "pages/ReviewWrite";
+import ReviewEdit from "pages/ReviewEdit";
+import MyPageReservation from "pages/MyPageReservation";
 
 function App() {
   const queryClient = new QueryClient();
@@ -25,7 +30,7 @@ function App() {
         <RecoilRoot>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
-            <Layout>
+            <AppLayout>
               <Header />
               <Routes>
                 <Route path="/" element={<Main />} />
@@ -51,14 +56,52 @@ function App() {
                   path="/studyCafe/:studyCafeId/reservation"
                   element={<Reservation />}
                 />
+                <Route
+                  path="/studyCafe/:studyCafeId/payment"
+                  element={<Payment />}
+                />
+                <Route
+                  path="/payments/success"
+                  element={<RedirectPayment status="success" virtual={false} />}
+                />
+                <Route
+                  path="/payments/fail"
+                  element={<RedirectPayment status="fail" virtual={false} />}
+                />
+                <Route
+                  path="/payments/virtual/success"
+                  element={<RedirectPayment status="success" virtual={true} />}
+                />
+                <Route
+                  path="/payments/virtual/fail"
+                  element={<RedirectPayment status="success" virtual={true} />}
+                />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route
+                  path="/myPage/reviews/:reviewId/write"
+                  element={<ReviewWrite />}
+                />
+                <Route
+                  path="/myPage/reservation"
+                  element={<MyPageReservation />}
+                />
+                <Route
+                  path="/myPage/reviews/:reviewId/write"
+                  element={<ReviewEdit />}
+                />
+                <Route
+                  path="/myPage/reservation"
+                  element={<MyPageReservation />}
+                />
                 <Route
                   path="/myPage/reservation/:reservationId/cancel"
                   element={<MyReservationCancel />}
                 />
+                {/* TODO 북마크 페이지 element 추가 */}
+                <Route path="/myPage/bookmarks" />
               </Routes>
-            </Layout>
+            </AppLayout>
           </ThemeProvider>
         </RecoilRoot>
       </CookiesProvider>

@@ -22,7 +22,11 @@ export const useLoginMutation = (body) => {
   const navigate = useNavigate();
   return useMutation(() => postLogin(body), {
     onSuccess: ({ grantType, accessToken }) => {
-      setToken({ accessToken, grantType });
+      try {
+        setToken({ accessToken, grantType });
+      } catch (e) {
+        console.error(e);
+      }
       navigate("/");
     },
     onError: (error) => handleErrorMessage(error.response.data),

@@ -1,9 +1,30 @@
 import styled from "styled-components";
 
-export const DarkButton = ({ text, width, height, ...props }) => {
+/**
+ *
+ * @param {string} text 라벨
+ * @param {number} width rem
+ * @param {number} height rem
+ * @param {string} colorTheme 'dark' 또는 'light'
+ * @param {() => void} onClick 이벤트핸들러
+ * @returns 버튼 컴포넌트
+ */
+export const Button = ({
+  text,
+  width,
+  height,
+  colorTheme = "dark",
+  onClick,
+  style,
+}) => {
   return (
-    <ButtonContainer width={width} height={height}>
-      <button style={{ ...props.style }}>{text ? text : ""}</button>
+    <ButtonContainer
+      width={width}
+      height={height}
+      colorTheme={colorTheme}
+      style={style}
+    >
+      <button onClick={onClick}>{text ? text : ""}</button>
     </ButtonContainer>
   );
 };
@@ -16,8 +37,11 @@ const ButtonContainer = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 1.5rem;
-    background-color: ${({ theme }) => theme.colors.mainDark};
-    color: ${({ theme }) => theme.colors.mostLight};
+    border: 1px solid ${({ theme }) => theme.colors.mainDark};
     ${({ theme }) => theme.fonts.heading2};
+    background-color: ${({ colorTheme, theme }) =>
+      colorTheme === "dark" ? theme.colors.mainDark : ""};
+    color: ${({ colorTheme, theme }) =>
+      colorTheme === "light" ? theme.colors.mainDark : theme.colors.gray200};
   }
 `;

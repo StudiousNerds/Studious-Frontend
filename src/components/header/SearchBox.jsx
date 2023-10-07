@@ -26,9 +26,7 @@ const SearchBox = () => {
       )}
       {isSearchBarOpen && (
         <ModalContainer>
-          <SearchBarModal onClick={handleModalClick}>
-            <SearchBar onClose={() => setIsSearchBarOpen(false)} />
-          </SearchBarModal>
+          <SearchBar />
         </ModalContainer>
       )}
       {isSearchBarOpen && <Overlay onClick={handleSearchClick} />}
@@ -72,16 +70,17 @@ const SearchBoxButton = styled.button`
 
 const ModalContainer = styled.div`
   position: fixed;
-  top: 5rem;
+  top: 4rem;
   left: 0;
   width: 100%;
   height: 25rem;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
   padding-top: 30px;
+  margin-bottom: 0rem;
 `;
 
 const SearchBarModal = styled.div`
@@ -90,17 +89,16 @@ const SearchBarModal = styled.div`
   justify-content: center;
   position: relative;
   padding: 20px;
-  z-index: 3;
+  z-index: 2;
 `;
 
 const Overlay = styled.div`
   position: fixed;
-  top: 30rem;
   left: 0;
   width: 100%;
   height: calc(100% - 5rem);
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  z-index: 2;
 `;
 
 export default SearchBox;

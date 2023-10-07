@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useLoginMutation } from "hooks/queries/useLogin";
 import { useNavigate } from "react-router-dom";
 import { getCookie } from "utils/cookie";
+import Loading from "components/common/Loading";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const loginMutation = useLoginMutation(emailPassword);
+  const { mutate, isLoading } = useLoginMutation(emailPassword);
   const links = {
     kakao: `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`,
     naver: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.REACT_APP_NAVER_REST_API_KEY}&state=test&redirect_uri=${process.env.REACT_APP_NAVER_REDIRECT_URI}`,
@@ -37,7 +38,7 @@ const Login = () => {
   };
   const handleLogin = (e) => {
     e.preventDefault();
-    loginMutation.mutate();
+    mutate();
   };
   const handleSocialLogin = (platform) => {
     window.location.href = links[platform];
@@ -60,42 +61,48 @@ const Login = () => {
   };
 
   return (
-    <LoginLayoutContainer>
-      <form>
-        <LoginLayout>
-          <LoginTypeTitle>이메일 로그인</LoginTypeTitle>
-          <LoginInput onChange={handleChangeEmail} placeholder="이메일" />
-          <LoginInput
-            type="password"
-            onChange={handleChangePassword}
-            placeholder="비밀번호"
-          />
-          <LoginButton onClick={handleLogin} type="submit" />
-        </LoginLayout>
-      </form>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <LoginLayoutContainer>
+          <form>
+            <LoginLayout>
+              <LoginTypeTitle>이메일 로그인</LoginTypeTitle>
+              <LoginInput onChange={handleChangeEmail} placeholder="이메일" />
+              <LoginInput
+                type="password"
+                onChange={handleChangePassword}
+                placeholder="비밀번호"
+              />
+              <LoginButton onClick={handleLogin} type="submit" />
+            </LoginLayout>
+          </form>
 
-      <LoginLayout>
-        <LoginTypeTitle>소셜 로그인</LoginTypeTitle>
-        <SocialLoginButton
-          domain={domain.kakao}
-          onClick={() => handleSocialLogin("kakao")}
-        >
-          <div>카카오톡으로 로그인</div>
-        </SocialLoginButton>
-        <SocialLoginButton
-          domain={domain.naver}
-          onClick={() => handleSocialLogin("naver")}
-        >
-          <div>네이버로 로그인</div>
-        </SocialLoginButton>
-        <SocialLoginButton
-          domain={domain.google}
-          onClick={() => handleSocialLogin("google")}
-        >
-          <div>Google로 로그인</div>
-        </SocialLoginButton>
-      </LoginLayout>
-    </LoginLayoutContainer>
+          <LoginLayout>
+            <LoginTypeTitle>소셜 로그인</LoginTypeTitle>
+            <SocialLoginButton
+              domain={domain.kakao}
+              onClick={() => handleSocialLogin("kakao")}
+            >
+              <div>카카오톡으로 로그인</div>
+            </SocialLoginButton>
+            <SocialLoginButton
+              domain={domain.naver}
+              onClick={() => handleSocialLogin("naver")}
+            >
+              <div>네이버로 로그인</div>
+            </SocialLoginButton>
+            <SocialLoginButton
+              domain={domain.google}
+              onClick={() => handleSocialLogin("google")}
+            >
+              <div>Google로 로그인</div>
+            </SocialLoginButton>
+          </LoginLayout>
+        </LoginLayoutContainer>
+      )}
+    </>
   );
 };
 

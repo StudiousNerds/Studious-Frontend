@@ -12,7 +12,7 @@ const HeaderLogoOnly = () => {
 export default HeaderLogoOnly;
 
 const HeaderLayout = styled.section`
-  padding: 1.5rem 0;
+  padding: 3rem 0;
   display: flex;
   justify-content: center;
   border-bottom: 2px solid ${({ theme }) => theme.colors.gray200};

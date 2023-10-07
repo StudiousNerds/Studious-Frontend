@@ -3,9 +3,11 @@ import styled from "styled-components";
 const HashTagsRow = ({ hashtags }) => {
   return (
     <HashTagsRowLayout>
-      {hashtags.map((hashtag, hashtagIndex) => (
-        <HashTagBox key={hashtagIndex}>{hashtag}</HashTagBox>
-      ))}
+      {hashtags &&
+        hashtags.length !== 0 &&
+        hashtags.map((hashtag, hashtagIndex) => (
+          <HashTagBox key={hashtagIndex}>{hashtag}</HashTagBox>
+        ))}
     </HashTagsRowLayout>
   );
 };

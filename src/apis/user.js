@@ -11,7 +11,10 @@ export const postOAuthLogin = async (code, platform) => {
 
 /* 일반 로그인 */
 export const postLogin = async (body) => {
-  const { data } = await POST("/studious/members/login", body);
+  const { data } = await POST(
+    "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/members/login",
+    body
+  );
   return data;
 };
 

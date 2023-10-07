@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { GET } from "apis/api";
 import { ReactComponent as SearchIcon } from "assets/icons/search100.svg";
 import { ReactComponent as MinusIcon } from "assets/icons/minus.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
@@ -7,7 +8,6 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeControler from "./TimeControler";
 import Calendar from "./Calendar";
-import { GET } from "apis/api";
 
 const SearchBar = ({ onClose }) => {
   const navigate = useNavigate();
@@ -43,10 +43,14 @@ const SearchBar = ({ onClose }) => {
 
   const onSelectTimeBlock = (e, timeBlock, index) => {
     if (!timeBlock.disabled) {
-      if (selectedStartTime === undefined) {
+      if (selectedStartTime === undefined || selectedEndTime === undefined) {
         setSelectedStartTime(index);
-        setSelectedEndTime(undefined);
+        setSelectedEndTime(index);
       } else {
+        if (index < selectedStartTime) {
+          setSelectedStartTime(index);
+          setSelectedEndTime(undefined);
+        }
         setSelectedEndTime(index);
       }
     }
@@ -106,26 +110,36 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    const params = {
-      page,
-      keyword,
-      date,
-      startTime,
-      endTime,
-      headCount,
-      sortType,
-      minGrade,
-      eventInProgress,
-      hashtags: Array.isArray(hashtags) ? hashtags.join(",") : [],
-      conveniences: Array.isArray(conveniences) ? conveniences.join(",") : [],
-    };
+    let url = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${page}`;
+
+    const queryParams = [];
+
+    if (keyword) queryParams.push(`keyword=${keyword}`);
+    if (date) queryParams.push(`date=${date}`);
+    if (startTime) queryParams.push(`startTime=${startTime}`);
+    if (endTime) queryParams.push(`endTime=${endTime}`);
+    if (headCount) queryParams.push(`headCount=${headCount}`);
+    if (sortType) queryParams.push(`sortType=${sortType}`);
+    if (minGrade) queryParams.push(`minGrade=${minGrade}`);
+    if (eventInProgress) queryParams.push(`eventInProgress=${eventInProgress}`);
+    if (hashtags && hashtags.length > 0) {
+      queryParams.push(`hashtags=${hashtags.join(",")}`);
+    }
+    if (conveniences && conveniences.length > 0) {
+      queryParams.push(`conveniences=${conveniences.join(",")}`);
+    }
+
+    if (queryParams.length > 0) {
+      url += `&${queryParams.join("&")}`;
+    }
 
     try {
-      const response = await GET("/studious/search", null, params);
+      const response = await GET(url);
 
       if (response.status === 200) {
         const responseData = response.data;
         setSearchResult(responseData);
+        console.log(response.data);
 
         navigate("/search-result", {
           state: {
@@ -287,7 +301,6 @@ const SearchBarWrapper = styled.div`
   justify-content: center;
   position: relative;
 `;
-
 const SearchBarLayout = styled.div`
   position: relative;
   display: flex;
@@ -335,7 +348,7 @@ const SearchBarButton = styled.button`
 `;
 const CalendarModal = styled.div`
   position: fixed;
-  top: 34%;
+  top: 35%;
   left: 34%;
   width: 40rem;
   height: 50rem;
@@ -347,7 +360,7 @@ const CountModal = styled.div`
   position: fixed;
   justify-content: space-between;
   align-items: center;
-  top: 34%;
+  top: 35%;
   left: 70%;
   width: 40rem;
   height: 15rem;

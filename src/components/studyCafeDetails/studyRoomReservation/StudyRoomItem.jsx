@@ -1,55 +1,108 @@
 import styled from "styled-components";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import NumberController from "components/common/NumberController";
+import TimeController from "components/common/TimeController";
 import useRedirectLogin from "hooks/useRedirectLogin";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { setCookie } from "utils/cookie";
+import { useState, useMemo } from "react";
+import { useSetRecoilState } from "recoil";
+import { reservationReqState } from "recoil/atoms/reservationReqState";
+import { formatDateToString } from "utils/formatDate";
+import useTimeController from "hooks/useTimeController";
+import { useNumberController } from "hooks/useNumberController";
+import * as ConvenienceIcons from "components/common/convenienceIcons";
+import { convenienceDic } from "components/constants/ConvenienceData";
 
 const StudyRoomItem = ({
   roomData: {
     id,
-    name,
-    minCount,
-    maxCount,
+    roomName,
+    minHeadCount,
+    maxHeadCount,
+    minUsingTime,
     price,
-    type,
+    priceType,
     conveniences,
     paidConveniences,
     canReserveDatetime,
     photos,
   },
-  selectedDate,
+  date,
 }) => {
   const navigate = useNavigate();
   const { handleRedirect } = useRedirectLogin();
-  const [startTime, setStartTime] = useState("00:00");
-  const [endTime, setEndTime] = useState("00:00");
-  const [duration, setDuration] = useState(0);
-  const [headCount, setHeadCount] = useState(minCount);
-  const pathname = useLocation().pathname.slice(1);
-  const cafeId = pathname.slice(pathname.indexOf("/") + 1);
+  const [startTime, setStartTime] = useState(undefined);
+  const [endTime, setEndTime] = useState(undefined);
+  const { pathname } = useLocation();
+  const cafeId = pathname.slice(pathname.lastIndexOf("/") + 1);
+  const setReservationReqState = useSetRecoilState(reservationReqState);
+  const [selectedPaidConvenience, setSelectedPaidConvenience] = useState([]);
+  const getEndTimeUsingTime = (startTime, endTime) => {
+    let definedEndTime = endTime + 1;
+    if (!definedEndTime) {
+      definedEndTime = startTime + 1;
+    }
+
+    const usingTime = definedEndTime - startTime;
+    return { usingTime, definedEndTime };
+  };
   const handleClickReservation = () => {
-    setCookie({
-      key: "reservationInfo",
-      value: {
-        cafeId,
-        roomId: id,
-        date: selectedDate,
-        startTime,
-        endTime,
-        duration,
-        headCount,
-        price,
-      },
+    const { usingTime, definedEndTime } = getEndTimeUsingTime(
+      startTime,
+      endTime
+    );
+    if (definedEndTime - startTime < minUsingTime) {
+      alert(`최소 이용 시간은 ${minUsingTime}시간입니다.`);
+      return;
+    }
+    setReservationReqState({
+      cafeId,
+      roomId: id,
+      date: formatDateToString(date, "-"),
+      startTime: `${startTime.toString().padStart(2, "0")}:00`,
+      endTime: `${definedEndTime.toString().padStart(2, "0")}:00`,
+      usingTime,
+      headCount: userCount,
+      selectedPaidConvenience: selectedPaidConvenience,
+      price: totalPrice,
     });
     if (!handleRedirect()) {
       navigate(`/studyCafe/${id}/reservation`);
     }
   };
+  const { onSelectTimeBlock } = useTimeController({
+    startTime,
+    setStartTime,
+    setEndTime,
+  });
+  const { userCount, handleUserCount } = useNumberController(
+    minHeadCount,
+    maxHeadCount
+  );
+
+  const totalPrice = useMemo(() => {
+    const usingTime = getEndTimeUsingTime(startTime, endTime).usingTime;
+    const selectedPaidConveniencePrice =
+      selectedPaidConvenience.length > 0 ? selectedPaidConvenience[0].price : 0;
+    if (priceType === "PER_PERSON") {
+      return price * userCount * usingTime + selectedPaidConveniencePrice;
+    }
+    return price * usingTime + selectedPaidConveniencePrice;
+  }, [
+    userCount,
+    startTime,
+    endTime,
+    price,
+    priceType,
+    selectedPaidConvenience,
+  ]);
+
+  const handleSelectPaidConvenience = (e) => {
+    setSelectedPaidConvenience([JSON.parse(e.target.value)]);
+  };
   return (
     <ItemContainer>
-      <ItemLeftSection>
+      <ItemLeftSection isSingleImage={photos.length === 1}>
         <img src={photos[0]} alt="스터디룸 이미지" />
         <SmallImagesSlider gap={0.9}>
           {photos.slice(1).map((photo, photoIndex) => {
@@ -60,13 +113,13 @@ const StudyRoomItem = ({
       <ItemRightSection>
         <StudyRoomMainInfoBox>
           <div className="info">
-            {name}
-            <div className="info__sub">{`최소 ${minCount}인 ~ 최대 ${maxCount}인`}</div>
+            {roomName}
+            <div className="info__sub">{`최소 ${minHeadCount}인 ~ 최대 ${maxHeadCount}인`}</div>
           </div>
           <div className="info">
             <div>{`${formatNumberWithCommas(price)}원`}</div>
             <div className="info__sub">
-              {type === "PER_HOUR" ? "/ 시간" : "/ 인"}
+              {priceType === "PER_HOUR" ? "/ 시간" : "/ 인"}
             </div>
           </div>
         </StudyRoomMainInfoBox>
@@ -77,28 +130,62 @@ const StudyRoomItem = ({
               name="paidConveniences"
               className="select"
               defaultValue={"선택하기"}
+              onChange={handleSelectPaidConvenience}
             >
               <option>선택하기</option>
               {paidConveniences.map((item, itemIndex) => (
                 <option value={JSON.stringify(item)} key={itemIndex}>
-                  {item.convenienceName}
+                  {`${item.convenienceName} (+${formatNumberWithCommas(
+                    item.price
+                  )})`}
                 </option>
               ))}
             </select>
           </PaidConveniencesBox>
           <UserNumberCounterBox>
             <span>인원수</span>
-            <NumberController minCount={minCount} maxCount={maxCount} />
+            <NumberController
+              userCount={userCount}
+              handleUserCount={handleUserCount}
+            />
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
-        <ExpectedPriceLayout>
-          <div>
-            <span>예상 결제 금액</span>
-            <span className="highlight">{`${formatNumberWithCommas(
-              15000
-            )}원`}</span>
-          </div>
-        </ExpectedPriceLayout>
+        <TimeController
+          hours={canReserveDatetime[formatDateToString(date, "-")]}
+          selectedStartTime={startTime}
+          selectedEndTime={endTime}
+          onSelectTimeBlock={onSelectTimeBlock}
+        />
+        {(startTime || endTime) && (
+          <ExpectedPriceLayout>
+            <div>
+              <span>예상 결제 금액</span>
+              <span className="highlight">{`${formatNumberWithCommas(
+                totalPrice
+              )}원`}</span>
+            </div>
+          </ExpectedPriceLayout>
+        )}
+
+        <IconSection>
+          {conveniences &&
+            conveniences.length > 0 &&
+            conveniences.map((convenienceName, index) => {
+              return (
+                <IconContainer>
+                  <IconBox>
+                    <img
+                      src={ConvenienceIcons[convenienceName]}
+                      width={"100%"}
+                      height={"100%"}
+                      alt="편의시설 아이콘"
+                    />
+                  </IconBox>
+                  <IconLabel>{convenienceDic[convenienceName]}</IconLabel>
+                </IconContainer>
+              );
+            })}
+        </IconSection>
         <ReservationButton onClick={handleClickReservation}>
           예약하기
         </ReservationButton>
@@ -109,9 +196,29 @@ const StudyRoomItem = ({
 
 export default StudyRoomItem;
 
+const IconSection = styled.div`
+  margin: 1rem 0;
+  display: flex;
+  row-gap: 1rem;
+  column-gap: 2rem;
+  flex-wrap: wrap;
+`;
+const IconContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-direction: column;
+`;
+const IconBox = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+const IconLabel = styled.div``;
+
 const ItemContainer = styled.div`
   width: 100%;
-  height: 56rem;
+  min-height: 42rem;
   background-color: ${({ theme }) => theme.colors.mostLight};
   padding: 4rem;
   display: flex;
@@ -120,6 +227,8 @@ const ItemContainer = styled.div`
 
 const ItemLeftSection = styled.section`
   width: 50%;
+  display: flex;
+  align-items: ${({ isSingleImage }) => (isSingleImage ? "center" : "stretch")};
 
   > img {
     border-radius: 2.5rem;
@@ -152,6 +261,7 @@ const SmallImagesSlider = styled.div`
 
 const ItemRightSection = styled.section`
   width: 50%;
+  position: relative;
 `;
 
 const StudyRoomMainInfoBox = styled.div`
@@ -225,6 +335,9 @@ const ExpectedPriceLayout = styled.div`
     }
   }
   margin-bottom: 1rem;
+  position: absolute;
+  bottom: 5rem;
+  right: 0;
 `;
 
 const ReservationButton = styled.button`
@@ -237,4 +350,6 @@ const ReservationButton = styled.button`
   background-color: ${({ theme }) => theme.colors.mainDark};
   ${({ theme }) => theme.fonts.body1Bold};
   color: #fff;
+  position: absolute;
+  bottom: 0;
 `;

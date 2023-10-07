@@ -10,6 +10,11 @@ import RefundPolicyBox from "components/common/RefundPolicyBox";
 import { Title, TitleSub } from "components/common/Title";
 import { useReservationQuery } from "hooks/queries/useReservation";
 import { getCookie } from "utils/cookie";
+import { useRecoilValue } from "recoil";
+import { reservationReqState } from "recoil/atoms/reservationReqState";
+import Loading from "components/common/Loading";
+import * as ConvenienceIcons from "components/common/convenienceIcons";
+import { convenienceDic } from "components/constants/ConvenienceData";
 
 const Reservation = () => {
   const { handleRedirect } = useRedirectLogin(true);
@@ -21,25 +26,28 @@ const Reservation = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const reservationInfo = getCookie("reservationInfo");
+  const reservationInfo = useRecoilValue(reservationReqState);
   const {
     cafeId,
     roomId,
     date,
     startTime,
     endTime,
-    duration,
-    headcount,
+    usingTime,
+    headCount,
     price,
+    selectedPaidConvenience,
   } = reservationInfo;
-  const { data } = useReservationQuery({
+  const { data, isLoading } = useReservationQuery({
     cafeId,
     roomId,
     token: getCookie("accessToken"),
   });
 
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [selectedConveniences, setSelectedConveniences] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(price);
+  const [selectedConveniences, setSelectedConveniences] = useState(
+    selectedPaidConvenience
+  );
   const [userInfo, setUserInfo] = useState({
     name: data?.username,
     phoneNumber: data?.userPhoneNumber,
@@ -71,18 +79,51 @@ const Reservation = () => {
       }));
     }
   };
+
+  const handleCheckPaidConvenience = (e, convenienceName, price) => {
+    if (!e.target.checked) {
+      setTotalPrice((totalPrice) => totalPrice - price);
+      const newSelectedConveniences = selectedConveniences.filter(
+        (convenience) => {
+          return convenience.convenienceName !== e.target.id;
+        }
+      );
+      setSelectedConveniences(newSelectedConveniences);
+      return;
+    }
+    setSelectedConveniences((prevConveniences) => [
+      ...prevConveniences,
+      {
+        convenienceName,
+        price,
+      },
+    ]);
+    setTotalPrice((totalPrice) => totalPrice + price);
+  };
+
+  const handleRequestChange = (e) => {
+    setUserInfo((userInfo) => ({
+      ...userInfo,
+      request: e.target.textContent,
+    }));
+  };
+
+  if (isLoading) return <Loading />;
   return (
     <>
       <Title>{data?.cafeName}</Title>
 
       <RemoteControlSection>
         <RemoteControl
+          cafeId={cafeId}
+          roomId={roomId}
           date={date}
           startTime={startTime}
           endTime={endTime}
-          duration={duration}
-          headcount={headcount}
+          usingTime={usingTime}
+          headCount={headCount}
           selectedConveniences={selectedConveniences}
+          userInfo={userInfo}
           totalPrice={totalPrice}
         />
       </RemoteControlSection>
@@ -93,6 +134,26 @@ const Reservation = () => {
           </div>
           <div className="right">
             <StudyRoomName>{data?.roomName}</StudyRoomName>
+
+            <IconSection>
+              {data?.conveniences &&
+                data?.conveniences.length > 0 &&
+                data?.conveniences.map((convenienceName, index) => {
+                  return (
+                    <IconContainer>
+                      <IconBox>
+                        <img
+                          src={ConvenienceIcons[convenienceName]}
+                          width={"100%"}
+                          height={"100%"}
+                          alt="편의시설 아이콘"
+                        />
+                      </IconBox>
+                      <IconLabel>{convenienceDic[convenienceName]}</IconLabel>
+                    </IconContainer>
+                  );
+                })}
+            </IconSection>
           </div>
         </TwoColumnContainer>
         <TwoColumnContainer>
@@ -135,12 +196,7 @@ const Reservation = () => {
             <TitleSub>요청사항</TitleSub>
             <EditableDiv
               placeholder="요청하실 내용을 입력해주세요."
-              onChange={(e) =>
-                setUserInfo((userInfo) => ({
-                  ...userInfo,
-                  request: e.target.value,
-                }))
-              }
+              onChange={handleRequestChange}
             />
           </div>
         </TwoColumnContainer>
@@ -152,14 +208,30 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>유료 편의 시설</TitleSub>
-          {data?.paidConveniences.length ? (
+          {data?.paidConveniences.length > 0 ? (
             <CheckBoxList>
               {data?.paidConveniences.map(
                 ({ convenienceName, price }, index) => {
                   return (
-                    <CheckBoxListItem key={index}>
+                    <CheckBoxListItem key={convenienceName + price + index}>
                       <div className="checkbox">
-                        <input type="checkbox" id={convenienceName} />
+                        <input
+                          type="checkbox"
+                          id={convenienceName}
+                          onChange={(e) =>
+                            handleCheckPaidConvenience(
+                              e,
+                              convenienceName,
+                              price
+                            )
+                          }
+                          defaultChecked={
+                            selectedPaidConvenience.length > 0
+                              ? convenienceName ===
+                                selectedPaidConvenience[0].convenienceName
+                              : false
+                          }
+                        />
                         <label htmlFor={convenienceName}>
                           {convenienceName}
                         </label>
@@ -190,6 +262,28 @@ const Reservation = () => {
 };
 
 export default Reservation;
+
+const IconSection = styled.div`
+  margin: 3rem 0;
+  display: flex;
+  row-gap: 1rem;
+  column-gap: 2rem;
+  flex-wrap: wrap;
+`;
+const IconContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-direction: column;
+`;
+const IconBox = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+const IconLabel = styled.div`
+  font-size: small;
+`;
 
 const RemoteControlSection = styled.section`
   width: 30%;
