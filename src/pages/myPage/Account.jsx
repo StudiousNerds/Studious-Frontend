@@ -13,33 +13,34 @@ import DeleteAccountModal from "components/myPage/account/DeleteAccountModal";
 import { Button } from "components/common/Button";
 import { getToken } from "utils/cookie";
 import EditProfileImage from "components/myPage/account/EditProfileImage";
+import DotLoader from "components/common/DotLoader";
 
 const Account = () => {
   const { data, isLoading } = useMyPageAccount();
   const token = getToken();
   const [isEditNickname, setIsEditNickname] = useState(false);
   const [newNickname, setNewNickname] = useState("");
-  const useNickname = useNicknameMutation();
+  const nicknameMutation = useNicknameMutation();
   const [isEditPhoneNumber, setIsEditPhoneNumber] = useState(false);
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
-  const usePhoneNumber = usePhoneNumberMutation();
+  const phoneNumberMutation = usePhoneNumberMutation();
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [passwordEditState, setPasswordEditState] = useState({
     oldPassword: "",
     newPassword: "",
   });
   const [isPasswordCheckWrong, setIsPasswordCheckWrong] = useState(false);
-  const usePassword = usePasswordMutation();
+  const passwordMutation = usePasswordMutation();
   const [isWithdrawClick, setIsWithdrawClick] = useState(false);
   const handleEditNicknameClick = () => {
     if (isEditNickname) {
-      useNickname.mutate({ newNickname, token });
+      nicknameMutation.mutate({ newNickname, token });
     }
     setIsEditNickname((isEdit) => !isEdit);
   };
   const handleEditPhoneNumberClick = () => {
     if (isEditPhoneNumber) {
-      usePhoneNumber.mutate({ newPhoneNumber, token });
+      phoneNumberMutation.mutate({ newPhoneNumber, token });
     }
     setIsEditPhoneNumber((isEdit) => !isEdit);
   };
@@ -47,7 +48,7 @@ const Account = () => {
     const { oldPassword, newPassword } = passwordEditState;
     if (!isPasswordCheckWrong && passwordEditState.oldPassword) {
       if (isEditPassword) {
-        usePassword.mutate({ oldPassword, newPassword, token });
+        passwordMutation.mutate({ oldPassword, newPassword, token });
       }
     }
     setIsEditPassword((isEdit) => !isEdit);
@@ -75,9 +76,15 @@ const Account = () => {
               <AccountInformationRow>
                 <div>닉네임</div>
                 <div className="edit-column">
-                  {newNickname && !isEditNickname
-                    ? newNickname
-                    : data?.nickname.trim()}
+                  {nicknameMutation.isLoading ? (
+                    <DotLoader size={"1rem"} />
+                  ) : newNickname &&
+                    !isEditNickname &&
+                    nicknameMutation.isSuccess ? (
+                    newNickname
+                  ) : (
+                    data?.nickname.trim()
+                  )}
                   {isEditNickname && (
                     <EditInputBox
                       onChange={(e) => setNewNickname(e.target.value)}
@@ -110,9 +117,15 @@ const Account = () => {
               <AccountInformationRow>
                 <div>휴대전화</div>
                 <div className="edit-column">
-                  {newPhoneNumber && isEditPhoneNumber
-                    ? newPhoneNumber
-                    : data?.phoneNumber}
+                  {phoneNumberMutation.isLoading ? (
+                    <DotLoader size="1rem" />
+                  ) : newPhoneNumber &&
+                    !isEditPhoneNumber &&
+                    phoneNumberMutation.isSuccess ? (
+                    newPhoneNumber
+                  ) : (
+                    data?.phoneNumber
+                  )}
                   {isEditPhoneNumber && (
                     <EditInputBox
                       onChange={(e) => setNewPhoneNumber(e.target.value)}
@@ -172,6 +185,17 @@ const Account = () => {
                         <GuideText>비밀번호가 일치하지 않습니다.</GuideText>
                       )}
                     </>
+                  )}
+                  {passwordMutation.isLoading ? (
+                    <DotLoader size="1rem" />
+                  ) : passwordMutation.isError ? (
+                    <GuideText>
+                      서버 오류로 변경에 실패했습니다. 다시 시도해주세요.
+                    </GuideText>
+                  ) : (
+                    passwordMutation.isSuccess && (
+                      <GuideText>성공적으로 변경되었습니다.</GuideText>
+                    )
                   )}
                 </div>
                 <div className="buttons-column">
