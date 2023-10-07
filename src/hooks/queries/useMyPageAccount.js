@@ -5,6 +5,7 @@ import {
   patchPhoneNumber,
   patchPassword,
   postWithdrawAccount,
+  postProfileImage,
 } from "apis/myPageAccount";
 import { getToken } from "utils/cookie";
 
@@ -38,4 +39,8 @@ export const usePasswordMutation = () => {
 
 export const useWithdrawMutation = () => {
   return useMutation(postWithdrawAccount);
+};
+
+export const useProfileImageMutation = () => {
+  return useMutation(postProfileImage);
 };

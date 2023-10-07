@@ -1,19 +1,18 @@
 import styled from "styled-components";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
-import ProfileImg from "components/common/ProfileImg";
 import {
   useMyPageAccount,
   useNicknameMutation,
   usePasswordMutation,
   usePhoneNumberMutation,
 } from "hooks/queries/useMyPageAccount";
-import { ReactComponent as SettingsIcon } from "assets/icons/settings.svg";
 import { useState } from "react";
 import { comparePassword } from "utils/comparePassword";
 import Loading from "components/common/Loading";
 import DeleteAccountModal from "components/myPage/account/DeleteAccountModal";
 import { Button } from "components/common/Button";
 import { getToken } from "utils/cookie";
+import EditProfileImage from "components/myPage/account/EditProfileImage";
 
 const Account = () => {
   const { data, isLoading } = useMyPageAccount();
@@ -50,8 +49,8 @@ const Account = () => {
       if (isEditPassword) {
         usePassword.mutate({ oldPassword, newPassword, token });
       }
-      setIsEditPassword((isEdit) => !isEdit);
     }
+    setIsEditPassword((isEdit) => !isEdit);
   };
   const handleCheckPasswordChange = (e) => {
     if (!comparePassword(passwordEditState.newPassword, e.target.value)) {
@@ -67,10 +66,7 @@ const Account = () => {
       ) : (
         <>
           <AccountLayout>
-            <AccountProfileImageSection>
-              <ProfileImg imageSrc={data?.photo} size={18} />
-              <SettingsIcon style={{ position: "absolute", right: 0 }} />
-            </AccountProfileImageSection>
+            <EditProfileImage imageSrc={data?.photo} />
             <AccountInformationSection>
               <AccountInformationRow>
                 <div>이름</div>
@@ -223,9 +219,6 @@ const AccountLayout = styled.section`
   display: flex;
   gap: 4rem;
   ${({ theme }) => theme.fonts.heading2};
-`;
-const AccountProfileImageSection = styled.div`
-  position: relative;
 `;
 const AccountInformationSection = styled.div`
   width: 100%;

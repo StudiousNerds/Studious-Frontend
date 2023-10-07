@@ -49,3 +49,14 @@ export const postWithdrawAccount = async ({ password, token }) => {
   );
   return data;
 };
+
+export const postProfileImage = async ({ file, token }) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const { data } = await POST(
+    `/studious/mypage/members/photo`,
+    formData,
+    token
+  );
+  return data;
+};
