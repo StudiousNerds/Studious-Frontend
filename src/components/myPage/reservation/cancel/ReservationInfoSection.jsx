@@ -2,12 +2,10 @@ import styled from "styled-components";
 import ThumbnailImage from "components/common/ThumbnailImage";
 
 const ReservationInfoSection = ({
-  reservationData: {
-    studycafeName,
-    studycafePhoto,
-    roomName,
-    reservation: { date, startTime, endTime, usingTime },
-  },
+  studycafePhoto,
+  studycafeName,
+  roomName,
+  reservation: { date, startTime, endTime, usingTime },
 }) => {
   const startTimeString = startTime.slice(0, startTime.lastIndexOf(":") + 1);
   const endTimeString = endTime.slice(0, endTime.lastIndexOf(":") + 1);

@@ -86,7 +86,12 @@ const MyReservationCancel = () => {
     e.target.checked ? setIsConfirmChecked(true) : setIsConfirmChecked(false);
   return (
     <TitleMainLayout title={"예약 취소"}>
-      <ReservationInfoSection reservationData={DUMMY_DATA.reservation} />
+      <ReservationInfoSection
+        studycafePhoto={DUMMY_DATA.reservation.studycafePhoto}
+        studycafeName={DUMMY_DATA.reservation.studycafeName}
+        roomName={DUMMY_DATA.reservation.roomName}
+        reservation={DUMMY_DATA.reservation.reservation}
+      />
       <Divider color="gray300" margin={4} />
       <PaymentRefundInfoSection>
         <div className="left">
