@@ -7,8 +7,8 @@ const ReservationInfoSection = ({
   roomName,
   reservation: { date, startTime, endTime, usingTime },
 }) => {
-  const startTimeString = startTime.slice(0, startTime.lastIndexOf(":") + 1);
-  const endTimeString = endTime.slice(0, endTime.lastIndexOf(":") + 1);
+  const startTimeString = startTime.slice(0, startTime.lastIndexOf(":"));
+  const endTimeString = endTime.slice(0, endTime.lastIndexOf(":"));
   return (
     <Section>
       <ThumbnailImage imageSrc={studycafePhoto} width={40} height={24} />
