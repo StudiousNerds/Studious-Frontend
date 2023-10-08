@@ -2,18 +2,22 @@ import styled from "styled-components";
 import ThumbnailImage from "components/common/ThumbnailImage";
 
 const ReservationInfoSection = ({
-  imageSrc,
-  cafeName,
-  roomName,
-  reservationDateTime,
+  reservationData: {
+    studycafeName,
+    studycafePhoto,
+    roomName,
+    reservation: { date, startTime, endTime, usingTime },
+  },
 }) => {
+  const startTimeString = startTime.slice(0, startTime.lastIndexOf(":") + 1);
+  const endTimeString = endTime.slice(0, endTime.lastIndexOf(":") + 1);
   return (
     <Section>
-      <ThumbnailImage imageSrc={imageSrc} width={40} height={24} />
+      <ThumbnailImage imageSrc={studycafePhoto} width={40} height={24} />
       <div className="text-info">
-        <span className="title">{cafeName}</span>
+        <span className="title">{studycafeName}</span>
         <span>{roomName}</span>
-        <span>{reservationDateTime}</span>
+        <span>{`${date} ${startTimeString} ~ ${endTimeString} (${usingTime}시간)`}</span>
       </div>
     </Section>
   );

@@ -11,58 +11,72 @@ import styled from "styled-components";
 
 const MyReservationCancel = () => {
   const DUMMY_DATA = {
-    studyname: "(스터디카페 이름)",
-    roomname: "(룸 이름)",
     reservation: {
-      date: "",
-      startTime: "20:00",
-      endTime: "22:00",
-      duration: 2,
+      studycafeName: "Nerds",
+      studycafePhoto:
+        "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/b6c73e77-7e36-46e8-ad85-fb2e63d1502d.jpeg",
+      roomName: "roomA",
+      reservation: {
+        date: "2023-10-08",
+        startTime: "02:00:00",
+        endTime: "04:00:00",
+        usingTime: 2,
+      },
     },
-    refundPolicy: [
-      {
-        day: "이용 8일 전",
-        rate: 90, // 퍼센티지
-      },
-      {
-        day: "이용 7일 전",
-        rate: 80, // 퍼센티지
-      },
-      {
-        day: "이용 6일 전",
-        rate: 70, // 퍼센티지
-      },
-      {
-        day: "이용 5일 전",
-        rate: 60, // 퍼센티지
-      },
-      {
-        day: "이용 4일 전",
-        rate: 50, // 퍼센티지
-      },
-      {
-        day: "이용 3일 전",
-        rate: 40, // 퍼센티지
-      },
-      {
-        day: "이용 2일 전",
-        rate: 30, // 퍼센티지
-      },
-      {
-        day: "이용 1일 전",
-        rate: 20, // 퍼센티지
-      },
-    ],
-    payment: {
-      method: "(결제 수단)",
-      price: 25000,
+    paymentRecord: {
+      totalPrice: 14000,
+      refundPrice: 0,
+      refundFee: 14000,
+      payment: [
+        {
+          price: 14000,
+          method: "카드",
+          completeTime: "2023-10-08T03:09:41",
+        },
+      ],
     },
-    refund: {
-      refundPrice: 1000,
-      refundFee: 500,
+    refundPolicy: {
+      refundPolicy: [
+        {
+          day: "이용 8일 전",
+          rate: 100,
+        },
+        {
+          day: "이용 7일 전",
+          rate: 100,
+        },
+        {
+          day: "이용 6일 전",
+          rate: 100,
+        },
+        {
+          day: "이용 5일 전",
+          rate: 100,
+        },
+        {
+          day: "이용 4일 전",
+          rate: 100,
+        },
+        {
+          day: "이용 3일 전",
+          rate: 70,
+        },
+        {
+          day: "이용 2일 전",
+          rate: 60,
+        },
+        {
+          day: "이용 1일 전",
+          rate: 50,
+        },
+        {
+          day: "이용 당일",
+          rate: 0,
+        },
+      ],
       refundPolicyOnDay: {
-        day: "이용 7일 전",
-        rate: 80,
+        day: "이용 당일",
+        rate: 0,
       },
     },
   };
@@ -72,12 +86,7 @@ const MyReservationCancel = () => {
     e.target.checked ? setIsConfirmChecked(true) : setIsConfirmChecked(false);
   return (
     <TitleMainLayout title={"예약 취소"}>
-      <ReservationInfoSection
-        imageSrc={null}
-        cafeName={"스터디카페 이름"}
-        roomName={"스터디룸 이름"}
-        reservationDateTime={"2023년 10월 8일"}
-      />
+      <ReservationInfoSection reservationData={DUMMY_DATA.reservation} />
       <Divider color="gray300" margin={4} />
       <PaymentRefundInfoSection>
         <div className="left">
