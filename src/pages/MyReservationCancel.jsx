@@ -1,3 +1,4 @@
+import { Button } from "components/common/Button";
 import Divider from "components/common/Divider";
 import RefundPolicyBox from "components/common/RefundPolicyBox";
 import { Title } from "components/common/Title";
@@ -76,31 +77,44 @@ const MyReservationCancel = () => {
       <PaymentRefundInfoSection>
         <div className="left">
           <PaymentDetailsSection />
-          <RefundInfoSection>
+          <section>
             <Title>환불 계좌 입력</Title>
-            <div className="detail-row">
+            <DetailsRow>
               <span>환불 계좌</span>
-              {BANK_CODES_DATA.map(({ bankName, bankCode }) => (
-                <option value={bankCode}>{bankName}</option>
-              ))}
-            </div>
-          </RefundInfoSection>
+              <div>
+                <select>
+                  {BANK_CODES_DATA.map(({ bankName, bankCode }) => (
+                    <option value={bankCode}>{bankName}</option>
+                  ))}
+                </select>
+                <input type="text" placeholder="계좌번호 입력" />
+              </div>
+            </DetailsRow>
+          </section>
         </div>
         <div className="right">
           <RefundPolicyBox />
         </div>
       </PaymentRefundInfoSection>
+      <Button text="다음" width={20} height={5} style={{ float: "right" }} />
     </TitleMainLayout>
   );
 };
 export default MyReservationCancel;
 
-const RefundInfoSection = styled.section``;
-
+const DetailsRow = styled.div`
+  ${({ theme }) => theme.fonts.body2};
+  display: flex;
+  justify-content: space-between;
+`;
 const PaymentRefundInfoSection = styled.section`
   display: flex;
   gap: 5rem;
   .left {
     flex-grow: 1;
   }
+  .right {
+    width: 40%;
+  }
+  margin-bottom: 7rem;
 `;
