@@ -1,5 +1,7 @@
 import Divider from "components/common/Divider";
+import RefundPolicyBox from "components/common/RefundPolicyBox";
 import { Title } from "components/common/Title";
+import { BANK_CODES_DATA } from "components/constants/BankCodeData";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
 import PaymentDetailsSection from "components/myPage/reservation/cancel/PaymentDetailsSection";
 import ReservationInfoSection from "components/myPage/reservation/cancel/ReservationInfoSection";
@@ -71,16 +73,34 @@ const MyReservationCancel = () => {
         reservationDateTime={"2023년 10월 8일"}
       />
       <Divider color="gray300" margin={4} />
-      <PaymentDetailsSection />
-      <RefundPaymentInfoSection>
-        <Title>환불 계좌 입력</Title>
-        <div className="detail-row">
-          <span>환불 계좌</span>
+      <PaymentRefundInfoSection>
+        <div className="left">
+          <PaymentDetailsSection />
+          <RefundInfoSection>
+            <Title>환불 계좌 입력</Title>
+            <div className="detail-row">
+              <span>환불 계좌</span>
+              {BANK_CODES_DATA.map(({ bankName, bankCode }) => (
+                <option value={bankCode}>{bankName}</option>
+              ))}
+            </div>
+          </RefundInfoSection>
         </div>
-      </RefundPaymentInfoSection>
+        <div className="right">
+          <RefundPolicyBox />
+        </div>
+      </PaymentRefundInfoSection>
     </TitleMainLayout>
   );
 };
 export default MyReservationCancel;
 
-const RefundPaymentInfoSection = styled.section``;
+const RefundInfoSection = styled.section``;
+
+const PaymentRefundInfoSection = styled.section`
+  display: flex;
+  gap: 5rem;
+  .left {
+    flex-grow: 1;
+  }
+`;
