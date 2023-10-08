@@ -5,6 +5,9 @@ import Divider from "components/common/Divider";
 import { Title } from "components/common/Title";
 import NumberController from "components/common/NumberController";
 import { useNumberController } from "hooks/useNumberController";
+import { useMemo, useState } from "react";
+import { Button } from "components/common/Button";
+import { formatNumberWithCommas } from "utils/formatNumber";
 
 const MyReservationModify = () => {
   const DUMMY_DATA = {
@@ -40,7 +43,23 @@ const MyReservationModify = () => {
       },
     ],
   };
-  const { userCount, handleUserCount } = useNumberController(2, 4);
+  const { userCount, handleUserCount } = useNumberController(2, 6, 5);
+  const [additionalItemsPrice, setAdditionalItemsPrice] = useState(0);
+  const handleItemChange = (e) => {
+    const targetPrice = JSON.parse(e.target.value).price;
+    if (e.target.checked) {
+      setAdditionalItemsPrice(
+        (additionalItemsPrice) => additionalItemsPrice + targetPrice
+      );
+      return;
+    }
+    setAdditionalItemsPrice(
+      (additionalItemsPrice) => additionalItemsPrice - targetPrice
+    );
+  };
+  const additionalTotalPrice = useMemo(() => {
+    return (userCount - DUMMY_DATA.headCount) * 2000 + additionalItemsPrice;
+  }, [userCount, additionalItemsPrice, DUMMY_DATA.headCount]);
   return (
     <TitleMainLayout title={"예약 취소"}>
       <ReservationInfoSection
@@ -76,7 +95,12 @@ const MyReservationModify = () => {
         {DUMMY_DATA.notPaidList.length > 0 &&
           DUMMY_DATA.notPaidList.map(({ name, price }) => (
             <CheckBoxListItem>
-              <input id="paid-checkbox-list" type="checkbox" />
+              <input
+                id="paid-checkbox-list"
+                type="checkbox"
+                onChange={handleItemChange}
+                value={JSON.stringify({ name, price })}
+              />
               <label
                 for="paid-checkbox-list"
                 className="paid-checkbox-list__label"
@@ -87,6 +111,19 @@ const MyReservationModify = () => {
             </CheckBoxListItem>
           ))}
       </CheckBoxList>
+      <SummaryRow>
+        <PaymentSummary>
+          <span>추가 결제 금액</span>
+          <span>{`${formatNumberWithCommas(additionalTotalPrice)}원`}</span>
+        </PaymentSummary>
+        <Button
+          text="결제하기"
+          colorTheme="light"
+          width={15}
+          height={4}
+          disabled={additionalTotalPrice === 0}
+        />
+      </SummaryRow>
     </TitleMainLayout>
   );
 };
@@ -111,5 +148,24 @@ const CheckBoxListItem = styled.li`
     display: flex;
     gap: 1rem;
     justify-content: space-between;
+  }
+`;
+
+const SummaryRow = styled.div`
+  float: right;
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+`;
+
+const PaymentSummary = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  span:first-child {
+    ${({ theme }) => theme.fonts.caption2}
+  }
+  span:last-child {
+    ${({ theme }) => theme.fonts.heading2Bold}
   }
 `;
