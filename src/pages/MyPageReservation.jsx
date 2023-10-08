@@ -11,12 +11,13 @@ import { GET } from "apis/api";
 import Loading from "components/common/Loading";
 
 const MyPageReservation = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("ALL");
   const [reservations, setReservations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPageCount, setTotalPageCount] = useState(0);
   const [clickedItem, setClickedItem] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [clickedItemDetails, setClickedItemDetails] = useState([]);
 
   function getCookie(name) {
     const cookies = document.cookie.split("; ");
@@ -39,16 +40,6 @@ const MyPageReservation = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-  };
-
-  const handleDateFilter = (dateFilterData) => {
-    //console.log("Selected Date Filter:", dateFilterData);
-  };
-
-  const handleItemClick = (item) => {
-    setClickedItem(item);
-  };
-  const handle = () => {
     try {
       axios
         .get(
@@ -56,10 +47,10 @@ const MyPageReservation = () => {
           {
             // params: {
             //   page: 1,
-            //   startDate: "2023-07-30",
-            //   endDate: "2023-07-31",
+            //   startDate: "",
+            //   endDate: "",
             //   studycafeName: "Nerds",
-            //   tab: "ALL",
+            //   tab: tab,
             // },
             headers: {
               "Content-Type": "application/json",
@@ -68,8 +59,6 @@ const MyPageReservation = () => {
           }
         )
         .then((response) => {
-          console.log(response.data.reservationRecordInfoWithStatusList);
-          console.log(response.data);
           setReservations(response.data.reservationRecordInfoWithStatusList);
         });
     } catch (error) {
@@ -77,70 +66,54 @@ const MyPageReservation = () => {
     }
   };
 
-  useEffect(() => {
-    // 확정된 예약 데이터 가져오기
-    setIsLoading(true);
-    axios
-      .get(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
+  const handleDateFilter = (dateFilterData) => {
+    //console.log("Selected Date Filter:", dateFilterData);
+  };
+
+  const handleItemClick = async (item) => {
+    try {
+      const response = await axios.get(
+        `/studious/mypage/reservations/${item.reservationId}`,
         {
-          // params: {
-          //   page: 1,
-          //   startDate: "2023-07-30",
-          //   endDate: "2023-07-31",
-          //   studycafeName: "Nerds",
-          //   tab: "ALL",
-          // },
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         }
-      )
-      .then((response) => {
-        console.log("here", response.data);
-        setReservations(response.data.reservationRecordInfoWithStatusList);
-        setIsLoading(false);
-      });
+      );
 
-    // 이용 중인 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setOngoingReservations(response.data);
-    // });
+      setClickedItemDetails(response.data);
 
-    // // 지난 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setPastReservations(response.data);
-    // });
+      // 예약 모달을 열 수 있도록 설정
+      setClickedItem(item);
+    } catch (error) {
+      console.error("Error fetching reservation details:", error);
+    }
+  };
 
-    // // 취소된 예약 데이터 가져오기
-    // axios.get("").then((response) => {
-    //   setCancelledReservations(response.data);
-    // });
+  useEffect(() => {
+    // 전체 예약 데이터 가져오기
+    setIsLoading(true);
 
-    // 클릭한 탭에 따라 서버로 요청 보내기
-    // const axiosReservations = async () => {
-    //   try {
-    //     const response = await GET(
-    //       "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-    //       {
-    //         // page: currentPage,
-    //         // startDate: "",
-    //         // endDate: "",
-    //         // studycafeName: "",
-    //         // tab: activeTab,
-    //       }
-    //     );
+    const axiosReservations = async () => {
+      try {
+        const response = await GET("/studious/mypage/reservations", {
+          page: currentPage,
+          startDate: "",
+          endDate: "",
+          studycafeName: "",
+          tab: "ALL",
+        });
 
-    //     setReservations(response.data.reservationInfo);
-    //     setTotalPageCount(response.data.totalPageCount);
-    //   } catch (error) {
-    //     console.error("Error fetching reservations:", error);
-    //   }
-    // };
+        setReservations(response.data.reservationInfo);
+        setTotalPageCount(response.data.totalPageCount);
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
+      }
+    };
 
-    // axiosReservations();
-  }, [activeTab, currentPage]);
+    axiosReservations();
+  }, []);
 
   return (
     <>
@@ -152,55 +125,57 @@ const MyPageReservation = () => {
           <TabContainer>
             {/* 전체 예약 탭 */}
             <TabWrapper>
-              <TabButton active={activeTab === "all"} onClick={() => handle()}>
+              <TabButton
+                active={activeTab === "ALL"}
+                onClick={() => handleTabChange("ALL")}>
                 전체
               </TabButton>
-              <TabIndicator active={activeTab === "all"} />
+              <TabIndicator active={activeTab === "ALL"} />
             </TabWrapper>
 
             {/* 이용 전 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "confirmed"}
-                onClick={() => handleTabChange("confirmed")}>
+                active={activeTab === "BEFORE_USING"}
+                onClick={() => handleTabChange("BEFORE_USING")}>
                 이용 전 예약
               </TabButton>
-              <TabIndicator active={activeTab === "confirmed"} />
+              <TabIndicator active={activeTab === "BEFORE_USING"} />
             </TabWrapper>
 
             {/* 이용 중인 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "ongoing"}
-                onClick={() => handleTabChange("ongoing")}>
+                active={activeTab === "USING"}
+                onClick={() => handleTabChange("USING")}>
                 이용중인 예약
               </TabButton>
-              <TabIndicator active={activeTab === "ongoing"} />
+              <TabIndicator active={activeTab === "USING"} />
             </TabWrapper>
 
             {/* 지난 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "past"}
-                onClick={() => handleTabChange("past")}>
+                active={activeTab === "AFTER_USING"}
+                onClick={() => handleTabChange("AFTER_USING")}>
                 지난 예약
               </TabButton>
-              <TabIndicator active={activeTab === "past"} />
+              <TabIndicator active={activeTab === "AFTER_USING"} />
             </TabWrapper>
 
             {/* 취소된 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "cancelled"}
-                onClick={() => handleTabChange("cancelled")}>
+                active={activeTab === "CANCELED"}
+                onClick={() => handleTabChange("CANCELED")}>
                 취소된 예약
               </TabButton>
-              <TabIndicator active={activeTab === "cancelled"} />
+              <TabIndicator active={activeTab === "CANCELED"} />
             </TabWrapper>
           </TabContainer>
 
           <FilterAndSearchContainer>
-            {activeTab !== "confirmed" ? (
+            {activeTab !== "USING" ? (
               <>
                 <DateFilter onDateFilter={handleDateFilter}></DateFilter>
                 <ReservationSearchCafe></ReservationSearchCafe>
