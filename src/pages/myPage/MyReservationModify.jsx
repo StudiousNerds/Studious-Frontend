@@ -61,7 +61,7 @@ const MyReservationModify = () => {
     return (userCount - DUMMY_DATA.headCount) * 2000 + additionalItemsPrice;
   }, [userCount, additionalItemsPrice, DUMMY_DATA.headCount]);
   return (
-    <TitleMainLayout title={"예약 취소"}>
+    <TitleMainLayout title={"예약 변경"}>
       <ReservationInfoSection
         studycafeName={DUMMY_DATA.place.studycafeName}
         roomName={DUMMY_DATA.place.roomName}
