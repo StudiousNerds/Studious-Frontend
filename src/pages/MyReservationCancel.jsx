@@ -90,7 +90,7 @@ const MyReservationCancel = () => {
       <Divider color="gray300" margin={4} />
       <PaymentRefundInfoSection>
         <div className="left">
-          <PaymentDetailsSection />
+          <PaymentDetailsSection paymentRecord={DUMMY_DATA.paymentRecord} />
           <section>
             <Title>환불 계좌 입력</Title>
             <DetailsRow>
@@ -107,7 +107,9 @@ const MyReservationCancel = () => {
           </section>
         </div>
         <div className="right">
-          <RefundPolicyBox />
+          <RefundPolicyBox
+            refundPolicy={DUMMY_DATA.refundPolicy.refundPolicy}
+          />
         </div>
       </PaymentRefundInfoSection>
       <ConfirmContainer>
