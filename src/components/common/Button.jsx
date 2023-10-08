@@ -46,5 +46,11 @@ const ButtonContainer = styled.div`
       colorTheme === "dark" ? theme.colors.mainDark : ""};
     color: ${({ colorTheme, theme }) =>
       colorTheme === "light" ? theme.colors.mainDark : theme.colors.gray200};
+
+    :disabled {
+      background-color: ${({ theme }) => theme.colors.gray300};
+      color: ${({ theme }) => theme.colors.mostLight};
+      border: none;
+    }
   }
 `;
