@@ -6,6 +6,7 @@ import { BANK_CODES_DATA } from "components/constants/BankCodeData";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
 import PaymentDetailsSection from "components/myPage/reservation/cancel/PaymentDetailsSection";
 import ReservationInfoSection from "components/myPage/reservation/cancel/ReservationInfoSection";
+import { useState } from "react";
 import styled from "styled-components";
 
 const MyReservationCancel = () => {
@@ -65,6 +66,10 @@ const MyReservationCancel = () => {
       },
     },
   };
+
+  const [isConfirmChecked, setIsConfirmChecked] = useState(false);
+  const handleConfirmChange = (e) =>
+    e.target.checked ? setIsConfirmChecked(true) : setIsConfirmChecked(false);
   return (
     <TitleMainLayout title={"예약 취소"}>
       <ReservationInfoSection
@@ -96,7 +101,24 @@ const MyReservationCancel = () => {
           <RefundPolicyBox />
         </div>
       </PaymentRefundInfoSection>
-      <Button text="다음" width={20} height={5} style={{ float: "right" }} />
+      <ConfirmContainer>
+        <div className="confirm-checkbox">
+          <input
+            id="confirm-checkbox__input"
+            type="checkbox"
+            onChange={handleConfirmChange}
+          />
+          <label for="confirm-checkbox__input">
+            본인은 환불 정책을 확인하였으며 이상이 없음에 동의합니다.
+          </label>
+        </div>
+        <Button
+          text="다음"
+          width={20}
+          height={5}
+          disabled={!isConfirmChecked}
+        />
+      </ConfirmContainer>
     </TitleMainLayout>
   );
 };
@@ -107,6 +129,7 @@ const DetailsRow = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const PaymentRefundInfoSection = styled.section`
   display: flex;
   gap: 5rem;
@@ -117,4 +140,15 @@ const PaymentRefundInfoSection = styled.section`
     width: 40%;
   }
   margin-bottom: 7rem;
+`;
+
+const ConfirmContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  ${({ theme }) => theme.fonts.body2}
+  .confirm-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
 `;
