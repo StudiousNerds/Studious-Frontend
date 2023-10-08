@@ -17,6 +17,7 @@ import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
 import MyReservationCancel from "pages/MyReservationCancel";
+import MyReservationModify from "pages/myPage/MyReservationModify";
 import RedirectPayment from "pages/RedirectPayment";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
@@ -97,6 +98,10 @@ function App() {
                 <Route
                   path="/myPage/reservation/:reservationId/cancel"
                   element={<MyReservationCancel />}
+                />
+                <Route
+                  path="/myPage/reservation/:reservationId/modify"
+                  element={<MyReservationModify />}
                 />
                 {/* TODO 북마크 페이지 element 추가 */}
                 <Route path="/myPage/bookmarks" />
