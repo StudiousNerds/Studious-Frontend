@@ -1,6 +1,9 @@
 import Divider from "components/common/Divider";
+import { Title } from "components/common/Title";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
+import PaymentDetailsSection from "components/myPage/reservation/cancel/PaymentDetailsSection";
 import ReservationInfoSection from "components/myPage/reservation/cancel/ReservationInfoSection";
+import styled from "styled-components";
 
 const MyReservationCancel = () => {
   const DUMMY_DATA = {
@@ -68,7 +71,16 @@ const MyReservationCancel = () => {
         reservationDateTime={"2023년 10월 8일"}
       />
       <Divider color="gray300" margin={4} />
+      <PaymentDetailsSection />
+      <RefundPaymentInfoSection>
+        <Title>환불 계좌 입력</Title>
+        <div className="detail-row">
+          <span>환불 계좌</span>
+        </div>
+      </RefundPaymentInfoSection>
     </TitleMainLayout>
   );
 };
 export default MyReservationCancel;
+
+const RefundPaymentInfoSection = styled.section``;
