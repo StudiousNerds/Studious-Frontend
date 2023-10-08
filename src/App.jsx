@@ -21,6 +21,7 @@ import RedirectPayment from "pages/RedirectPayment";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
 import MyPageReservation from "pages/MyPageReservation";
+import Bookmark from "pages/Bookmark";
 
 function App() {
   const queryClient = new QueryClient();
@@ -94,6 +95,7 @@ function App() {
                   path="/myPage/reservation"
                   element={<MyPageReservation />}
                 />
+                <Route path="/myPage/bookmark" element={<Bookmark />} />
               </Routes>
             </AppLayout>
           </ThemeProvider>

@@ -1,27 +1,27 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
 import bookmarkOn from "assets/icons/bookmarkOn.svg";
 import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
-const StudyCafeGridSearch = ({
-  item: {
-    id,
-    name,
+const BookmarkItem = ({ item }) => {
+  const {
+    cafeId,
+    cafeName,
     photo,
     grade,
     accumRevCnt,
     nearestStation,
-    walkingTime,
+    distance,
     hashtags,
-  },
-}) => {
+  } = item;
+
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -41,13 +41,13 @@ const StudyCafeGridSearch = ({
   const accessToken = getCookie("accessToken");
 
   const handleClickItem = () => {
-    navigate(`/studyCafe/${id}`);
+    navigate(`/studyCafe/${cafeId}`);
   };
 
   const handleBookmarkClick = () => {
     setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
 
-    const itemId = id;
+    const itemId = cafeId;
     const bookmarkStatus = !isBookmarked;
 
     axios
@@ -89,7 +89,7 @@ const StudyCafeGridSearch = ({
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {name}
+          {cafeName}
           <div className="star">
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
@@ -100,8 +100,8 @@ const StudyCafeGridSearch = ({
         </ItemDetailsTitle>
         <ItemDetailsMeta>
           {nearestStation &&
-            walkingTime &&
-            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${walkingTime}분`}
+            distance &&
+            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`}
         </ItemDetailsMeta>
 
         <ItemDetailsHashtags>
@@ -116,7 +116,7 @@ const StudyCafeGridSearch = ({
   );
 };
 
-export default StudyCafeGridSearch;
+export default BookmarkItem;
 
 const ItemLayout = styled.div`
   display: flex;
