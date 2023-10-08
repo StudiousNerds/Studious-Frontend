@@ -1,4 +1,6 @@
-import { Title } from "components/common/Title";
+import ThumbnailImage from "components/common/ThumbnailImage";
+import TitleMainLayout from "components/layouts/TitleMainLayout";
+import styled from "styled-components";
 
 const MyReservationCancel = () => {
   const DUMMY_DATA = {
@@ -58,9 +60,26 @@ const MyReservationCancel = () => {
     },
   };
   return (
-    <>
-      <Title>예약 취소</Title>
-    </>
+    <TitleMainLayout title={"예약 취소"}>
+      <ReservationInfoSection>
+        <ThumbnailImage width={40} height={24} />
+      </ReservationInfoSection>
+    </TitleMainLayout>
   );
 };
 export default MyReservationCancel;
+
+const ReservationInfoSection = styled.section`
+  display: flex;
+  img {
+  }
+  div.text-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    ${({ theme }) => theme.fonts.heading2};
+    .title {
+      ${({ theme }) => theme.fonts.heading2Bold};
+    }
+  }
+`;
