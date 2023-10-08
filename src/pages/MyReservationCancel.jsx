@@ -1,6 +1,6 @@
-import ThumbnailImage from "components/common/ThumbnailImage";
+import Divider from "components/common/Divider";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
-import styled from "styled-components";
+import ReservationInfoSection from "components/myPage/reservation/cancel/ReservationInfoSection";
 
 const MyReservationCancel = () => {
   const DUMMY_DATA = {
@@ -61,25 +61,14 @@ const MyReservationCancel = () => {
   };
   return (
     <TitleMainLayout title={"예약 취소"}>
-      <ReservationInfoSection>
-        <ThumbnailImage width={40} height={24} />
-      </ReservationInfoSection>
+      <ReservationInfoSection
+        imageSrc={null}
+        cafeName={"스터디카페 이름"}
+        roomName={"스터디룸 이름"}
+        reservationDateTime={"2023년 10월 8일"}
+      />
+      <Divider color="gray300" margin={4} />
     </TitleMainLayout>
   );
 };
 export default MyReservationCancel;
-
-const ReservationInfoSection = styled.section`
-  display: flex;
-  img {
-  }
-  div.text-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    ${({ theme }) => theme.fonts.heading2};
-    .title {
-      ${({ theme }) => theme.fonts.heading2Bold};
-    }
-  }
-`;
