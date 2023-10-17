@@ -52,7 +52,7 @@ const StudyCafeGridSearch = ({
 
     axios
       .post(
-        "/studious/mypage/bookmarks",
+        "/bookmarks",
         {
           studycafeId: itemId,
         },

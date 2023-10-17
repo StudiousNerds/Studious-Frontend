@@ -15,6 +15,7 @@ export const Button = ({
   height,
   colorTheme = "dark",
   onClick,
+  disabled = false,
   style,
 }) => {
   return (
@@ -24,7 +25,9 @@ export const Button = ({
       colorTheme={colorTheme}
       style={style}
     >
-      <button onClick={onClick}>{text ? text : ""}</button>
+      <button onClick={onClick} disabled={disabled}>
+        {text ? text : ""}
+      </button>
     </ButtonContainer>
   );
 };
@@ -43,5 +46,11 @@ const ButtonContainer = styled.div`
       colorTheme === "dark" ? theme.colors.mainDark : ""};
     color: ${({ colorTheme, theme }) =>
       colorTheme === "light" ? theme.colors.mainDark : theme.colors.gray200};
+
+    :disabled {
+      background-color: ${({ theme }) => theme.colors.gray300};
+      color: ${({ theme }) => theme.colors.mostLight};
+      border: none;
+    }
   }
 `;

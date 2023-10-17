@@ -1,7 +1,11 @@
 import { useState } from "react";
 
-export const useNumberController = (minCount, maxCount) => {
-  const [userCount, setUserCount] = useState(minCount);
+export const useNumberController = (
+  minCount,
+  maxCount,
+  defaultCount = minCount
+) => {
+  const [userCount, setUserCount] = useState(defaultCount);
   const handleUserCount = (direction) => {
     if (direction === "minus" && userCount > minCount) {
       setUserCount((userCount) => userCount - 1);

@@ -24,7 +24,6 @@ const StudyCafeGridItem = ({ item }) => {
     navigate(`/studyCafe/${studycafeId}`);
   };
 
-  console.log(item);
   if (!item) return;
   return (
     <ItemLayout>

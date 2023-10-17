@@ -38,15 +38,19 @@ const Bookmark = () => {
 
   const loadBookmarks = async () => {
     try {
-      const response = await axios.get(`/studious/mypage/bookmarks`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          page: currentPage,
-          size: size,
-        },
-      });
+      const response = await axios.get(
+        `https://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080
+      /studious/mypage/bookmarks`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            page: currentPage,
+            size: size,
+          },
+        }
+      );
       setBookmarks(response.data.bookmarkInfo);
     } catch (error) {
       console.error("Error fetching bookmarks:", error);

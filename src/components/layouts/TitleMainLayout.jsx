@@ -14,6 +14,7 @@ export default TitleMainLayout;
 
 const MainLayout = styled.div`
   margin-top: 5rem;
+  margin-bottom: 20rem;
 `;
 
 const MainContainer = styled.main`
