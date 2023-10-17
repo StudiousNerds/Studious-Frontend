@@ -18,5 +18,9 @@ export default ProfileImg;
 const ImageContainer = styled.div`
   width: ${({ size }) => (typeof size === "number" ? `${size}rem` : size)};
   height: ${({ size }) => (typeof size === "number" ? `${size}rem` : size)};
-  border-radius: 50%;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
 `;
