@@ -23,6 +23,7 @@ import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
 import MyPageReservation from "pages/MyPageReservation";
 import PrivateRoute from "PrivateRoute";
+import Account from "pages/myPage/Account";
 
 function App() {
   const queryClient = new QueryClient();
