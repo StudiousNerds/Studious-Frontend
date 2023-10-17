@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { GET } from "apis/api";
 function useSearchResult({ currentPage, sortOption, searchBarData }) {
   const axiosSearchResult = async (params) => {
-    const response = await GET("/studious/search", null, params);
+    const response = await GET("/search", null, params);
     return response.data;
   };
 
