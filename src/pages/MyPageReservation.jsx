@@ -41,26 +41,21 @@ const MyPageReservation = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     try {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-          {
-            // params: {
-            //   page: 1,
-            //   startDate: "",
-            //   endDate: "",
-            //   studycafeName: "Nerds",
-            //   tab: tab,
-            // },
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        )
-        .then((response) => {
-          setReservations(response.data.reservationRecordInfoWithStatusList);
-        });
+      GET("mypage/reservations", {
+        // params: {
+        //   page: 1,
+        //   startDate: "",
+        //   endDate: "",
+        //   studycafeName: "Nerds",
+        //   tab: tab,
+        // },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }).then((response) => {
+        setReservations(response.data.reservationRecordInfoWithStatusList);
+      });
     } catch (error) {
       console.error("Error fetching reservations:", error);
     }
@@ -72,15 +67,12 @@ const MyPageReservation = () => {
 
   const handleItemClick = async (item) => {
     try {
-      const response = await axios.get(
-        `/studious/mypage/reservations/${item.reservationId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await GET(`/mypage/reservations/${item.reservationId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       setClickedItemDetails(response.data);
 
@@ -97,7 +89,7 @@ const MyPageReservation = () => {
 
     const axiosReservations = async () => {
       try {
-        const response = await GET("/studious/mypage/reservations", {
+        const response = await GET("/mypage/reservations", {
           page: currentPage,
           startDate: "",
           endDate: "",
