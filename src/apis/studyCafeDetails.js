@@ -9,7 +9,7 @@ export const getStudyRoomReservation = async ({ studyCafeId, date }) => {
   try {
     if (studyCafeId) {
       const { data } = await GET(
-        `/studious/studycafes/${studyCafeId}?date=${date || ""}`
+        `/studycafes/${studyCafeId}?date=${date || ""}`
       );
       return data;
     } else {
@@ -24,7 +24,7 @@ export const getAllStudyRoomsReviews = async ({ studyCafeId, page, size }) => {
   try {
     if (studyCafeId && page && size) {
       const { data } = await GET(
-        `/studious/studycafes/${studyCafeId}/reviews?page=${page}&size=${size}`
+        `/studycafes/${studyCafeId}/reviews?page=${page}&size=${size}`
       );
       return data;
     } else {
@@ -44,7 +44,7 @@ export const getStudyRoomReviews = async ({
   try {
     if (studyCafeId && studyRoomId && page && size) {
       const { data } = await GET(
-        `/studious/studycafes/${studyCafeId}/rooms/${studyRoomId}/reviews?page=${page}&size=${size}`
+        `/studycafes/${studyCafeId}/rooms/${studyRoomId}/reviews?page=${page}&size=${size}`
       );
       return data;
     } else {
@@ -60,9 +60,7 @@ export const getStudyRoomReviews = async ({
 export const getRefundPolicy = async ({ studyCafeId }) => {
   try {
     if (studyCafeId) {
-      const { data } = await GET(
-        `/studious/studycafes/${studyCafeId}/refundPolicy`
-      );
+      const { data } = await GET(`/studycafes/${studyCafeId}/refundPolicy`);
       return data;
     } else {
       throw new Error("studyCafeId를 전달하여 api를 호출해주세요.");
@@ -75,7 +73,7 @@ export const getRefundPolicy = async ({ studyCafeId }) => {
 export const getNotices = async ({ studyCafeId }) => {
   try {
     if (studyCafeId) {
-      const { data } = await GET(`/studious/studycafes/${studyCafeId}/notice`);
+      const { data } = await GET(`/studycafes/${studyCafeId}/notice`);
       return data;
     } else {
       throw new Error("studyCafeId를 전달하여 api를 호출해주세요.");

@@ -5,12 +5,12 @@ import {
   patchPhoneNumber,
   patchPassword,
   postWithdrawAccount,
+  postProfileImage,
 } from "apis/myPageAccount";
-import useRedirectLogin from "hooks/useRedirectLogin";
+import { getToken } from "utils/cookie";
 
 export const useMyPageAccount = () => {
-  const { token, handleRedirect } = useRedirectLogin();
-  handleRedirect();
+  const token = getToken();
   return useQuery(["useMyPageAccount"], () => getMyPageAccount(token));
 };
 
@@ -25,18 +25,20 @@ export const usePhoneNumberMutation = () => {
 export const usePasswordMutation = () => {
   return useMutation(patchPassword, {
     onError: (err) => {
+      /* TODO 현재는 실행되지 않는 코드 -> axios 400~500 에러 처리 추가 필요 */
       const errorCode = err.response.data.code;
       if (errorCode === "MISMATCH_PASSWORD") {
         alert("비밀번호가 일치하지 않습니다.");
       }
       console.error(err);
     },
-    onSuccess: () => {
-      alert("비밀번호가 성공적으로 변경되었습니다.");
-    },
   });
 };
 
 export const useWithdrawMutation = () => {
   return useMutation(postWithdrawAccount);
+};
+
+export const useProfileImageMutation = () => {
+  return useMutation(postProfileImage);
 };
