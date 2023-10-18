@@ -81,22 +81,19 @@ const MyPageReservation = () => {
     // 확정된 예약 데이터 가져오기
     setIsLoading(true);
     axios
-      .get(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-        {
-          // params: {
-          //   page: 1,
-          //   startDate: "2023-07-30",
-          //   endDate: "2023-07-31",
-          //   studycafeName: "Nerds",
-          //   tab: "ALL",
-          // },
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+      .get("/mypage/reservations", {
+        // params: {
+        //   page: 1,
+        //   startDate: "2023-07-30",
+        //   endDate: "2023-07-31",
+        //   studycafeName: "Nerds",
+        //   tab: "ALL",
+        // },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then((response) => {
         console.log("here", response.data);
         setReservations(response.data.reservationRecordInfoWithStatusList);

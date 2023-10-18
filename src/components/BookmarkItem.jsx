@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
@@ -7,12 +6,15 @@ import bookmarkOn from "assets/icons/bookmarkOn.svg";
 import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
 import { useNavigate } from "react-router-dom";
+import { POST } from "apis/api";
+import { DELETE } from "apis/api";
+import { getCookie } from "utils/cookie";
 
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const BookmarkItem = ({ item }) => {
   const {
-    cafeId,
+    studycafeId,
     cafeName,
     photo,
     grade,
@@ -25,50 +27,42 @@ const BookmarkItem = ({ item }) => {
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
-
   const accessToken = getCookie("accessToken");
 
   const handleClickItem = () => {
-    navigate(`/studyCafe/${cafeId}`);
+    navigate(`/studyCafe/${studycafeId}`);
   };
 
   const handleBookmarkClick = () => {
     setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
-
-    const itemId = cafeId;
+    const itemId = studycafeId;
     const bookmarkStatus = !isBookmarked;
 
-    axios
-      .post(
-        "/studious/mypage/bookmarks",
-        {
-          studycafeId: itemId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${accessToken}`,
+      },
+    };
+    if (isBookmarked) {
+      DELETE(`/mypage/bookmarks/${itemId}`, {}, config)
+        .then((response) => {
+          console.log(response);
+          setIsBookmarked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      POST(`/mypage/bookmarks/${itemId}`, {}, config)
+        .then((response) => {
+          console.log(response);
+          setIsBookmarked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (

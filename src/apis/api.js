@@ -33,23 +33,23 @@ const request = async ({ url, method, body, params, token }) => {
   }
 };
 
-axios.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
-    const navigate = useNavigate();
-    switch (error.response.status) {
-      case 401:
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-        break;
-      default:
-        console.error(error.response);
-    }
-    return Promise.reject(error);
-  }
-);
+// axios.interceptors.response.use(
+//   function (response) {
+//     return response;
+//   },
+//   function (error) {
+//     const navigate = useNavigate();
+//     switch (error.response.status) {
+//       case 401:
+//         alert("로그인이 필요합니다.");
+//         navigate("/login");
+//         break;
+//       default:
+//         console.error(error.response);
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export const GET = (url, token) => request({ url, method: "get", token });
 export const POST = (url, body, token) =>

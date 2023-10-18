@@ -6,7 +6,9 @@ import star from "assets/icons/starYellow.svg";
 import bookmarkOn from "assets/icons/bookmarkOn.svg";
 import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
-import axios from "axios";
+import { getCookie } from "utils/cookie";
+import { setCookie } from "utils/cookie";
+import { POST } from "apis/api";
 
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
@@ -25,50 +27,36 @@ const StudyCafeGridSearch = ({
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
-
-  const accessToken = getCookie("accessToken");
-
   const handleClickItem = () => {
     navigate(`/studyCafe/${id}`);
   };
 
-  const handleBookmarkClick = () => {
+  const handleBookmarkClick = async () => {
     setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
 
     const itemId = id;
     const bookmarkStatus = !isBookmarked;
 
-    axios
-      .post(
-        "/bookmarks",
-        {
-          studycafeId: itemId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const requestData = {
+      studycafeId: itemId,
+    };
+
+    const accessToken = getCookie("accessToken");
+    setCookie({ key: "accessToken", value: accessToken, options: {} });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${accessToken}`,
+      },
+    };
+
+    try {
+      const response = await POST(`/mypage/bookmarks/${itemId}`, {}, config);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

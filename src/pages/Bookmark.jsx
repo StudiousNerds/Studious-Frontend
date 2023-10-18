@@ -4,6 +4,8 @@ import styled from "styled-components";
 import BookmarkItem from "components/BookmarkItem";
 import Loading from "components/common/Loading";
 import Pagination from "components/Pagination";
+import { getCookie } from "utils/cookie";
+import { GET } from "apis/api";
 
 const Bookmark = () => {
   const [bookmarks, setBookmarks] = useState([]);
@@ -17,19 +19,6 @@ const Bookmark = () => {
     loadBookmarks();
   }, [currentPage]);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
-
   const accessToken = getCookie("accessToken");
 
   const handlePageChange = (newPage) => {
@@ -38,19 +27,12 @@ const Bookmark = () => {
 
   const loadBookmarks = async () => {
     try {
-      const response = await axios.get(
-        `https://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080
-      /studious/mypage/bookmarks`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            page: currentPage,
-            size: size,
-          },
-        }
-      );
+      const response = await GET(`/mypage/bookmarks`, accessToken, {
+        params: {
+          page: currentPage,
+          size: size,
+        },
+      });
       setBookmarks(response.data.bookmarkInfo);
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
@@ -63,9 +45,14 @@ const Bookmark = () => {
         <Loading />
       ) : (
         <BookmarkContainer>
+          <BookmarkText>북마크</BookmarkText>
           <GridContainer>
             {bookmarks.map((item) => (
-              <BookmarkItem key={item.Id} item={item} />
+              <BookmarkItem
+                key={item.studycafeId}
+                item={item}
+                isBookmarked={item.isBookmarked}
+              />
             ))}
           </GridContainer>
 
@@ -84,7 +71,6 @@ export default Bookmark;
 const BookmarkContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const GridContainer = styled.div`
@@ -95,4 +81,11 @@ const GridContainer = styled.div`
   width: 100%;
   margin: 0;
   justify-items: center;
+`;
+
+const BookmarkText = styled.div`
+  ${({ theme }) => theme.fonts.heading1Bold};
+  color: ${({ theme }) => theme.colors.gray900};
+  margin-top: 5rem;
+  margin-bottom 5rem;
 `;
