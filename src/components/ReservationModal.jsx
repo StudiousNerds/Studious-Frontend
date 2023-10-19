@@ -20,10 +20,10 @@ const ReservationModal = ({ item, onClose }) => {
       <ModalContainer>
         <ModalContent>
           <CloseButton onClick={closeModal}>X</CloseButton>
-          <ModalTextCafe>스터디카페 이름{item.studycafeName}</ModalTextCafe>
-          <ModalTextRoom>스터디룸 이름{item.roomName}</ModalTextRoom>
+          <ModalTextCafe>{item.studycafeName}</ModalTextCafe>
+          <ModalTextRoom>{item.roomName}</ModalTextRoom>
           <ModalTextTime>
-            시간: {item.reservationDate} {item.reservationStartTime} -{" "}
+            {item.reservationDate} {item.reservationStartTime} -{" "}
             {item.reservationEndTime} ({item.usingTime})
           </ModalTextTime>
           <ModalTextAd>위치: </ModalTextAd>
@@ -122,3 +122,4 @@ const Divider = styled.div`
   margin-top: 2rem;
   margin-left: 7rem;
 `;
+

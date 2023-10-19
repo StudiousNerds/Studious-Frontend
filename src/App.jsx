@@ -93,7 +93,7 @@ function App() {
                   element={<MyPageReservation />}
                 />
                 <Route
-                  path="/myPage/reviews/:reviewId/write"
+                  path="/myPage/reviews/:reviewId/edit"
                   element={<ReviewEdit />}
                 />
                 <Route
