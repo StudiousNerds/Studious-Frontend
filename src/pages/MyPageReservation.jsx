@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import ReviewCafeList from "components/ReviewCafeList";
 import ReservationSearchCafe from "components/ReservationSearchCafe";
 import ReservationList from "components/ReservationList";
 import FilterModal from "components/Search/FilterModal";
 import DateFilter from "components/DateFilter";
 import ReservationModal from "components/ReservationModal";
-import axios from "axios";
 import { GET } from "apis/api";
 import Loading from "components/common/Loading";
+import { getCookie } from "utils/cookie";
 
 const MyPageReservation = () => {
   const [activeTab, setActiveTab] = useState("ALL");
@@ -19,19 +18,6 @@ const MyPageReservation = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [clickedItemDetails, setClickedItemDetails] = useState([]);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
-
   const accessToken = getCookie("accessToken");
 
   const closeModal = () => {
@@ -41,17 +27,17 @@ const MyPageReservation = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     try {
-      GET("mypage/reservations", {
-        // params: {
-        //   page: 1,
-        //   startDate: "",
-        //   endDate: "",
-        //   studycafeName: "Nerds",
-        //   tab: tab,
-        // },
+      GET("/reservations", {
+        params: {
+          reservation_status: tab,
+          period: "",
+          dt_st: "",
+          dt_ed: "",
+          keyword: "",
+        },
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
       }).then((response) => {
         setReservations(response.data.reservationRecordInfoWithStatusList);
@@ -67,10 +53,10 @@ const MyPageReservation = () => {
 
   const handleItemClick = async (item) => {
     try {
-      const response = await GET(`/mypage/reservations/${item.reservationId}`, {
+      const response = await GET(`/reservations/${item.reservationId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
       });
 
@@ -89,23 +75,25 @@ const MyPageReservation = () => {
 
     const axiosReservations = async () => {
       try {
-        const response = await GET("/mypage/reservations", {
-          page: currentPage,
-          startDate: "",
-          endDate: "",
-          studycafeName: "",
-          tab: "ALL",
-        });
+        const config = {
+          headers: {
+            Authorization: `${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        };
+        const response = await GET("/reservations", config);
 
         setReservations(response.data.reservationInfo);
         setTotalPageCount(response.data.totalPageCount);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching reservations:", error);
+        setIsLoading(false);
       }
     };
 
     axiosReservations();
-  }, []);
+  }, [accessToken]);
 
   return (
     <>
@@ -138,21 +126,21 @@ const MyPageReservation = () => {
             {/* 이용 중인 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "USING"}
-                onClick={() => handleTabChange("USING")}>
+                active={activeTab === "INUSE"}
+                onClick={() => handleTabChange("INUSE")}>
                 이용중인 예약
               </TabButton>
-              <TabIndicator active={activeTab === "USING"} />
+              <TabIndicator active={activeTab === "INUSE"} />
             </TabWrapper>
 
             {/* 지난 예약 탭 */}
             <TabWrapper>
               <TabButton
-                active={activeTab === "AFTER_USING"}
-                onClick={() => handleTabChange("AFTER_USING")}>
+                active={activeTab === "PAST"}
+                onClick={() => handleTabChange("PAST")}>
                 지난 예약
               </TabButton>
-              <TabIndicator active={activeTab === "AFTER_USING"} />
+              <TabIndicator active={activeTab === "PAST"} />
             </TabWrapper>
 
             {/* 취소된 예약 탭 */}
@@ -167,7 +155,7 @@ const MyPageReservation = () => {
           </TabContainer>
 
           <FilterAndSearchContainer>
-            {activeTab !== "USING" ? (
+            {activeTab !== "INUSE" ? (
               <>
                 <DateFilter onDateFilter={handleDateFilter}></DateFilter>
                 <ReservationSearchCafe></ReservationSearchCafe>
