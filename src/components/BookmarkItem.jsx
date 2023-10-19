@@ -1,48 +1,42 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
 import bookmarkOn from "assets/icons/bookmarkOn.svg";
 import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
-import { getCookie } from "utils/cookie";
-import { setCookie } from "utils/cookie";
+import { useNavigate } from "react-router-dom";
 import { POST } from "apis/api";
+import { DELETE } from "apis/api";
+import { getCookie } from "utils/cookie";
 
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
-const StudyCafeGridSearch = ({
-  item: {
-    id,
-    name,
+const BookmarkItem = ({ item }) => {
+  const {
+    studycafeId,
+    cafeName,
     photo,
     grade,
     accumRevCnt,
     nearestStation,
-    walkingTime,
+    distance,
     hashtags,
-  },
-}) => {
+  } = item;
+
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+  const accessToken = getCookie("accessToken");
+
   const handleClickItem = () => {
-    navigate(`/studyCafe/${id}`);
+    navigate(`/studyCafe/${studycafeId}`);
   };
 
-  const handleBookmarkClick = async () => {
+  const handleBookmarkClick = () => {
     setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
-
-    const itemId = id;
+    const itemId = studycafeId;
     const bookmarkStatus = !isBookmarked;
-
-    const requestData = {
-      studycafeId: itemId,
-    };
-
-    const accessToken = getCookie("accessToken");
-    setCookie({ key: "accessToken", value: accessToken, options: {} });
 
     const config = {
       headers: {
@@ -50,12 +44,24 @@ const StudyCafeGridSearch = ({
         Authorization: `${accessToken}`,
       },
     };
-
-    try {
-      const response = await POST(`/mypage/bookmarks/${itemId}`, {}, config);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+    if (isBookmarked) {
+      DELETE(`/mypage/bookmarks/${itemId}`, {}, config)
+        .then((response) => {
+          console.log(response);
+          setIsBookmarked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      POST(`/mypage/bookmarks/${itemId}`, {}, config)
+        .then((response) => {
+          console.log(response);
+          setIsBookmarked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -77,7 +83,7 @@ const StudyCafeGridSearch = ({
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {name}
+          {cafeName}
           <div className="star">
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
@@ -88,8 +94,8 @@ const StudyCafeGridSearch = ({
         </ItemDetailsTitle>
         <ItemDetailsMeta>
           {nearestStation &&
-            walkingTime &&
-            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${walkingTime}분`}
+            distance &&
+            `${nearestStation.match(/[가-힣]+역/g)} 도보 ${distance}분`}
         </ItemDetailsMeta>
 
         <ItemDetailsHashtags>
@@ -104,7 +110,7 @@ const StudyCafeGridSearch = ({
   );
 };
 
-export default StudyCafeGridSearch;
+export default BookmarkItem;
 
 const ItemLayout = styled.div`
   display: flex;
