@@ -34,7 +34,7 @@ const SearchResult = () => {
   const displayedItems = searchResult.slice(startIndex, endIndex);
 
   const buildApiUrl = () => {
-    let apiUrl = `/studious/search?page=1`;
+    let apiUrl = `/search?page=1`;
     if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
     if (searchBarData.startTime)
       apiUrl += `&startTime=${searchBarData.startTime}`;
