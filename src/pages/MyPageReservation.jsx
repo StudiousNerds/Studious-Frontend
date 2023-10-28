@@ -81,23 +81,21 @@ const MyPageReservation = () => {
     // 확정된 예약 데이터 가져오기
     setIsLoading(true);
     axios
-      .get(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reservations",
-        {
-          // params: {
-          //   page: 1,
-          //   startDate: "2023-07-30",
-          //   endDate: "2023-07-31",
-          //   studycafeName: "Nerds",
-          //   tab: "ALL",
-          // },
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+      .get("/mypage/reservations", {
+        // params: {
+        //   page: 1,
+        //   startDate: "2023-07-30",
+        //   endDate: "2023-07-31",
+        //   studycafeName: "Nerds",
+        //   tab: "ALL",
+        // },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then((response) => {
+        console.log("here", response.data);
         setReservations(response.data.reservationRecordInfoWithStatusList);
         setIsLoading(false);
       });
@@ -161,8 +159,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "confirmed"}
-                onClick={() => handleTabChange("confirmed")}
-              >
+                onClick={() => handleTabChange("confirmed")}>
                 이용 전 예약
               </TabButton>
               <TabIndicator active={activeTab === "confirmed"} />
@@ -172,8 +169,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "ongoing"}
-                onClick={() => handleTabChange("ongoing")}
-              >
+                onClick={() => handleTabChange("ongoing")}>
                 이용중인 예약
               </TabButton>
               <TabIndicator active={activeTab === "ongoing"} />
@@ -183,8 +179,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "past"}
-                onClick={() => handleTabChange("past")}
-              >
+                onClick={() => handleTabChange("past")}>
                 지난 예약
               </TabButton>
               <TabIndicator active={activeTab === "past"} />
@@ -194,8 +189,7 @@ const MyPageReservation = () => {
             <TabWrapper>
               <TabButton
                 active={activeTab === "cancelled"}
-                onClick={() => handleTabChange("cancelled")}
-              >
+                onClick={() => handleTabChange("cancelled")}>
                 취소된 예약
               </TabButton>
               <TabIndicator active={activeTab === "cancelled"} />
@@ -285,6 +279,7 @@ const MarginReservationSearchCafe = styled.div`
 `;
 
 const Divider = styled.div`
+  width: 100rem;
   width: 100rem;
   margin-left: 6rem;
   height: 0.1rem;

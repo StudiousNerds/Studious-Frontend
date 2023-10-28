@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import FilterModal from "components/FilterModal";
 import StudyCafeGridItem from "components/StudyCafeGridItem";
-import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
 import Loading from "components/common/Loading";
+import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 
 const SearchResult = () => {
   const location = useLocation();
@@ -34,7 +34,7 @@ const SearchResult = () => {
   const displayedItems = searchResult.slice(startIndex, endIndex);
 
   const buildApiUrl = () => {
-    let apiUrl = `/studious/search?page=1`;
+    let apiUrl = `/search?page=1`;
     if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
     if (searchBarData.startTime)
       apiUrl += `&startTime=${searchBarData.startTime}`;
@@ -53,7 +53,7 @@ const SearchResult = () => {
 
   const axiosData = async () => {
     try {
-      let apiUrl = `/studious/search?page=${currentPage}&sortType=${sortOption}`;
+      let apiUrl = `/search?page=${currentPage}&sortType=${sortOption}`;
       if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
       if (searchBarData.startTime)
         apiUrl += `&startTime=${searchBarData.startTime}`;

@@ -26,7 +26,7 @@ const SearchBox = () => {
       )}
       {isSearchBarOpen && (
         <ModalContainer>
-          <SearchBar />
+          <SearchBar onClose={handleSearchClick} />
         </ModalContainer>
       )}
       {isSearchBarOpen && <Overlay onClick={handleSearchClick} />}

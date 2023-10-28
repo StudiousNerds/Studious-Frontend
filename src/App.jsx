@@ -22,6 +22,7 @@ import RedirectPayment from "pages/RedirectPayment";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
 import MyPageReservation from "pages/MyPageReservation";
+import Bookmark from "pages/Bookmark";
 import PrivateRoute from "PrivateRoute";
 import Account from "pages/myPage/Account";
 
@@ -93,7 +94,7 @@ function App() {
                   element={<MyPageReservation />}
                 />
                 <Route
-                  path="/myPage/reviews/:reviewId/write"
+                  path="/myPage/reviews/:reviewId/edit"
                   element={<ReviewEdit />}
                 />
                 <Route
@@ -108,8 +109,7 @@ function App() {
                   path="/myPage/reservation/:reservationId/modify"
                   element={<MyReservationModify />}
                 />
-                {/* TODO 북마크 페이지 element 추가 */}
-                <Route path="/myPage/bookmarks" />
+                <Route path="/myPage/bookmarks" element={<Bookmark />} />
               </Routes>
             </AppLayout>
           </ThemeProvider>

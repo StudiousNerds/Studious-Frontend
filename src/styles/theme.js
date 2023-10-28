@@ -8,7 +8,6 @@ const colors = {
   gray500: "#8F8F8F", // sub color light1
   gray300: "#C6C6C6", // sub color light2
   gray200: "#F0F0F0", // sub color light3
-  black: "#101010", //sub color_dark
 };
 
 function FONT({ weight, size, lineHeight }) {
