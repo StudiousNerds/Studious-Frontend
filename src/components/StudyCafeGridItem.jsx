@@ -13,7 +13,7 @@ const StudyCafeGridItem = ({ item }) => {
     studycafeName,
     photo,
     grade,
-    accumRevCnt,
+    accumResCnt,
     nearestStation,
     walkingTime,
     hashtags,
@@ -37,7 +37,7 @@ const StudyCafeGridItem = ({ item }) => {
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
             <span className="accumRevCnt">{`(${formatNumberWithCommas(
-              accumRevCnt
+              accumResCnt
             )})`}</span>
           </div>
         </ItemDetailsTitle>
