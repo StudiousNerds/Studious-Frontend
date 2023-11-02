@@ -30,7 +30,7 @@ const OAuthLogin = ({ platform }) => {
         providerId: userInfo.providerId,
         type: userInfo.type,
       });
-      navigate("/signup");
+      navigate("/signup/oauth");
     }
   };
 
