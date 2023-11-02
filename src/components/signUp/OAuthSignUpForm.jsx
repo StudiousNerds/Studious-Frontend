@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useOAuthSignUpMutation } from "hooks/queries/useSignup";
 
 const SignUpForm = ({ isOAuth, email, providerId, type }) => {
   const [signUpInfo, setSignUpInfo] = useState({
@@ -12,8 +13,10 @@ const SignUpForm = ({ isOAuth, email, providerId, type }) => {
     roles: ["USER"],
     birthday: "",
   });
+  const handleOAuthSignUpMutation = useOAuthSignUpMutation(signUpInfo);
   const handleSignUp = (e) => {
     e.preventDefault();
+    handleOAuthSignUpMutation.mutate();
   };
   const handleChangeEmail = (e) => {
     setSignUpInfo((info) => ({ ...info, email: e.target.value }));
