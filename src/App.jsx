@@ -10,7 +10,7 @@ import Header from "components/header/Header";
 import Main from "pages/Main";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";
-import OAuthSignUp from "pages/SignUp/OAuthSignUp";
+import OAuthSignUpForm from "pages/SignUp/OAuthSignUpForm";
 import OAuthLogin from "pages/OAuthLogin";
 import StudyCafeDetails from "pages/StudyCafeDetails";
 import Payment from "pages/Payment";
@@ -41,7 +41,7 @@ function App() {
                 <Route path="/" element={<Main />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/signup/oauth" element={<OAuthSignUp />} />
+                <Route path="/signup/oauth" element={<OAuthSignUpForm />} />
                 <Route
                   path="/oauth/kakao"
                   element={<OAuthLogin platform={"kakao"} />}

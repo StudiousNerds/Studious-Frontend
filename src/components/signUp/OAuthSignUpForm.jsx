@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useOAuthSignUpMutation } from "hooks/queries/useSignup";
 
-const SignUpForm = ({ isOAuth, email, providerId, type }) => {
+const OAuthSignUpForm = ({ isOAuth, email, providerId, type }) => {
   const [signUpInfo, setSignUpInfo] = useState({
     email,
     name: "",
@@ -74,7 +74,7 @@ const SignUpForm = ({ isOAuth, email, providerId, type }) => {
   );
 };
 
-export default SignUpForm;
+export default OAuthSignUpForm;
 
 const SignUpLayoutContainer = styled.form`
   margin-top: 3rem;
