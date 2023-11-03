@@ -87,21 +87,23 @@ const MyReservationCancel = () => {
     },
   };
 
+  const { reservationId } = useParams();
+  const { data } = useReservationCancelQuery({ reservationId });
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
   const handleConfirmChange = (e) =>
     e.target.checked ? setIsConfirmChecked(true) : setIsConfirmChecked(false);
   return (
     <TitleMainLayout title={"예약 취소"}>
       <ReservationInfoSection
-        studycafePhoto={DUMMY_DATA.place.studycafePhoto}
-        studycafeName={DUMMY_DATA.place.studycafeName}
-        roomName={DUMMY_DATA.place.roomName}
-        reservation={DUMMY_DATA.reservation}
+        studycafePhoto={data.place.studycafePhoto}
+        studycafeName={data.place.studycafeName}
+        roomName={data.place.roomName}
+        reservation={data.reservation}
       />
       <Divider color="gray300" margin={4} />
       <PaymentRefundInfoSection>
         <div className="left">
-          <PaymentDetailsSection paymentRecord={DUMMY_DATA.paymentRecord} />
+          <PaymentDetailsSection paymentRecord={data.paymentRecord} />
           <section>
             <Title>환불 계좌 입력</Title>
             <DetailsRow>
@@ -118,9 +120,7 @@ const MyReservationCancel = () => {
           </section>
         </div>
         <div className="right">
-          <RefundPolicyBox
-            refundPolicy={DUMMY_DATA.refundPolicy.refundPolicy}
-          />
+          <RefundPolicyBox refundPolicy={data.refundPolicy.refundPolicy} />
         </div>
       </PaymentRefundInfoSection>
       <ConfirmContainer>
