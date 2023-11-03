@@ -21,8 +21,9 @@ export const useOAuthLoginMutation = (code, platform, successCallback) => {
 export const useLoginMutation = (body) => {
   const navigate = useNavigate();
   return useMutation(() => postLogin(body), {
-    onSuccess: ({ grantType, accessToken }) => {
+    onSuccess: ({ tokenInfo:{grantType, accessToken} }) => {
       try {
+        console.log(accessToken, grantType);
         setToken({ accessToken, grantType });
       } catch (e) {
         console.error(e);

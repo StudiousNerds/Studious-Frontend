@@ -3,6 +3,7 @@ import {
   postReservationModify,
   getPreviousReservationInfo,
 } from "apis/reservationModify";
+import { getMyPageReservation } from 'apis/myPageReservation';
 import { getToken } from "utils/cookie";
 
 export const useReservationModifyMutation = ({ reservationId, body }) => {
@@ -16,3 +17,10 @@ export const useReservationModifyQuery = ({ reservationId }) => {
     getPreviousReservationInfo({ reservationId, token })
   );
 };
+
+export const useReservationCheck = ({ token }) => {
+  const token = getToken();
+  return useQuery(["useMyPageReservation"], () =>
+    getMyPageReservation({ token })
+  );
+}

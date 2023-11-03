@@ -26,19 +26,18 @@ const MyPageReservation = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    const params = {
+      page: "",
+      startDate: "",
+      endDate: "",
+      studycafeName: "",
+      tab: tab,
+    };
+
     try {
       GET("/reservations", {
-        params: {
-          reservation_status: tab,
-          period: "",
-          dt_st: "",
-          dt_ed: "",
-          keyword: "",
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${accessToken}`,
-        },
+        
+        token: accessToken,
       }).then((response) => {
         setReservations(response.data.reservationRecordInfoWithStatusList);
       });
@@ -54,10 +53,7 @@ const MyPageReservation = () => {
   const handleItemClick = async (item) => {
     try {
       const response = await GET(`/reservations/${item.reservationId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${accessToken}`,
-        },
+        token: accessToken,
       });
 
       setClickedItemDetails(response.data);
@@ -75,13 +71,7 @@ const MyPageReservation = () => {
 
     const axiosReservations = async () => {
       try {
-        const config = {
-          headers: {
-            Authorization: `${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        };
-        const response = await GET("/reservations", config);
+        const response = await GET("/reservations", accessToken);
 
         setReservations(response.data.reservationInfo);
         setTotalPageCount(response.data.totalPageCount);
