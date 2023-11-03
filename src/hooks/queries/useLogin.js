@@ -1,6 +1,8 @@
 import { postLogin, postOAuthLogin } from "apis/user";
+import { USER } from "components/constants/User";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { setCookie } from "utils/cookie";
 import { setToken } from "utils/setToken";
 
 const handleErrorMessage = ({ code, message }) => {
@@ -21,9 +23,10 @@ export const useOAuthLoginMutation = (code, platform, successCallback) => {
 export const useLoginMutation = (body) => {
   const navigate = useNavigate();
   return useMutation(() => postLogin(body), {
-    onSuccess: ({ grantType, accessToken }) => {
+    onSuccess: ({ token: { grantType, accessToken }, profile }) => {
       try {
         setToken({ accessToken, grantType });
+        setCookie({ key: USER.profileKey, value: profile });
       } catch (e) {
         console.error(e);
       }
