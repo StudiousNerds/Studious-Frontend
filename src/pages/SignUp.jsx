@@ -1,6 +1,7 @@
 import SignUpForm from "components/signUp/SignUpForm";
 import { useRecoilValue } from "recoil";
 import { oAuthSignUpState } from "recoil/atoms/oAuthSignUpState";
+import OAuthSignUpForm from "components/signUp/OAuthSignUpForm";
 
 const SignUp = () => {
   const OAuthSignUpState = useRecoilValue(oAuthSignUpState);
@@ -10,7 +11,7 @@ const SignUp = () => {
     OAuthSignUpState.type
   ) {
     return (
-      <SignUpForm
+      <OAuthSignUpForm
         isOAuth={true}
         email={OAuthSignUpState.email}
         providerId={OAuthSignUpState.providerId}

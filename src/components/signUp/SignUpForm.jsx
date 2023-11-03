@@ -33,7 +33,7 @@ const SignUpForm = () => {
     setSignUpInfo((info) => ({ ...info, phoneNumber: e.target.value }));
   };
   const handleChangeBirthday = (e) => {
-    setSignUpInfo((info) => ({ ...info, birtyday: e.target.value }));
+    setSignUpInfo((info) => ({ ...info, birthday: e.target.value }));
   };
   return (
     <SignUpLayoutContainer>

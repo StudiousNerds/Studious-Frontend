@@ -18,9 +18,6 @@ const OAuthSignUpForm = ({ isOAuth, email, providerId, type }) => {
     e.preventDefault();
     handleOAuthSignUpMutation.mutate();
   };
-  const handleChangeEmail = (e) => {
-    setSignUpInfo((info) => ({ ...info, email: e.target.value }));
-  };
   const handleChangeName = (e) => {
     setSignUpInfo((info) => ({ ...info, name: e.target.value }));
   };
@@ -36,12 +33,6 @@ const OAuthSignUpForm = ({ isOAuth, email, providerId, type }) => {
   return (
     <SignUpLayoutContainer>
       <SignUpTitle>STUDIOUS 회원가입</SignUpTitle>
-      <SignUpItem>
-        <h1>
-          이메일 <span>*</span>
-        </h1>
-        <SignUpItemInput onChange={handleChangeEmail} />
-      </SignUpItem>
       <SignUpItem>
         <h1>
           이름 <span>*</span>
