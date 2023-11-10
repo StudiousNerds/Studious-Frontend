@@ -49,8 +49,8 @@ const Reservation = () => {
     selectedPaidConvenience
   );
   const [userInfo, setUserInfo] = useState({
-    name: data?.username,
-    phoneNumber: data?.userPhoneNumber,
+    name: data?.user.name,
+    phoneNumber: data?.user.phoneNumber,
     request: "",
   });
 
@@ -74,8 +74,8 @@ const Reservation = () => {
     if (e.target.checked) {
       setUserInfo((userInfo) => ({
         ...userInfo,
-        name: data?.username,
-        phoneNumber: data?.userPhoneNumber,
+        name: data?.user.name,
+        phoneNumber: data?.user.phoneNumber,
       }));
     }
   };
@@ -111,7 +111,7 @@ const Reservation = () => {
   if (isLoading) return <Loading />;
   return (
     <>
-      <Title>{data?.cafeName}</Title>
+      <Title>{data?.place.studycafeName}</Title>
 
       <RemoteControlSection>
         <RemoteControl
@@ -130,10 +130,10 @@ const Reservation = () => {
       <MainSection>
         <TwoColumnContainer>
           <div className="left">
-            <img src={data?.studycafePhoto} alt="스터디카페 이미지" />
+            <img src={data?.place.studycafePhoto} alt="스터디카페 이미지" />
           </div>
           <div className="right">
-            <StudyRoomName>{data?.roomName}</StudyRoomName>
+            <StudyRoomName>{data?.place.roomName}</StudyRoomName>
 
             <IconSection>
               {data?.conveniences &&
@@ -254,7 +254,7 @@ const Reservation = () => {
 
         <RowContainer>
           <TitleSub>환불 규정</TitleSub>
-          <RefundPolicyBox refundPolicy={data?.refundPolicy} />
+          <RefundPolicyBox refundPolicy={data?.refundPolicies} />
         </RowContainer>
       </MainSection>
     </>
