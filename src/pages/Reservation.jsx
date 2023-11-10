@@ -94,7 +94,7 @@ const Reservation = () => {
     setSelectedConveniences((prevConveniences) => [
       ...prevConveniences,
       {
-        convenienceName,
+        name: convenienceName,
         price,
       },
     ]);
