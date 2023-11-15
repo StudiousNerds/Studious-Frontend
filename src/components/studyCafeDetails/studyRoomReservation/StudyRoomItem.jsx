@@ -16,7 +16,7 @@ import { convenienceDic } from "components/constants/ConvenienceData";
 const StudyRoomItem = ({
   roomData: {
     id,
-    roomName,
+    name,
     minHeadCount,
     maxHeadCount,
     minUsingTime,
@@ -113,7 +113,7 @@ const StudyRoomItem = ({
       <ItemRightSection>
         <StudyRoomMainInfoBox>
           <div className="info">
-            {roomName}
+            {name}
             <div className="info__sub">{`최소 ${minHeadCount}인 ~ 최대 ${maxHeadCount}인`}</div>
           </div>
           <div className="info">
@@ -124,24 +124,26 @@ const StudyRoomItem = ({
           </div>
         </StudyRoomMainInfoBox>
         <StudyRoomExtraOptionsBox>
-          <PaidConveniencesBox>
-            <div>유료 편의시설</div>
-            <select
-              name="paidConveniences"
-              className="select"
-              defaultValue={"선택하기"}
-              onChange={handleSelectPaidConvenience}
-            >
-              <option>선택하기</option>
-              {paidConveniences.map((item, itemIndex) => (
-                <option value={JSON.stringify(item)} key={itemIndex}>
-                  {`${item.convenienceName} (+${formatNumberWithCommas(
-                    item.price
-                  )})`}
-                </option>
-              ))}
-            </select>
-          </PaidConveniencesBox>
+          {paidConveniences && paidConveniences.length > 0 && (
+            <PaidConveniencesBox>
+              <div>유료 편의시설</div>
+              <select
+                name="paidConveniences"
+                className="select"
+                defaultValue={"선택하기"}
+                onChange={handleSelectPaidConvenience}
+              >
+                <option>선택하기</option>
+                {paidConveniences.map((item, itemIndex) => (
+                  <option value={JSON.stringify(item)} key={itemIndex}>
+                    {`${item.convenienceName} (+${formatNumberWithCommas(
+                      item.price
+                    )})`}
+                  </option>
+                ))}
+              </select>
+            </PaidConveniencesBox>
+          )}
           <UserNumberCounterBox>
             <span>인원수</span>
             <NumberController
