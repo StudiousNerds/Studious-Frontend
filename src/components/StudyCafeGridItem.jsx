@@ -9,11 +9,11 @@ const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridItem = ({ item }) => {
   const {
-    studycafeId,
-    studycafeName,
+    id,
+    name,
     photo,
     grade,
-    accumResCnt,
+    accumRevCnt,
     nearestStation,
     walkingTime,
     hashtags,
@@ -21,7 +21,7 @@ const StudyCafeGridItem = ({ item }) => {
 
   const navigate = useNavigate();
   const handleClickItem = () => {
-    navigate(`/studyCafe/${studycafeId}`);
+    navigate(`/studyCafe/${id}`);
   };
 
   if (!item) return;
@@ -32,12 +32,12 @@ const StudyCafeGridItem = ({ item }) => {
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
-          {studycafeName}
+          {name}
           <div className="star">
             <Icon iconSrc={star} size={1.6} lineHeight={2} alt="별점 아이콘" />
             <span>{grade}</span>
             <span className="accumRevCnt">{`(${formatNumberWithCommas(
-              accumResCnt
+              accumRevCnt
             )})`}</span>
           </div>
         </ItemDetailsTitle>
