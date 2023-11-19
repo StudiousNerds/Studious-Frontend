@@ -24,8 +24,8 @@ const StudyRoomItem = ({
     priceType,
     conveniences,
     paidConveniences,
-    canReserveDatetime,
-    photos,
+    canReserveDateTime,
+    photo,
   },
   date,
 }) => {
@@ -102,13 +102,13 @@ const StudyRoomItem = ({
   };
   return (
     <ItemContainer>
-      <ItemLeftSection isSingleImage={photos.length === 1}>
-        <img src={photos[0]} alt="스터디룸 이미지" />
-        <SmallImagesSlider gap={0.9}>
-          {photos.slice(1).map((photo, photoIndex) => {
+      <ItemLeftSection isSingleImage={true}>
+        <img src={photo} alt="스터디룸 이미지" />
+        {/* <SmallImagesSlider gap={0.9}>
+          {photo.slice(1).map((photo, photoIndex) => {
             return <img key={photoIndex} src={photo} alt="스터디룸 이미지" />;
           })}
-        </SmallImagesSlider>
+        </SmallImagesSlider> */}
       </ItemLeftSection>
       <ItemRightSection>
         <StudyRoomMainInfoBox>
@@ -153,7 +153,7 @@ const StudyRoomItem = ({
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
         <TimeController
-          hours={canReserveDatetime[formatDateToString(date, "-")]}
+          hours={canReserveDateTime[formatDateToString(date, "-")]}
           selectedStartTime={startTime}
           selectedEndTime={endTime}
           onSelectTimeBlock={onSelectTimeBlock}
