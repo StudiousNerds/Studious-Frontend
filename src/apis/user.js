@@ -13,9 +13,15 @@ export const postLogin = async (body) => {
   return data;
 };
 
-/* 회원가입 */
+/* 일반 회원가입 */
 export const postSignUp = async (body, failCallback) => {
   const { data } = await POST("/members/signup", body, "", failCallback);
+  return data;
+};
+
+/* 소셜 회원가입 */
+export const postOAuthSignUp = async (body, failCallback) => {
+  const { data } = await POST("/oauth/signup", body, "", failCallback);
   return data;
 };
 

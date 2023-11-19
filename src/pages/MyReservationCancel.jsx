@@ -6,22 +6,28 @@ import { BANK_CODES_DATA } from "components/constants/BankCodeData";
 import TitleMainLayout from "components/layouts/TitleMainLayout";
 import PaymentDetailsSection from "components/myPage/reservation/cancel/PaymentDetailsSection";
 import ReservationInfoSection from "components/myPage/reservation/cancel/ReservationInfoSection";
+import {
+  useReservationCancelQuery,
+  useReservationModifyQuery,
+} from "hooks/queries/useMyPageReservation";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const MyReservationCancel = () => {
   const DUMMY_DATA = {
-    reservation: {
+    place: {
       studycafeName: "Nerds",
       studycafePhoto:
-        "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/b6c73e77-7e36-46e8-ad85-fb2e63d1502d.jpeg",
+        "https://i.pinimg.com/736x/1f/62/2f/1f622fbd33a79bd592f7386151e6dd8e.jpg",
       roomName: "roomA",
-      reservation: {
-        date: "2023-10-08",
-        startTime: "02:00:00",
-        endTime: "04:00:00",
-        usingTime: 2,
-      },
+      address: "서울 상세 주소",
+    },
+    reservation: {
+      date: "2023-10-08",
+      startTime: "02:00:00",
+      endTime: "04:00:00",
+      usingTime: 2,
     },
     paymentRecord: {
       totalPrice: 14000,
@@ -81,21 +87,23 @@ const MyReservationCancel = () => {
     },
   };
 
+  const { reservationId } = useParams();
+  const { data } = useReservationCancelQuery({ reservationId });
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
   const handleConfirmChange = (e) =>
     e.target.checked ? setIsConfirmChecked(true) : setIsConfirmChecked(false);
   return (
     <TitleMainLayout title={"예약 취소"}>
       <ReservationInfoSection
-        studycafePhoto={DUMMY_DATA.reservation.studycafePhoto}
-        studycafeName={DUMMY_DATA.reservation.studycafeName}
-        roomName={DUMMY_DATA.reservation.roomName}
-        reservation={DUMMY_DATA.reservation.reservation}
+        studycafePhoto={data.place.studycafePhoto}
+        studycafeName={data.place.studycafeName}
+        roomName={data.place.roomName}
+        reservation={data.reservation}
       />
       <Divider color="gray300" margin={4} />
       <PaymentRefundInfoSection>
         <div className="left">
-          <PaymentDetailsSection paymentRecord={DUMMY_DATA.paymentRecord} />
+          <PaymentDetailsSection paymentRecord={data.paymentRecord} />
           <section>
             <Title>환불 계좌 입력</Title>
             <DetailsRow>
@@ -112,9 +120,7 @@ const MyReservationCancel = () => {
           </section>
         </div>
         <div className="right">
-          <RefundPolicyBox
-            refundPolicy={DUMMY_DATA.refundPolicy.refundPolicy}
-          />
+          <RefundPolicyBox refundPolicy={data.refundPolicy.refundPolicy} />
         </div>
       </PaymentRefundInfoSection>
       <ConfirmContainer>
