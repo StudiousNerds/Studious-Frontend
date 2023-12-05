@@ -26,7 +26,7 @@ export const useLoginMutation = (body) => {
     onSuccess: ({ tokenInfo: { grantType, accessToken }, profile }) => {
       try {
         setToken({ accessToken, grantType });
-        setCookie({ key: USER.profileKey, value: profile });
+        setCookie({ key: USER.profileKey, value: JSON.stringify(profile) });
       } catch (e) {
         console.error(e);
       }
