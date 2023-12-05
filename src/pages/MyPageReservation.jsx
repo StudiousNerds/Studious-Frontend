@@ -36,7 +36,6 @@ const MyPageReservation = () => {
 
     try {
       GET("/reservations", {
-        
         token: accessToken,
       }).then((response) => {
         setReservations(response.data.reservationRecordInfoWithStatusList);
