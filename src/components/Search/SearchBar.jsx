@@ -110,7 +110,7 @@ const SearchBar = ({ onClose }) => {
     hashtags,
     conveniences,
   }) => {
-    let url = `/search?page=${page}`;
+    let url = `/studycafes?size=10&page=${page}`;
 
     const queryParams = [];
 
