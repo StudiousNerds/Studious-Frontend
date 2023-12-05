@@ -27,26 +27,28 @@ const PhotoUploader = () => {
   return (
     <PhotoUploaderWrapper>
       <SelectedPhotoCount>({selectedPhotos.length}/10)</SelectedPhotoCount>
-      <SelectedPhotosList>
-        {selectedPhotos.map((photo, index) => (
-          <SelectedPhoto key={index}>
-            <DeleteButton onClick={() => handleDeletePhoto(index)}>
-              <DeleteIcon />
-            </DeleteButton>
-            <img src={URL.createObjectURL(photo)} alt={`사진 ${index + 1}`} />
-          </SelectedPhoto>
-        ))}
-      </SelectedPhotosList>
-      <UploadButton onClick={handleButtonClick}>
-        <UploadIcon />
-        <input
-          type="file"
-          multiple
-          onChange={handlePhotoSelect}
-          ref={fileInputRef}
-          style={{ display: "none" }}
-        />
-      </UploadButton>
+      <PhotoContainer>
+        <SelectedPhotosList>
+          {selectedPhotos.map((photo, index) => (
+            <SelectedPhoto key={index}>
+              <DeleteButton onClick={() => handleDeletePhoto(index)}>
+                <DeleteIcon />
+              </DeleteButton>
+              <img src={URL.createObjectURL(photo)} alt={`사진 ${index + 1}`} />
+            </SelectedPhoto>
+          ))}
+        </SelectedPhotosList>
+        <UploadButton onClick={handleButtonClick}>
+          <UploadIcon />
+          <input
+            type="file"
+            multiple
+            onChange={handlePhotoSelect}
+            ref={fileInputRef}
+            style={{ display: "none" }}
+          />
+        </UploadButton>
+      </PhotoContainer>
     </PhotoUploaderWrapper>
   );
 };
@@ -85,7 +87,7 @@ const UploadButton = styled.label`
 const SelectedPhotosList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  justify-content: center;
 `;
 
 const SelectedPhoto = styled.div`
@@ -95,6 +97,7 @@ const SelectedPhoto = styled.div`
   border: none;
   border-radius: 1rem;
   margin-top: 1rem;
+  margin-left: 3rem;
   overflow: hidden;
   background-color: ${({ theme }) => theme.colors.gray200};
 
@@ -103,6 +106,14 @@ const SelectedPhoto = styled.div`
     height: 100%;
     object-fit: cover;
   }
+`;
+
+const PhotoContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row-reverse;
+  width: 300rem;
 `;
 
 const DeleteButton = styled.button`

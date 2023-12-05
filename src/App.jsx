@@ -90,20 +90,16 @@ function App() {
                   element={<ReviewWrite />}
                 />
                 <Route
+                  path="/myPage/reviews/:reviewId/edit"
+                  component={<ReviewEdit />}
+                />
+                <Route
                   path="/myPage/reservation"
                   element={<MyPageReservation />}
                 />
                 <Route
                   path="/myPage/reviews/:reviewId/edit"
                   element={<ReviewEdit />}
-                />
-                <Route
-                  path="/myPage/reservation"
-                  element={<MyPageReservation />}
-                />
-                <Route
-                  path="/myPage/reservation/:reservationId/cancel"
-                  element={<MyReservationCancel />}
                 />
                 <Route
                   path="/myPage/reservation/:reservationId/modify"

@@ -5,17 +5,27 @@ import ReviewCafeList from "components/ReviewCafeList";
 import DateFilter from "components/DateFilter";
 import { GET } from "apis/api";
 import { useNavigate } from "react-router-dom";
+import StarsGrade from "components/common/StarsGrade";
+import DeletePopup from "components/DeletePopup";
 
 const Reviews = () => {
   const navigate = useNavigate();
   const [writableReviews, setWritableReviews] = useState([]);
   const [writtenReviews, setWrittenReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("writable");
-  const [selectedDateFilter, setSelectedDateFilter] = useState({
-    filter: "1year",
-    startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-    endDate: new Date(),
-  });
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [selectedReviewToDelete, setSelectedReviewToDelete] = useState([]);
+
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setMonth(endDate.getMonth() - 1);
+
+  const [selectedStartDate, setSelectedStartDate] = useState(startDate);
+  const [selectedEndDate, setSelectedEndDate] = useState(endDate);
+  const handleDateFilterChange = ({ startDate, endDate }) => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+  };
 
   const IMG_DUMMY_URL =
     "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
@@ -25,10 +35,17 @@ const Reviews = () => {
     axios
       .get(
         "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
-        config
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       )
       .then((response) => {
         setWritableReviews(response.data.availableReviewInfo);
+      })
+      .catch((error) => {
+        console.log(error);
       });
 
     // 작성한 리뷰 목록 가져오기
@@ -38,7 +55,7 @@ const Reviews = () => {
     //     config
     //   )
     //   .then((response) => {
-    //     setWrittenReviews(response.data);
+    //     setWrittenReviews(response.data.writtenReviewInfos);
     //   });
   }, []);
 
@@ -87,18 +104,42 @@ const Reviews = () => {
           console.log("writable error", error);
         });
     } else if (tab === "written") {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
-          config
-        )
-        .then((response) => {
-          console.log(response.data);
-          setWrittenReviews(response.data.writtenReviewInfos);
-        })
-        .catch((error) => {
-          console.log("written error", error);
-        });
+      // axios
+      //   .get(
+      //     "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
+      //     config
+      //   )
+      //   .then((response) => {
+      //     console.log(response.data);
+      //     //setWrittenReviews(response.data.writtenReviewInfos);
+      //   })
+      //   .catch((error) => {
+      //     console.log("written error", error);
+      //   });
+      setWrittenReviews([
+        {
+          reservationId: 5,
+          studycafeInfo: {
+            studycafeId: 1,
+            studycafeName: "Nerds",
+            studycafePhoto:
+              "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
+            roomName: "roomA",
+            date: "2023-12-10",
+          },
+          gradeInfo: {
+            cleanliness: 5,
+            deafening: 5,
+            fixtureStatus: 5,
+          },
+          reviewInfo: {
+            writeDate: "2023-09-10",
+            reviewPhoto:
+              "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/076a1754-f70f-4123-953f-ed683d7b30e2.png",
+            detail: "최고입니다!",
+          },
+        },
+      ]);
     }
   };
 
@@ -106,24 +147,57 @@ const Reviews = () => {
     console.log("리뷰 작성 페이지로 이동:", review);
     const { reservationId } = review;
     const writeReviewPath = `/myPage/reviews/${reservationId}/write`;
-    navigate(writeReviewPath);
+    navigate(writeReviewPath, { state: { review: review } });
   };
 
   const handleUpdateReview = (review) => {
     console.log("리뷰 수정 페이지로 이동:", review);
+    navigate(`myPage/reviews/${review.id}/edit`, { state: { review } });
   };
 
   const handleDeleteReview = (review) => {
     console.log("리뷰 삭제", review);
+    setSelectedReviewToDelete(review);
+    setShowDeletePopup(true);
   };
 
-  const handleDateFilterChange = (dateFilter) => {
-    //setSelectedDateFilter(dateFilter);
+  const closeDeletePopup = () => {
+    setSelectedReviewToDelete(null);
+    setShowDeletePopup(false);
   };
 
-  // useEffect(() => {
-  //   //setWritableReviews([...DUMMY_DATA1]);
-  // }, []);
+  const performDeleteReview = (review) => {
+    const { reviewId } = review;
+
+    axios
+      .delete(
+        `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/reviews/${reviewId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("리뷰 삭제 성공:", response.data);
+
+        // 리다이렉트?
+        closeDeletePopup();
+      })
+      .catch((error) => {
+        console.error("리뷰 삭제 실패:", error);
+        closeDeletePopup();
+      });
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate.replace(/\//g, ".").replace(/\.$/, "");
+  };
 
   return (
     <Wrapper>
@@ -162,7 +236,11 @@ const Reviews = () => {
       ) : (
         <>
           {activeTab === "written"}
-          <DateFilter onDateFilter={handleDateFilterChange} />
+          <DateFilter
+            onDateFilter={handleDateFilterChange}
+            startDate={selectedStartDate}
+            endDate={selectedEndDate}
+          />
           {writtenReviews.map((review) => (
             <div key={review.reservationId}>
               <ReviewContainer key={review.reervationId}>
@@ -176,7 +254,7 @@ const Reviews = () => {
                       {review.studycafeInfo.studycafeName}
                     </ReviewInfoCafe>
                     <ReviewInfo>
-                      이용일자: {review.studycafeInfo.date}
+                      이용일자: {formatDate(review.studycafeInfo.date)}
                     </ReviewInfo>
                     <ReviewInfo>{review.studycafeInfo.roomName}</ReviewInfo>
                   </CafeDetails>
@@ -184,15 +262,27 @@ const Reviews = () => {
                 <SmallDivider></SmallDivider>
                 <ReviewInlineInfo>
                   <ReviewStar>
-                    <span>청결도</span>{" "}
-                    <StarRating value={review.gradeInfo.cleanliness} />
-                    <span>방음</span>{" "}
-                    <StarRating value={review.gradeInfo.deafening} />
-                    <span>비품상태</span>{" "}
-                    <StarRating value={review.gradeInfo.fixtureStatus} />
+                    <StarWrapper>
+                      <StarText>청결도</StarText>
+                      <StarsGrade
+                        size={2}
+                        grade={review.gradeInfo.cleanliness}
+                      />
+                    </StarWrapper>
+                    <StarWrapper>
+                      <StarText>방음</StarText>
+                      <StarsGrade size={2} grade={review.gradeInfo.deafening} />
+                    </StarWrapper>
+                    <StarWrapper>
+                      <StarText>비품상태</StarText>
+                      <StarsGrade
+                        size={2}
+                        grade={review.gradeInfo.fixtureStatus}
+                      />
+                    </StarWrapper>
                   </ReviewStar>
                   <ReviewInfoDate>
-                    작성 일자: {review.reviewInfo.writedate}
+                    작성 일자: {formatDate(review.reviewInfo.writeDate)}
                   </ReviewInfoDate>
                 </ReviewInlineInfo>
                 <ReviewImageDetail>
@@ -203,6 +293,15 @@ const Reviews = () => {
                   <ReviewInfoText>{review.reviewInfo.detail}</ReviewInfoText>
                 </ReviewImageDetail>
                 <ReviewButtonWrapper>
+                  {showDeletePopup && (
+                    <DeletePopup
+                      review={selectedReviewToDelete}
+                      onClose={closeDeletePopup}
+                      onDelete={(review) => {
+                        performDeleteReview(review);
+                      }}
+                    />
+                  )}
                   <UpdateButton onClick={() => handleUpdateReview(review)}>
                     리뷰 수정
                   </UpdateButton>
@@ -304,7 +403,6 @@ const ReviewStar = styled.div`
 const ReviewInfoDate = styled.div`
   ${({ theme }) => theme.fonts.body3};
   color: ${({ theme }) => theme.colors.gray800};
-  width: 12rem;
   margin-left: 24rem;
   margin-top: 2rem;
 `;
@@ -381,4 +479,14 @@ const Star = styled.span`
   font-size: 1.2rem;
   margin-right: 0.2rem;
   color: ${({ filled }) => (filled ? "#ffcd00" : "#d2d2d2")};
+`;
+const StarText = styled.div`
+  ${({ theme }) => theme.fonts.body1Bold};
+  color: ${({ theme }) => theme.colors.black};
+  margin-right: 1rem;
+`;
+
+const StarWrapper = styled.div`
+  margin-right: 16rem;
+  display: flex;
 `;

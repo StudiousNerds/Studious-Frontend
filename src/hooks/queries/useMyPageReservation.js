@@ -3,6 +3,7 @@ import {
   postReservationModify,
   getPreviousReservationInfo,
 } from "apis/reservationModify";
+import { getMyPageReservation } from 'apis/myPageReservation';
 import { getToken } from "utils/cookie";
 import {
   getPreviousReservationInfoCancel,
