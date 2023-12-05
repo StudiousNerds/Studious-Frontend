@@ -5,6 +5,10 @@ import {
 } from "apis/reservationModify";
 import { getMyPageReservation } from 'apis/myPageReservation';
 import { getToken } from "utils/cookie";
+import {
+  getPreviousReservationInfoCancel,
+  postReservationCancel,
+} from "apis/reservationCancel";
 
 export const useReservationModifyMutation = ({ reservationId, body }) => {
   const token = getToken();
@@ -18,9 +22,14 @@ export const useReservationModifyQuery = ({ reservationId }) => {
   );
 };
 
-export const useReservationCheck = ({ token }) => {
+export const useReservationCancelMutation = ({ reservationId, body }) => {
   const token = getToken();
-  return useQuery(["useMyPageReservation"], () =>
-    getMyPageReservation({ token })
+  return useMutation(postReservationCancel({ reservationId, body, token }));
+};
+
+export const useReservationCancelQuery = ({ reservationId }) => {
+  const token = getToken();
+  return useMutation(
+    getPreviousReservationInfoCancel({ reservationId, token })
   );
-}
+};

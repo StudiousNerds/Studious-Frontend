@@ -24,16 +24,16 @@ const RemoteControl = ({
     roomId,
     token: getCookie("accessToken"),
     body: {
-      reserveUser: userInfo,
-      reservationInfo: {
+      user: userInfo,
+      reservation: {
         date,
         startTime,
         endTime,
         usingTime,
         headCount,
-        price: totalPrice,
       },
       paidConveniences: selectedConveniences,
+      price: totalPrice,
     },
   });
   const handlePayReservationClick = () => {

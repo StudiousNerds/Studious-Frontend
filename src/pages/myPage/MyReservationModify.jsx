@@ -8,6 +8,8 @@ import { useNumberController } from "hooks/useNumberController";
 import { useMemo, useState } from "react";
 import { Button } from "components/common/Button";
 import { formatNumberWithCommas } from "utils/formatNumber";
+import { useReservationModifyQuery } from "hooks/queries/useMyPageReservation";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const MyReservationModify = () => {
   const DUMMY_DATA = {
@@ -15,6 +17,8 @@ const MyReservationModify = () => {
       studycafeName: "Nerds",
       roomName: "roomA",
       address: "서울 성북구 동소문로 14-8 Nerds 빌딩 5층",
+      studycafePhoto:
+        "https://i.pinimg.com/736x/1f/62/2f/1f622fbd33a79bd592f7386151e6dd8e.jpg",
     },
     reservation: {
       date: "2023-11-22",
@@ -23,27 +27,38 @@ const MyReservationModify = () => {
       usingTime: 3,
     },
     headCount: 5,
-    paidList: [],
-    notPaidList: [
-      {
-        name: "MONITOR",
-        price: 1000,
-      },
-      {
-        name: "BEAM",
-        price: 2000,
-      },
-      {
-        name: "POINTER",
-        price: 500,
-      },
-      {
-        name: "NOTEBOOK",
-        price: 1000,
-      },
-    ],
+    maxHeadCount: 6,
+    priceType: "PER_HOUR",
+    paidConveniences: {
+      paidList: [],
+      notPaidList: [
+        {
+          name: "MONITOR",
+          price: 1000,
+        },
+        {
+          name: "BEAM",
+          price: 2000,
+        },
+        {
+          name: "POINTER",
+          price: 500,
+        },
+        {
+          name: "NOTEBOOK",
+          price: 1000,
+        },
+      ],
+    },
   };
-  const { userCount, handleUserCount } = useNumberController(2, 6, 5);
+  const { reservationId } = useParams();
+  const { data } = useReservationModifyQuery({ reservationId });
+  console.log(data);
+  const { userCount, handleUserCount } = useNumberController(
+    1,
+    DUMMY_DATA.maxHeadCount,
+    DUMMY_DATA.headCount
+  );
   const [additionalItemsPrice, setAdditionalItemsPrice] = useState(0);
   const handleItemChange = (e) => {
     const targetPrice = JSON.parse(e.target.value).price;
@@ -58,12 +73,15 @@ const MyReservationModify = () => {
     );
   };
   const additionalTotalPrice = useMemo(() => {
-    return (userCount - DUMMY_DATA.headCount) * 2000 + additionalItemsPrice;
+    const headCountDiff = userCount - DUMMY_DATA.headCount > 0 ?? 0;
+    return headCountDiff * 2000 + additionalItemsPrice;
   }, [userCount, additionalItemsPrice, DUMMY_DATA.headCount]);
+
   return (
     <TitleMainLayout title={"예약 변경"}>
       <ReservationInfoSection
         studycafeName={DUMMY_DATA.place.studycafeName}
+        studycafePhoto={DUMMY_DATA.place.studycafePhoto}
         roomName={DUMMY_DATA.place.roomName}
         reservation={DUMMY_DATA.reservation}
       />
@@ -77,8 +95,8 @@ const MyReservationModify = () => {
       </DetailItem>
       <Title>유료 편의시설</Title>
       <CheckBoxList>
-        {DUMMY_DATA.paidList.length > 0 &&
-          DUMMY_DATA.paidList.map(({ name, price }) => (
+        {DUMMY_DATA.paidConveniences.paidList.length > 0 &&
+          DUMMY_DATA.paidConveniences.paidList.map(({ name, price }) => (
             <CheckBoxListItem>
               <input id="paid-checkbox-list" type="checkbox" disabled />
               <label
@@ -92,8 +110,8 @@ const MyReservationModify = () => {
           ))}
       </CheckBoxList>
       <CheckBoxList>
-        {DUMMY_DATA.notPaidList.length > 0 &&
-          DUMMY_DATA.notPaidList.map(({ name, price }) => (
+        {DUMMY_DATA.paidConveniences.notPaidList.length > 0 &&
+          DUMMY_DATA.paidConveniences.notPaidList.map(({ name, price }) => (
             <CheckBoxListItem>
               <input
                 id="paid-checkbox-list"

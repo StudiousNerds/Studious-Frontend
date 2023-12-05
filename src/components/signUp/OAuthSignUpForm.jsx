@@ -1,30 +1,25 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { useSignUpMutation } from "hooks/queries/useSignup";
+import { useOAuthSignUpMutation } from "hooks/queries/useSignup";
 
-const SignUpForm = () => {
+const OAuthSignUpForm = ({ isOAuth, email, providerId, type }) => {
   const [signUpInfo, setSignUpInfo] = useState({
-    email: "",
+    email,
     name: "",
-    password: "",
     nickname: "",
+    providerId,
+    type,
     phoneNumber: "",
     roles: ["USER"],
     birthday: "",
   });
-  const handleSignUpMutation = useSignUpMutation(signUpInfo);
+  const handleOAuthSignUpMutation = useOAuthSignUpMutation(signUpInfo);
   const handleSignUp = (e) => {
     e.preventDefault();
-    handleSignUpMutation.mutate();
-  };
-  const handleChangeEmail = (e) => {
-    setSignUpInfo((info) => ({ ...info, email: e.target.value }));
+    handleOAuthSignUpMutation.mutate();
   };
   const handleChangeName = (e) => {
     setSignUpInfo((info) => ({ ...info, name: e.target.value }));
-  };
-  const handleChangePassword = (e) => {
-    setSignUpInfo((info) => ({ ...info, password: e.target.value }));
   };
   const handleChangeNickname = (e) => {
     setSignUpInfo((info) => ({ ...info, nickname: e.target.value }));
@@ -38,12 +33,6 @@ const SignUpForm = () => {
   return (
     <SignUpLayoutContainer>
       <SignUpTitle>STUDIOUS 회원가입</SignUpTitle>
-      <SignUpItem>
-        <h1>
-          이메일 <span>*</span>
-        </h1>
-        <SignUpItemInput onChange={handleChangeEmail} />
-      </SignUpItem>
       <SignUpItem>
         <h1>
           이름 <span>*</span>
@@ -71,25 +60,12 @@ const SignUpForm = () => {
           onChange={handleChangePhoneNumber}
         />
       </SignUpItem>
-      <SignUpItem>
-        <h1>
-          비밀번호 <span>*</span>
-        </h1>
-        <SignUpItemInputBox>
-          <SignUpItemInput
-            type="password"
-            placeholder="영문 + 숫자 + 특수문자의 조합 최소 10자"
-            onChange={handleChangePassword}
-          />
-          <SignUpItemInput type="password" placeholder="비밀번호 재입력" />
-        </SignUpItemInputBox>
-      </SignUpItem>
       <SignUpButton onClick={handleSignUp}>회원가입</SignUpButton>
     </SignUpLayoutContainer>
   );
 };
 
-export default SignUpForm;
+export default OAuthSignUpForm;
 
 const SignUpLayoutContainer = styled.form`
   margin-top: 3rem;
@@ -110,12 +86,6 @@ const SignUpItem = styled.div`
       color: ${({ theme }) => theme.colors.mainDark};
     }
   }
-`;
-const SignUpItemInputBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
 `;
 const SignUpItemInput = styled.input`
   display: box;

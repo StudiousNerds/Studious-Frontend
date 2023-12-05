@@ -5,5 +5,5 @@
  */
 export const formatNumberWithCommas = (num) => {
   if (!num) return num;
-  num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };

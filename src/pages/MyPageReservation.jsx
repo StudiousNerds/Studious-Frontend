@@ -67,6 +67,30 @@ const MyPageReservation = () => {
   useEffect(() => {
     // 전체 예약 데이터 가져오기
     setIsLoading(true);
+    axios
+      .get("/mypage/reservations", {
+        // params: {
+        //   page: 1,
+        //   startDate: "2023-07-30",
+        //   endDate: "2023-07-31",
+        //   studycafeName: "Nerds",
+        //   tab: "ALL",
+        // },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.log("here", response.data);
+        setReservations(response.data.reservationRecordInfoWithStatusList);
+        setIsLoading(false);
+      });
+
+    // 이용 중인 예약 데이터 가져오기
+    // axios.get("").then((response) => {
+    //   setOngoingReservations(response.data);
+    // });
 
     const axiosReservations = async () => {
       try {
