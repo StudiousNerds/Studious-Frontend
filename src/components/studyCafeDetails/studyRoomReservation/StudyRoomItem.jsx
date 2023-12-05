@@ -16,7 +16,7 @@ import { convenienceDic } from "components/constants/ConvenienceData";
 const StudyRoomItem = ({
   roomData: {
     id,
-    roomName,
+    name,
     minHeadCount,
     maxHeadCount,
     minUsingTime,
@@ -24,8 +24,8 @@ const StudyRoomItem = ({
     priceType,
     conveniences,
     paidConveniences,
-    canReserveDatetime,
-    photos,
+    canReserveDateTime,
+    photo,
   },
   date,
 }) => {
@@ -102,18 +102,18 @@ const StudyRoomItem = ({
   };
   return (
     <ItemContainer>
-      <ItemLeftSection isSingleImage={photos.length === 1}>
-        <img src={photos[0]} alt="스터디룸 이미지" />
-        <SmallImagesSlider gap={0.9}>
-          {photos.slice(1).map((photo, photoIndex) => {
+      <ItemLeftSection isSingleImage={true}>
+        <img src={photo} alt="스터디룸 이미지" />
+        {/* <SmallImagesSlider gap={0.9}>
+          {photo.slice(1).map((photo, photoIndex) => {
             return <img key={photoIndex} src={photo} alt="스터디룸 이미지" />;
           })}
-        </SmallImagesSlider>
+        </SmallImagesSlider> */}
       </ItemLeftSection>
       <ItemRightSection>
         <StudyRoomMainInfoBox>
           <div className="info">
-            {roomName}
+            {name}
             <div className="info__sub">{`최소 ${minHeadCount}인 ~ 최대 ${maxHeadCount}인`}</div>
           </div>
           <div className="info">
@@ -124,24 +124,26 @@ const StudyRoomItem = ({
           </div>
         </StudyRoomMainInfoBox>
         <StudyRoomExtraOptionsBox>
-          <PaidConveniencesBox>
-            <div>유료 편의시설</div>
-            <select
-              name="paidConveniences"
-              className="select"
-              defaultValue={"선택하기"}
-              onChange={handleSelectPaidConvenience}
-            >
-              <option>선택하기</option>
-              {paidConveniences.map((item, itemIndex) => (
-                <option value={JSON.stringify(item)} key={itemIndex}>
-                  {`${item.convenienceName} (+${formatNumberWithCommas(
-                    item.price
-                  )})`}
-                </option>
-              ))}
-            </select>
-          </PaidConveniencesBox>
+          {paidConveniences && paidConveniences.length > 0 && (
+            <PaidConveniencesBox>
+              <div>유료 편의시설</div>
+              <select
+                name="paidConveniences"
+                className="select"
+                defaultValue={"선택하기"}
+                onChange={handleSelectPaidConvenience}
+              >
+                <option>선택하기</option>
+                {paidConveniences.map((item, itemIndex) => (
+                  <option value={JSON.stringify(item)} key={itemIndex}>
+                    {`${item.convenienceName} (+${formatNumberWithCommas(
+                      item.price
+                    )})`}
+                  </option>
+                ))}
+              </select>
+            </PaidConveniencesBox>
+          )}
           <UserNumberCounterBox>
             <span>인원수</span>
             <NumberController
@@ -151,7 +153,7 @@ const StudyRoomItem = ({
           </UserNumberCounterBox>
         </StudyRoomExtraOptionsBox>
         <TimeController
-          hours={canReserveDatetime[formatDateToString(date, "-")]}
+          hours={canReserveDateTime[formatDateToString(date, "-")]}
           selectedStartTime={startTime}
           selectedEndTime={endTime}
           onSelectTimeBlock={onSelectTimeBlock}

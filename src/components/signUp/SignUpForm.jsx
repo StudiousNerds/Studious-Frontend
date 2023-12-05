@@ -2,15 +2,15 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useSignUpMutation } from "hooks/queries/useSignup";
 
-const SignUpForm = ({ isOAuth, email, providerId, type }) => {
+const SignUpForm = () => {
   const [signUpInfo, setSignUpInfo] = useState({
-    email: email ? email : "",
-    password: null,
+    email: "",
+    name: "",
+    password: "",
     nickname: "",
-    providerId: providerId ? providerId : null,
-    type: type ? type : null,
     phoneNumber: "",
     roles: ["USER"],
+    birthday: "",
   });
   const handleSignUpMutation = useSignUpMutation(signUpInfo);
   const handleSignUp = (e) => {
@@ -19,6 +19,9 @@ const SignUpForm = ({ isOAuth, email, providerId, type }) => {
   };
   const handleChangeEmail = (e) => {
     setSignUpInfo((info) => ({ ...info, email: e.target.value }));
+  };
+  const handleChangeName = (e) => {
+    setSignUpInfo((info) => ({ ...info, name: e.target.value }));
   };
   const handleChangePassword = (e) => {
     setSignUpInfo((info) => ({ ...info, password: e.target.value }));
@@ -29,37 +32,35 @@ const SignUpForm = ({ isOAuth, email, providerId, type }) => {
   const handleChangePhoneNumber = (e) => {
     setSignUpInfo((info) => ({ ...info, phoneNumber: e.target.value }));
   };
+  const handleChangeBirthday = (e) => {
+    setSignUpInfo((info) => ({ ...info, birthday: e.target.value }));
+  };
   return (
     <SignUpLayoutContainer>
       <SignUpTitle>STUDIOUS 회원가입</SignUpTitle>
-      {!isOAuth && (
-        <>
-          <SignUpItem>
-            <h1>
-              이메일 <span>*</span>
-            </h1>
-            <SignUpItemInput onChange={handleChangeEmail} />
-          </SignUpItem>
-          <SignUpItem>
-            <h1>
-              비밀번호 <span>*</span>
-            </h1>
-            <SignUpItemInputBox>
-              <SignUpItemInput
-                type="password"
-                placeholder="영문 + 숫자 + 특수문자의 조합 최소 10자"
-                onChange={handleChangePassword}
-              />
-              <SignUpItemInput type="password" placeholder="비밀번호 재입력" />
-            </SignUpItemInputBox>
-          </SignUpItem>
-        </>
-      )}
+      <SignUpItem>
+        <h1>
+          이메일 <span>*</span>
+        </h1>
+        <SignUpItemInput onChange={handleChangeEmail} />
+      </SignUpItem>
+      <SignUpItem>
+        <h1>
+          이름 <span>*</span>
+        </h1>
+        <SignUpItemInput onChange={handleChangeName} />
+      </SignUpItem>
       <SignUpItem>
         <h1>
           닉네임 <span>*</span>
         </h1>
         <SignUpItemInput placeholder="닉네임" onChange={handleChangeNickname} />
+      </SignUpItem>
+      <SignUpItem>
+        <h1>
+          생일 <span>*</span>
+        </h1>
+        <SignUpItemInput type="date" onChange={handleChangeBirthday} />
       </SignUpItem>
       <SignUpItem>
         <h1>
@@ -69,6 +70,19 @@ const SignUpForm = ({ isOAuth, email, providerId, type }) => {
           placeholder="전화번호 입력(- 생략)"
           onChange={handleChangePhoneNumber}
         />
+      </SignUpItem>
+      <SignUpItem>
+        <h1>
+          비밀번호 <span>*</span>
+        </h1>
+        <SignUpItemInputBox>
+          <SignUpItemInput
+            type="password"
+            placeholder="영문 + 숫자 + 특수문자의 조합 최소 10자"
+            onChange={handleChangePassword}
+          />
+          <SignUpItemInput type="password" placeholder="비밀번호 재입력" />
+        </SignUpItemInputBox>
       </SignUpItem>
       <SignUpButton onClick={handleSignUp}>회원가입</SignUpButton>
     </SignUpLayoutContainer>

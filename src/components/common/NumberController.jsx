@@ -9,7 +9,7 @@ const NumberController = ({ userCount, handleUserCount }) => {
         onClick={() => handleUserCount("minus")}
         style={{ cursor: "pointer" }}
       />
-      {userCount}
+      <span>{userCount}</span>
       <PlusIcon
         onClick={() => handleUserCount("plus")}
         style={{ cursor: "pointer" }}
@@ -23,4 +23,7 @@ export default NumberController;
 const NumberControllerLayout = styled.div`
   display: flex;
   gap: 1.5rem;
+  span {
+    ${({ theme }) => theme.fonts.body1}
+  }
 `;

@@ -16,11 +16,15 @@ import Payment from "pages/Payment";
 import SearchResult from "pages/SearchResult";
 import Reservation from "pages/Reservation";
 import Reviews from "pages/Reviews";
-import Account from "pages/myPage/Account";
+import MyReservationCancel from "pages/MyReservationCancel";
+import MyReservationModify from "pages/myPage/MyReservationModify";
 import RedirectPayment from "pages/RedirectPayment";
 import ReviewWrite from "pages/ReviewWrite";
 import ReviewEdit from "pages/ReviewEdit";
 import MyPageReservation from "pages/MyPageReservation";
+import Bookmark from "pages/Bookmark";
+import PrivateRoute from "PrivateRoute";
+import Account from "pages/myPage/Account";
 
 function App() {
   const queryClient = new QueryClient();
@@ -78,22 +82,30 @@ function App() {
                 />
                 <Route path="/search-result" element={<SearchResult />} />
                 <Route path="/myPage/reviews" element={<Reviews />} />
+                <Route element={<PrivateRoute />}>
+                  <Route path="/myPage/account" element={<Account />} />
+                </Route>
                 <Route
                   path="/myPage/reviews/:reviewId/write"
                   element={<ReviewWrite />}
                 />
                 <Route
+                  path="/myPage/reviews/:reviewId/edit"
+                  component={<ReviewEdit />}
+                />
+                <Route
                   path="/myPage/reservation"
                   element={<MyPageReservation />}
                 />
                 <Route
-                  path="/myPage/reviews/:reviewId/write"
+                  path="/myPage/reviews/:reviewId/edit"
                   element={<ReviewEdit />}
                 />
                 <Route
-                  path="/myPage/reservation"
-                  element={<MyPageReservation />}
+                  path="/myPage/reservation/:reservationId/modify"
+                  element={<MyReservationModify />}
                 />
+                <Route path="/myPage/bookmarks" element={<Bookmark />} />
               </Routes>
             </AppLayout>
           </ThemeProvider>

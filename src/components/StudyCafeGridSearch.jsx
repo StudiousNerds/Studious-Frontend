@@ -1,10 +1,15 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Icon from "./common/Icon";
 import star from "assets/icons/starYellow.svg";
+import bookmarkOn from "assets/icons/bookmarkOn.svg";
+import bookmarkOff from "assets/icons/bookmarkOff.svg";
 import { formatNumberWithCommas } from "utils/formatNumber";
+import { getCookie } from "utils/cookie";
+import { setCookie } from "utils/cookie";
+import { POST } from "apis/api";
 
-// 서버에서 가져온 데이터에 이미지가 없는 경우 사용할 대체 이미지입니다.
 const IMG_DUMMY_URL = "http://placehold.it/640x480";
 
 const StudyCafeGridSearch = ({
@@ -20,13 +25,55 @@ const StudyCafeGridSearch = ({
   },
 }) => {
   const navigate = useNavigate();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
   const handleClickItem = () => {
     navigate(`/studyCafe/${id}`);
   };
+
+  const handleBookmarkClick = async () => {
+    setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
+
+    const itemId = id;
+    const bookmarkStatus = !isBookmarked;
+
+    const requestData = {
+      studycafeId: itemId,
+    };
+
+    const accessToken = getCookie("accessToken");
+    setCookie({ key: "accessToken", value: accessToken, options: {} });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${accessToken}`,
+      },
+    };
+
+    try {
+      const response = await POST(`/mypage/bookmarks/${itemId}`, {}, config);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ItemLayout>
-      <ItemImageBox onClick={handleClickItem}>
-        <img src={photo ? photo : IMG_DUMMY_URL} alt="스터디카페 이미지" />
+      <ItemImageBox>
+        <img
+          onClick={handleClickItem}
+          src={photo ? photo : IMG_DUMMY_URL}
+          alt="스터디카페 이미지"
+        />
+        <BookmarkButton onClick={handleBookmarkClick}>
+          {isBookmarked ? (
+            <Icon iconSrc={bookmarkOff} size={3} alt="북마크 채워진 아이콘" />
+          ) : (
+            <Icon iconSrc={bookmarkOn} size={3} alt="북마크 비워진 아이콘" />
+          )}
+        </BookmarkButton>
       </ItemImageBox>
       <ItemDetails>
         <ItemDetailsTitle onClick={handleClickItem}>
@@ -68,6 +115,7 @@ const ItemLayout = styled.div`
 `;
 const ItemImageBox = styled.div`
   width: 100%;
+  position: relative;
   img {
     border-radius: 2rem;
     width: 100%;
@@ -103,4 +151,13 @@ const ItemDetailsHashtags = styled.div`
   ${({ theme }) => theme.fonts.caption1};
   display: flex;
   gap: 5px;
+`;
+const BookmarkButton = styled.button`
+  background-color: transprent;
+  cursor: pointer;
+  position: absolute;
+  top: -6.9rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
 `;

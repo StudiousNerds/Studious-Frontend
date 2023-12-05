@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const ReservationModal = ({ item, onClose }) => {
+const ReservationModal = ({ clickedItemDetails, onClose }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clickedItem, setClickedItem] = useState(null);
 
@@ -20,21 +20,21 @@ const ReservationModal = ({ item, onClose }) => {
       <ModalContainer>
         <ModalContent>
           <CloseButton onClick={closeModal}>X</CloseButton>
-          <ModalTextCafe>스터디카페 이름{item.studycafeName}</ModalTextCafe>
-          <ModalTextRoom>스터디룸 이름{item.roomName}</ModalTextRoom>
+          <ModalTextCafe>{clickedItemDetails.studycafeName}</ModalTextCafe>
+          <ModalTextRoom>{clickedItemDetails.roomName}</ModalTextRoom>
           <ModalTextTime>
-            시간: {item.reservationDate} {item.reservationStartTime} -{" "}
-            {item.reservationEndTime} ({item.usingTime})
+            {clickedItemDetails.date} {clickedItemDetails.startTime} -{" "}
+            {clickedItemDetails.endTime} ({clickedItemDetails.usingTime})
           </ModalTextTime>
-          <ModalTextAd>위치: </ModalTextAd>
+          <ModalTextAd>{clickedItemDetails.address} </ModalTextAd>
           <ModalTextInfo>예약자 정보 </ModalTextInfo>
-          <ModalTextAd>이름 </ModalTextAd>
-          <ModalTextAd>전화번호 </ModalTextAd>
+          <ModalTextAd>{clickedItemDetails.name} </ModalTextAd>
+          <ModalTextAd>{clickedItemDetails.phoneNumber} </ModalTextAd>
           <ModalText>결제 정보 </ModalText>
-          <ModalTextAd>이용 금액 {item.price} </ModalTextAd>
+          <ModalTextAd>이용 금액 {clickedItemDetails.price}원 </ModalTextAd>
           <Divider />
-          <ModalText>총 결제 금액 {item.price}</ModalText>
-          <ModalTextAd>결제 수단 {item.paymentMethod}</ModalTextAd>
+          <ModalText>총 결제 금액 {clickedItemDetails.price}원 </ModalText>
+          <ModalTextAd>결제 수단 {clickedItemDetails.method}</ModalTextAd>
         </ModalContent>
       </ModalContainer>
     </ModalBackground>
@@ -122,3 +122,4 @@ const Divider = styled.div`
   margin-top: 2rem;
   margin-left: 7rem;
 `;
+

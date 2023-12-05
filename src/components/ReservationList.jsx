@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const IMG_DUMMY_URL =
   "https://www.idjnews.kr/news/photo/202008/124221_84195_2158.jpg";
 
 const ReservationList = ({ reservations, onItemClick }) => {
+  const navigate = useNavigate();
+
   const renderButtons = (reservationStatus) => {
     switch (reservationStatus) {
       case "BEFORE_USING":
@@ -18,6 +21,12 @@ const ReservationList = ({ reservations, onItemClick }) => {
         return <TimeButton>시간 연장</TimeButton>;
       case "AFTER_USING":
         return <WriteReviewButton>후기 작성하기</WriteReviewButton>;
+      case "CANCELED":
+        return (
+          <>
+            <CancelReason>{reservations.cancelReason}</CancelReason>
+          </>
+        );
       default:
         return null;
     }
@@ -27,10 +36,12 @@ const ReservationList = ({ reservations, onItemClick }) => {
     switch (reservationStatus) {
       case "BEFORE_USING":
         return "이용 전";
-      case "using":
+      case "USING":
         return "이용 중";
-      case "after_using":
+      case "AFTER_USING":
         return "이용 후";
+      case "CANCELED":
+        return "취소";
       default:
         return "";
     }
@@ -61,8 +72,7 @@ const ReservationList = ({ reservations, onItemClick }) => {
               </NameStatusWrapper>
               <ReservationInfo>{reservations.roomName}</ReservationInfo>
               <ReservationInfo>
-                결제금액 ₩{reservations.price}원(
-                {reservations.paymentMethod})
+                결제금액 ₩{reservations.price}원
               </ReservationInfo>
               <ReservationInfo>
                 {formatDate(reservations.reservationDate)}{" "}
@@ -184,5 +194,16 @@ const WriteReviewButton = styled.button`
 `;
 
 const ClickableItem = styled.div``;
+
+const CancelReason = styled.div`
+  margin-top: -8rem;
+  margin-left: 50rem;
+  border-radius: 2rem;
+  width: 18rem;
+  height: 9rem;
+  background-color: ${({ theme }) => theme.colors.gray200};
+  text-align: center;
+  padding: 3rem;
+`;
 
 export default ReservationList;

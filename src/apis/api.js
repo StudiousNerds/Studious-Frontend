@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const baseURL = process.env.REACT_APP_BASE_URL;
 const request = async ({ url, method, body, params, token }) => {
   try {
@@ -30,6 +32,24 @@ const request = async ({ url, method, body, params, token }) => {
     throw error;
   }
 };
+
+// axios.interceptors.response.use(
+//   function (response) {
+//     return response;
+//   },
+//   function (error) {
+//     const navigate = useNavigate();
+//     switch (error.response.status) {
+//       case 401:
+//         alert("로그인이 필요합니다.");
+//         navigate("/login");
+//         break;
+//       default:
+//         console.error(error.response);
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export const GET = (url, token) => request({ url, method: "get", token });
 export const POST = (url, body, token) =>

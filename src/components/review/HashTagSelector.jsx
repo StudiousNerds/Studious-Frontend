@@ -5,31 +5,34 @@ const HashTagSelector = ({ onSelect }) => {
   const [selectedTags, setSelectedTags] = useState([]);
 
   const allTags = [
-    "깨끗해요",
-    "친절해요",
-    "쾌적해요",
-    "면접용",
-    "역세권",
-    "최신식",
-    "접근성",
-    "설명과동일",
-    "조용해요",
-    "갓성비",
-    "집중잘돼요",
-    "프라이빗",
+    { label: "깨끗해요", value: "CLEAN" },
+    { label: "친절해요", value: "KIND" },
+    { label: "쾌적해요", value: "PLEASANT" },
+    { label: "면접용", value: "INTERVIEW" },
+    { label: "역세권", value: "STATION_AREA" },
+    { label: "최신식", value: "LATEST" },
+    { label: "접근성", value: "ACCESS" },
+    { label: "설명과동일", value: "SAME_AS_DESCRIPTION" },
+    { label: "조용해요", value: "QUITE" },
+    { label: "갓성비", value: "COST_EFFECTIVE" },
+    { label: "집중잘돼요", value: "FOCUS" },
+    { label: "프라이빗", value: "PRIVATE" },
   ];
 
   const maxSelectableTags = 5;
 
   const handleTagSelect = (tag) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(
-        selectedTags.filter((selectedTag) => selectedTag !== tag)
-      );
-    } else {
-      if (selectedTags.length < maxSelectableTags) {
-        setSelectedTags([...selectedTags, tag]);
+    if (tag) {
+      if (selectedTags.includes(tag)) {
+        setSelectedTags(
+          selectedTags.filter((selectedTag) => selectedTag !== tag)
+        );
+      } else {
+        if (selectedTags.length < maxSelectableTags) {
+          setSelectedTags([...selectedTags, tag]);
+        }
       }
+      onSelect(selectedTags);
     }
   };
 
@@ -46,10 +49,10 @@ const HashTagSelector = ({ onSelect }) => {
       <HashTagList>
         {allTags.map((tag) => (
           <HashTagButton
-            key={tag}
-            isSelected={selectedTags.includes(tag)}
-            onClick={() => handleTagSelect(tag)}>
-            {tag}
+            key={tag.label}
+            isSelected={selectedTags.includes(tag.value)}
+            onClick={() => handleTagSelect(tag.value)}>
+            {tag.label}
           </HashTagButton>
         ))}
       </HashTagList>

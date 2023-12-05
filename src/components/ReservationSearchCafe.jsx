@@ -4,11 +4,29 @@ import { GET } from "apis/api";
 
 const ReservationSearchCafe = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [reservationStatus, setReservationStatus] = useState("");
+  const [period, setPeriod] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const handleSearch = () => {
-    const queryParams = new URLSearchParams({ cafeName: searchQuery });
+    const queryParams = new URLSearchParams({
+      reservation_status: reservationStatus,
+      period: period,
+      dt_st: startDate,
+      dt_ed: endDate,
+      keyword: searchQuery,
+    });
     const queryString = queryParams.toString();
-    const url = `/api/searchCafes?${queryString}`;
+    const url = `/reservations?${queryString}`;
+
+    GET(url)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   return (

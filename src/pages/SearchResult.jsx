@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import FilterModal from "components/FilterModal";
 import StudyCafeGridItem from "components/StudyCafeGridItem";
-import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
+import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 import Loading from "components/common/Loading";
 
 const SearchResult = () => {
@@ -53,7 +53,7 @@ const SearchResult = () => {
 
   const axiosData = async () => {
     try {
-      let apiUrl = `/studious/search?page=${currentPage}&sortType=${sortOption}`;
+      let apiUrl = `/studycafes?page=${currentPage}&sortType=${sortOption}`;
       if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
       if (searchBarData.startTime)
         apiUrl += `&startTime=${searchBarData.startTime}`;

@@ -227,6 +227,7 @@ const MarginReservationSearchCafe = styled.div`
 
 const Divider = styled.div`
   width: 100rem;
+  width: 100rem;
   margin-left: 6rem;
   height: 0.1rem;
   background-color: #c6c6c6;
