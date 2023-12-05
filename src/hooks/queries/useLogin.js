@@ -23,7 +23,7 @@ export const useOAuthLoginMutation = (code, platform, successCallback) => {
 export const useLoginMutation = (body) => {
   const navigate = useNavigate();
   return useMutation(() => postLogin(body), {
-    onSuccess: ({ token: { grantType, accessToken }, profile }) => {
+    onSuccess: ({ tokenInfo: { grantType, accessToken }, profile }) => {
       try {
         setToken({ accessToken, grantType });
         setCookie({ key: USER.profileKey, value: profile });
