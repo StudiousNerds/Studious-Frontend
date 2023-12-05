@@ -97,8 +97,8 @@ function App() {
                   element={<MyPageReservation />}
                 />
                 <Route
-                  path="/myPage/reservation/:reservationId/cancel"
-                  element={<MyReservationCancel />}
+                  path="/myPage/reviews/:reviewId/edit"
+                  element={<ReviewEdit />}
                 />
                 <Route
                   path="/myPage/reservation/:reservationId/modify"
