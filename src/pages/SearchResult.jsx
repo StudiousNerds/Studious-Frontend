@@ -53,7 +53,7 @@ const SearchResult = () => {
 
   const axiosData = async () => {
     try {
-      let apiUrl = `/search?page=${currentPage}&sortType=${sortOption}`;
+      let apiUrl = `/studycafes?page=${currentPage}&sortType=${sortOption}`;
       if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
       if (searchBarData.startTime)
         apiUrl += `&startTime=${searchBarData.startTime}`;
