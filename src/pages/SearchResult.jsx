@@ -7,6 +7,7 @@ import StudyCafeGridItem from "components/StudyCafeGridItem";
 import Pagination from "components/Pagination";
 import { GET } from "apis/api";
 import useSearchResult from "hooks/queries/useSearchResult";
+import Loading from "components/common/Loading";
 import StudyCafeGridSearch from "components/StudyCafeGridSearch";
 
 const SearchResult = () => {
@@ -24,6 +25,7 @@ const SearchResult = () => {
   const [conveniences, setConveniences] = useState([]);
 
   const [axiosKey, setAxiosKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(searchResult.length / itemsPerPage);
@@ -32,7 +34,7 @@ const SearchResult = () => {
   const displayedItems = searchResult.slice(startIndex, endIndex);
 
   const buildApiUrl = () => {
-    let apiUrl = `/studious/search?page=1`;
+    let apiUrl = `/search?page=1`;
     if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
     if (searchBarData.startTime)
       apiUrl += `&startTime=${searchBarData.startTime}`;
@@ -51,7 +53,7 @@ const SearchResult = () => {
 
   const axiosData = async () => {
     try {
-      let apiUrl = `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/search?page=${currentPage}&sortType=${sortOption}`;
+      let apiUrl = `/studycafes?page=${currentPage}&sortType=${sortOption}`;
       if (searchBarData.date) apiUrl += `&date=${searchBarData.date}`;
       if (searchBarData.startTime)
         apiUrl += `&startTime=${searchBarData.startTime}`;
@@ -64,8 +66,10 @@ const SearchResult = () => {
       if (conveniences.length > 0)
         apiUrl += `&conveniences=${conveniences.join(",")}`;
 
+      setIsLoading(true);
       const response = await GET(apiUrl);
       if (response.status === 200) {
+        setIsLoading(false);
         const responseData = response.data;
         setSearchResult(responseData);
       }
@@ -105,39 +109,45 @@ const SearchResult = () => {
   }, [initialSearchResult]);
 
   return (
-    <SearchResultContainer>
-      <FilterSortContainer>
-        <SortSelect value={sortOption} onChange={handleSortOptionChange}>
-          <option value="REVIEW_DESC">리뷰 많은 순</option>
-          <option value="RESERVATION_DESC">예약 많은 순</option>
-          <option value="GRADE_DESC">평점 높은 순</option>
-          <option value="CREATED_DESC">최신순</option>
-        </SortSelect>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <SearchResultContainer>
+          <FilterSortContainer>
+            <SortSelect value={sortOption} onChange={handleSortOptionChange}>
+              <option value="REVIEW_DESC">리뷰 많은 순</option>
+              <option value="RESERVATION_DESC">예약 많은 순</option>
+              <option value="GRADE_DESC">평점 높은 순</option>
+              <option value="CREATED_DESC">최신순</option>
+            </SortSelect>
 
-        <FilterButton onClick={handleFilterButtonClick}>
-          <FilterIcon />
-        </FilterButton>
-      </FilterSortContainer>
+            <FilterButton onClick={handleFilterButtonClick}>
+              <FilterIcon />
+            </FilterButton>
+          </FilterSortContainer>
 
-      {isModalOpen && (
-        <FilterModal
-          onClose={handleFilterButtonClick}
-          applyFilters={handleApplyFilters}
-        />
+          {isModalOpen && (
+            <FilterModal
+              onClose={handleFilterButtonClick}
+              applyFilters={handleApplyFilters}
+            />
+          )}
+
+          <GridContainer>
+            {displayedItems.map((item) => (
+              <StudyCafeGridSearch key={item.Id} item={item} />
+            ))}
+          </GridContainer>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </SearchResultContainer>
       )}
-
-      <GridContainer>
-        {displayedItems.map((item) => (
-          <StudyCafeGridSearch key={item.Id} item={item} />
-        ))}
-      </GridContainer>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </SearchResultContainer>
+    </>
   );
 };
 

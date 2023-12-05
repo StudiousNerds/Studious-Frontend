@@ -122,3 +122,4 @@ const Divider = styled.div`
   margin-top: 2rem;
   margin-left: 7rem;
 `;
+

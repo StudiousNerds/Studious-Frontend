@@ -1,18 +1,26 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
 
-const Day = ({ date, isSelected, isToday, isPastDate, onClick }) => {
-  const dayOfWeek = date.getDay();
-  const isSaturday = dayOfWeek === 6;
-  const isSunday = dayOfWeek === 0;
-
+const Day = ({
+  date,
+  isSelected,
+  isToday,
+  isPastDate,
+  isSaturday,
+  isSunday,
+  isHoliday,
+  onClick,
+}) => {
   return (
     <DayContainer
       isSelected={isSelected}
       isToday={isToday}
       onClick={onClick}
-      isPastDate={isPastDate}
-    >
+      isSaturday={isSaturday}
+      isSunday={isSunday}
+      isHoliday={isHoliday}
+      isPastDate={isPastDate}>
       {date.getDate()}
       {isToday && <TodayText>오늘</TodayText>}
     </DayContainer>
@@ -26,6 +34,8 @@ const Calendar = ({ dafaultDate, onSelectDate }) => {
 
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
+  const [holidays, setHolidays] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(dafaultDate);
 
   const firstDayOfMonth = new Date(year, month, 1);
   const lastDayOfMonth = new Date(year, month + 1, 0);
@@ -46,7 +56,23 @@ const Calendar = ({ dafaultDate, onSelectDate }) => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState(dafaultDate);
+  const goToPreviousMonth = () => {
+    if (month === 0) {
+      setYear(year - 1);
+      setMonth(11);
+    } else {
+      setMonth(month - 1);
+    }
+  };
+
+  const goToNextMonth = () => {
+    if (month === 11) {
+      setYear(year + 1);
+      setMonth(0);
+    } else {
+      setMonth(month + 1);
+    }
+  };
 
   const isPastDate = (date) => {
     const today = new Date();
@@ -63,28 +89,50 @@ const Calendar = ({ dafaultDate, onSelectDate }) => {
     onSelectDate(date);
   };
 
+  useEffect(() => {
+    const calendarId = process.env.REACT_APP_CALENDAR_ID;
+    const apiKey = process.env.REACT_APP_API_KEY;
+    axios
+      .get(
+        `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}`
+      )
+      .then((response) => {
+        const events = response.data.items;
+
+        const holidays = events.map((event) => {
+          const eventDate = new Date(event.start.date);
+          eventDate.setHours(0, 0, 0, 0);
+          return {
+            name: event.summary,
+            date: eventDate,
+          };
+        });
+
+        setHolidays(holidays);
+      })
+      .catch((error) => {
+        console.error("Error holidays:", error);
+      });
+  }, []);
+
   return (
     <CalendarContainer>
       <CalendarHeader>
-        <CalendarButton onClick={() => setMonth(month - 1)}>
-          &lt;
-        </CalendarButton>
+        <CalendarButton onClick={goToPreviousMonth}>&lt;</CalendarButton>
         <CalendarMonth>{`${year}. ${String(month + 1).padStart(
           2,
           "0"
         )}`}</CalendarMonth>
-        <CalendarButton onClick={() => setMonth(month + 1)}>
-          &gt;
-        </CalendarButton>
+        <CalendarButton onClick={goToNextMonth}>&gt;</CalendarButton>
       </CalendarHeader>
       <CalendarWeekdays>
-        <Weekday isSunday>일</Weekday>
+        <Weekday>일</Weekday>
         <Weekday>월</Weekday>
         <Weekday>화</Weekday>
         <Weekday>수</Weekday>
         <Weekday>목</Weekday>
         <Weekday>금</Weekday>
-        <Weekday isSaturday>토</Weekday>
+        <Weekday>토</Weekday>
       </CalendarWeekdays>
       <CalendarDays>
         {Array(startDayOfWeek)
@@ -97,11 +145,16 @@ const Calendar = ({ dafaultDate, onSelectDate }) => {
             key={date.getTime()}
             date={date}
             onClick={() => handleDateClick(date)}
+            isPastDate={isPastDate(date)}
             isSelected={
               selectedDate && date.getTime() === selectedDate.getTime()
             }
+            isHoliday={holidays.some(
+              (holiday) => holiday.date.getTime() === date.getTime()
+            )}
             isToday={isToday(date)}
-            isPastDate={isPastDate(date)}
+            isSaturday={date.getDay() === 6}
+            isSunday={date.getDay() === 0}
           />
         ))}
       </CalendarDays>
@@ -172,9 +225,6 @@ const DayContainer = styled.div`
     background-color: rgba(0, 39, 176, 0.3);
   }
 
-  color: ${({ isSaturday, isSunday, theme }) =>
-    isSaturday ? "#2F5DFF" : isSunday ? "#FF4B4B" : theme.colors.gray900};
-
   ${(props) =>
     props.isSelected &&
     `
@@ -199,6 +249,25 @@ const DayContainer = styled.div`
     &:hover {
       background-color: transparent; 
     }
+    pointer-events: none;
+  `}
+
+  ${(props) =>
+    props.isSaturday &&
+    `
+    color: #2F5DFF; 
+  `}
+
+  ${(props) =>
+    (props.isSunday || props.isHoliday) &&
+    `
+    color: #FF4B4B; 
+  `}
+
+  ${(props) =>
+    props.isPastDate &&
+    `
+    color: #c8c8c8;
   `}
 `;
 
