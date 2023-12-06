@@ -156,16 +156,20 @@ const MyPageReservation = () => {
               </MarginReservationSearchCafe>
             )}
           </FilterAndSearchContainer>
-          {reservations.map((item, index) => (
-            <>
-              <ReservationList
-                key={index}
-                reservations={item}
-                onItemClick={handleItemClick}
-              />
-              <Divider />
-            </>
-          ))}
+          {reservations.length === 0 ? (
+            <></>
+          ) : (
+            reservations.map((item, index) => (
+              <>
+                <ReservationList
+                  key={index}
+                  reservations={item}
+                  onItemClick={handleItemClick}
+                />
+                <Divider />
+              </>
+            ))
+          )}
           {clickedItem && (
             <ReservationModal item={clickedItem} onClose={closeModal} />
           )}
