@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import ReviewCafeList from "components/ReviewCafeList";
 import DateFilter from "components/DateFilter";
 import { GET } from "apis/api";
+import { DELETE } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import StarsGrade from "components/common/StarsGrade";
 import DeletePopup from "components/DeletePopup";
+import { getCookie } from "utils/cookie";
 
 const Reviews = () => {
   const navigate = useNavigate();
@@ -32,26 +33,30 @@ const Reviews = () => {
 
   useEffect(() => {
     // 작성 가능한 리뷰 목록 가져오기
-    axios
-      .get(
-        "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+    GET(`/mypage/reviews/reviewable`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${accessToken}`,
+      },
+    })
       .then((response) => {
-        setWritableReviews(response.data.availableReviewInfo);
+        if (response.status === 200) {
+          setWritableReviews(response.data.availableReviewInfo);
+        } else if (response.status === 401) {
+          alert("인증이 실패하였습니다. 다시 로그인 해주세요.");
+          navigate("/login");
+        }
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.status === 500) {
+          alert("데이터베이스에 오류가 있습니다. 잠시 후 다시 시도해주세요.");
+        }
       });
 
     // 작성한 리뷰 목록 가져오기
-    // axios
-    //   .get(
-    //     "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
+    // GET(
+    //     "/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
     //     config
     //   )
     //   .then((response) => {
@@ -59,25 +64,12 @@ const Reviews = () => {
     //   });
   }, []);
 
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + "=")) {
-        const tokenWithBearer = cookie.substring(name.length + 1);
-        const token = tokenWithBearer.replace("Bearer%20", "");
-        return token;
-      }
-    }
-    return null;
-  }
-
   const accessToken = getCookie("accessToken");
 
   const config = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `${accessToken}`,
     },
   };
 
@@ -92,11 +84,7 @@ const Reviews = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "writable") {
-      axios
-        .get(
-          "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews/available?page=1",
-          config
-        )
+      GET("/reviews/reviewable?page=1", config)
         .then((response) => {
           setWritableReviews(response.data.availableReviewInfo);
         })
@@ -104,42 +92,17 @@ const Reviews = () => {
           console.log("writable error", error);
         });
     } else if (tab === "written") {
-      // axios
-      //   .get(
-      //     "http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/mypage/reviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
-      //     config
-      //   )
-      //   .then((response) => {
-      //     console.log(response.data);
-      //     //setWrittenReviews(response.data.writtenReviewInfos);
-      //   })
-      //   .catch((error) => {
-      //     console.log("written error", error);
-      //   });
-      setWrittenReviews([
-        {
-          reservationId: 5,
-          studycafeInfo: {
-            studycafeId: 1,
-            studycafeName: "Nerds",
-            studycafePhoto:
-              "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/70d9ec39-b0e0-4c50-8955-66854688cffd.jpeg",
-            roomName: "roomA",
-            date: "2023-12-10",
-          },
-          gradeInfo: {
-            cleanliness: 5,
-            deafening: 5,
-            fixtureStatus: 5,
-          },
-          reviewInfo: {
-            writeDate: "2023-09-10",
-            reviewPhoto:
-              "https://studious-was-bucket.s3.ap-northeast-2.amazonaws.com/076a1754-f70f-4123-953f-ed683d7b30e2.png",
-            detail: "최고입니다!",
-          },
-        },
-      ]);
+      GET(
+        "/reviews/wrotereviews?startDate=2023-09-01&endDate=2023-09-20&page=1",
+        config
+      )
+        .then((response) => {
+          console.log(response.data);
+          setWrittenReviews(response.data.writtenReviewInfos);
+        })
+        .catch((error) => {
+          console.log("written error", error);
+        });
     }
   };
 
@@ -169,23 +132,28 @@ const Reviews = () => {
   const performDeleteReview = (review) => {
     const { reviewId } = review;
 
-    axios
-      .delete(
-        `http://ec2-13-125-171-43.ap-northeast-2.compute.amazonaws.com:8080/studious/reviews/${reviewId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+    DELETE(`/reviews/${reviewId}`, {
+      headers: {
+        Authorization: `${accessToken}`,
+      },
+    })
       .then((response) => {
-        console.log("리뷰 삭제 성공:", response.data);
-
-        // 리다이렉트?
-        closeDeletePopup();
+        if (response.status === 200) {
+          console.log("리뷰 삭제 성공:", response.data);
+          closeDeletePopup();
+          navigate("/myPage/reviews");
+        } else if (response.status === 404) {
+          alert("해당 리뷰를 찾을 수 없습니다.");
+        }
       })
       .catch((error) => {
-        console.error("리뷰 삭제 실패:", error);
+        if (error.response && error.response.status === 404) {
+          alert("해당 사용자를 찾을 수 없습니다.");
+        } else if (error.response.status === 500) {
+          alert("데이터베이스에 오류가 있습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+          console.error("리뷰 삭제 실패:", error);
+        }
         closeDeletePopup();
       });
   };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import { GET } from "apis/api";
 
 const ReviewEdit = () => {
   const { reviewId } = useParams();
@@ -11,9 +12,7 @@ const ReviewEdit = () => {
   // 리뷰 정보를 불러오는 함수
   const fetchReview = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/studious/mypage/{userId}/reveiws/${reviewId}`
-      );
+      const response = await GET(`/mypage/reveiws/${reviewId}`);
       setReview(response.data);
     } catch (error) {
       console.error("Error fetching review:", error);
@@ -31,10 +30,7 @@ const ReviewEdit = () => {
 
   const handleEditReview = async () => {
     try {
-      await axios.patch(
-        `http://localhost:8080/studious/mypage/{userId}/reveiws/${reviewId}`,
-        review
-      );
+      await axios.patch(`mypage/{userId}/reveiws/${reviewId}`, review);
       alert("리뷰가 수정되었습니다.");
       navigate("/");
     } catch (error) {
