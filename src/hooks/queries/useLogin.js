@@ -1,4 +1,5 @@
 import { postLogin, postOAuthLogin } from "apis/user";
+import { errorCode } from "components/constants/ErrorCode";
 import { USER } from "components/constants/User";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import { setCookie } from "utils/cookie";
 import { setToken } from "utils/setToken";
 
 const handleErrorMessage = ({ code, message }) => {
-  if (code === "ALREADY_EXIST_PHONE_NUMBER" || code === "MISMATCH_EMAIL") {
+  if (code in errorCode.user) {
     alert(message);
   }
 };
