@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+# ScascannerFinal
+> 스터디룸 조회 및 예약 기능 사이트 개발 프로젝트 (2023.03.20 ~)
+>
+> __우리가 불편했던 것을 우리의 힘으로 개선해야 한다!__
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 목차
+1. [설명](#설명)
+2. [기술 스택](#기술-스택)
+3. [구현 기능](#구현-기능)
 
-## Available Scripts
+### 규칙
+1. 2주에 1번씩 대면 회의
+2. 1주일에 한 번씩 `Pull Request` 올리기
+3. 커밋은 기능 단위 기준으로 하고 메시지는 반드시 노션에 있는 커밋 메시지 컨벤션을 준수하여 작성할 것!
 
-In the project directory, you can run:
+## 설명
 
-### `npm start`
+### 제안 배경
+- 스터디 카페와 개인석/자유석 요금은 검색이 용이하나, 스터디 룸의 존재 여부와 요금 및 시설은 파악하기에 어려움이 많다. 그리고 이를 알기 위해선 보편적으로 오픈채팅을 이용한 상담만이 유일한 수단인 곳이 많고, 결제 또한 직접 방문하여 키오스크에서 결제하거나 계좌 번호를 받아 입금하는 형태인 곳이 많다. 또한 스터디룸에 대한 실제 후기가 많지 않아 사진과 실제 스터디룸이 다르거나, 안내되어 있는 정보와 다른 경우가 있다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 주요 내용
+- 사용자가 설정해 놓은 날짜/시간/인원 을 통해 알맞는 스터디룸을 검색하고 해당 스터디룸을 선택하면 상세 정보 (HDMI, 에어컨 여부 등 편의 시설)를 조회할 수 있고 실시간 예약 현황을 조회하고 가능한 시간대에 예약을 하고 스터디룸 연장 시 사이트를 이용해 간편하게 연장을 할 수 있다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧑‍💻 Team members
 
-### `npm test`
+### Backend
+| [김민우](https://github.com/kmw2378) | [길가은](https://github.com/rlfrkdms1) |                                            [최보현](https://github.com/Brilly-Bohyun)                                            |
+| :--------------------------------: | :----------------------------------: |:-----------------------------------------------------------------------------------------------------------------------------:|
+| <img src="https://user-images.githubusercontent.com/83744709/212283218-78f4db00-6530-411e-becc-d93161f81035.png" width="200"> | <img src="https://user-images.githubusercontent.com/83744709/212281564-acac7f5c-ce83-45e2-8b3c-1579f5f6898a.png" width="200"> | <img src="https://user-images.githubusercontent.com/83744709/212281310-471a7dd8-11a9-4d01-83aa-8a6338b24bc3.png" width="200"> |
+| 팀장 | 팀원 |                                                              팀원                                                               |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
+|                                              [김한주](https://github.com/hanjuuuuuu)                                              | [이민희](https://github.com/leeminhee119) |
+|:------------------------------------------------------------------------------------------------------------------------------:| :---: |
+| <img src="https://user-images.githubusercontent.com/107420002/226254682-c0aa9b25-2d0e-4969-a7b7-4c3c84e251b6.png" width="200"> | <img src="https://user-images.githubusercontent.com/107420002/226254622-c09f022a-b2d7-4260-9fb3-250098735cde.png" width="200"> | <img src="https://user-images.githubusercontent.com/83744709/212281310-471a7dd8-11a9-4d01-83aa-8a6338b24bc3.png" width="200"> |
+|                                                               팀원                                                               | 팀원 |
 
-### `npm run build`
+## 기술 스택
+|                                                 Spring                                                 |                                                              JPA                                                               | JavaScript | TypeScript |  React   |
+|:------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:| :------: | :------: | :------: |
+| <img src="https://cdn.freebiesupply.com/logos/large/2x/spring-3-logo-png-transparent.png" width="100"> | <img src="https://user-images.githubusercontent.com/107420002/226260149-7a74fd61-4da7-42f1-9e3e-cb1a95cd2fc4.png" width="100"> | ![image](https://user-images.githubusercontent.com/107420002/226259666-d69e1b6a-bdd9-4bf9-9308-0783b91d4bf8.png) | ![image](https://user-images.githubusercontent.com/107420002/226259679-041ff46f-c1cf-4e86-b3b9-104fcdf50449.png) | ![image](https://user-images.githubusercontent.com/107420002/226259751-e9bf147c-35ad-491a-8998-0d09da13f6ba.png) |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 구현 기능
+### 조회 기능
+- 예약할 스터디룸, 예약할 날짜, 시간, 인원수에 따라 실시간으로 예약 가능한 시간대를 조회할 수 있다.
+- HDMI, TV, 화이트 보드 등 각 스터디룸 마다 상세정보를 확인할 수 있다.
+- 날짜, 편의시설, 인원수 등의 기준으로 필터링을 해 원하는 조건의 스터디룸을 검색할 수 있다.
+### 예약 기능
+- 조회를 통해 예약할 스터디룸과 시간, 날짜를 정했다면, 이를 바탕으로 예약과 결제를 상담 없이 바로 할 수 있다.
+- 실시간 예약 변경/취소/연장이 가능하다.
+### 결제 기능
+- 예약된 건에 대해 토스 페이먼츠를 이용해 카드/가상계좌/계좌이체/상품권/휴대폰 등의 다양한 결제 수단을 통해 결제를 할 수 있다.
+- 예약한 스터디룸의 환불 정책에 의거하여 환불을 진행할 수 있다.
+### 추가 예정 기능
+- 실제 사용자들의 리뷰 작성 기능
+- 스터디 커뮤니티 기능
